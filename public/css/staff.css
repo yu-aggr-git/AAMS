@@ -1,0 +1,460 @@
+@charset "UTF-8";
+
+button {
+    padding         : 0 1vw;
+    font-size       : 2vmin;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    text-align      : center;
+    cursor          : pointer;
+}
+
+#main {
+    height      : 80vh;
+    margin      : 5vmin 0;
+    overflow-y  : auto;
+}
+
+#menuBar > #staffLogout{
+    font-size: 1.5vmin;
+}
+
+
+#main::-webkit-scrollbar,
+html::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* ───────────────────────────────────────────────────
+   ログイン
+   ……………………………………………………………………………………………………………………………………… */
+
+    #modal > #staffLogin {
+        width   : 80vmin;
+        height  : 60vmin;
+        display : flex;
+    }
+    #modal > #staffLogin > .modalBody {
+        justify-content : space-around;
+    }
+    #modal > #staffLogin > .modalBody > select,
+    #modal > #staffLogin > .modalBody > input {
+        background          : #ececec;
+        margin-bottom       : 2vh;
+        padding             : 0;
+        width               : 80%;
+        height              : 4vh;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #modal > #staffLogin > .modalBody > button {
+        background      : #000;
+        margin-bottom   : 5vmin;
+        padding         : 0 1vw;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
+        font-size       : 2vmin;
+        text-align      : center;
+        color           : #fff;
+        cursor          : pointer;
+    }
+
+
+/* ───────────────────────────────────────────────────
+   イベント選択
+   ……………………………………………………………………………………………………………………………………… */
+
+    #selectStaffEventArea {
+        display         : flex;
+        justify-content : start;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #selectStaffEventArea > div {
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #selectStaffEventArea > div > #selectStaffEvent {
+        background          : #ececec;
+        padding             : 0.5vmin 3vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh 0 0 100vh;
+        font-size           : 2vmin;
+        font-weight         : bold;
+        text-align          : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #selectStaffEventArea > div > #sendSelectStaffEvent {
+        background      : #fff;
+        margin-left     : 1vmin;
+        padding         : 0 1vw;
+        border-radius   : 0 100vh 100vh 0;
+        font-size       : 2vmin;
+        white-space     : nowrap;
+        color           : #000;    
+    }
+
+
+/* ───────────────────────────────────────────────────
+   イベント情報
+   ……………………………………………………………………………………………………………………………………… */
+
+   #staffEventInfoArea {
+        margin-top      : 5vmin;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #staffEventInfoArea > table {
+        width                       : 80%;
+        border-collapse             : separate;
+        border-spacing              : 0;
+        border-radius               : 100vh 0;
+    }
+    #staffEventInfoArea > table tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #staffEventInfoArea > table td,
+    #staffEventInfoArea > table th {
+        margin          : 0;
+        padding         : 1vmin;
+        font-size       : 1.5vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+    }
+    #staffEventInfoArea > table tr:first-child th,
+    #staffEventInfoArea > table tr:first-child td {
+        border-bottom: none;
+    }
+    #staffEventInfoArea > table th {
+        width       : 15%;
+        background  : #ececec;
+        font-weight : normal;
+    }
+    #staffEventInfoArea > table #eventName,
+    #staffEventInfoArea > table #mail {
+        width       : 45%;
+        text-align  : start;
+    }
+    #staffEventInfoArea > table #firstDay,
+    #staffEventInfoArea > table #endDay,
+    #staffEventInfoArea > table #birthday {
+        width: 15%;
+    }
+    #staffEventInfoArea > table #separator,
+    #staffEventInfoArea > table #shift {
+        width: 5%;
+    }
+    #staffEventInfoArea > table #shift > a {
+        display: none;
+    }
+    #staffEventInfoArea > table #firstDay,
+    #staffEventInfoArea > table #separator {
+        border-right: none;
+    }
+    #staffEventInfoArea > table #endDay,
+    #staffEventInfoArea > table #separator {
+        border-left: none;
+    }
+    #staffEventInfoArea > #staffEventInfoMsgArea {
+        display         : none;
+        width           : 80%;
+        margin          : 0.5vmin 0;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : end;
+        flex-flow       : column;
+    }
+    #staffEventInfoArea > #staffEventInfoMsgArea > #staffEventInfoMsg {
+        font-size   : 1.5vmin;
+        text-align  : end;
+    }
+    #staffEventInfoArea > #staffEventInfoMsgArea > input {
+        background          : #ececec;
+        margin              : 1vh 0;
+        padding             : 0;
+        width               : 40%;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #staffEventInfoArea > #staffEventInfoMsgArea > #setPassOpen {
+        margin          : 0 1vmin;
+        padding         : 0 1vmin;
+        font-size       : 1.5vmin;
+        color           : black;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
+    }
+
+
+/* ───────────────────────────────────────────────────
+   項目切換え
+   ……………………………………………………………………………………………………………………………………… */
+
+    #selectItemArea {
+        display         : none;
+        margin-top      : 10vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : center;
+    }
+
+    #selectItemArea button {
+        background  : #fff;
+        margin      : 0 1vmin;
+    }
+
+
+/* ───────────────────────────────────────────────────
+   勤怠情報
+   ……………………………………………………………………………………………………………………………………… */
+
+    #staffWorkReportInfoArea {
+        display         : none;
+        margin-top      : 5vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : start; 
+        flex-flow       : column;
+    }
+    #staffWorkReportInfoArea > p {
+        font-size : 1.5vmin;
+    }
+    #staffWorkReportInfoArea > div {
+        width           : 100%;
+        margin-top      : 2vmin;
+        overflow-x      : auto;
+    }
+    #staffWorkReportInfoArea > div::-webkit-scrollbar {
+        display: none;
+    }
+    #staffWorkReportInfoArea > div > table {
+        width           : 100%;
+        border-collapse : separate;
+        border-spacing  : 0;
+        border-radius   : 100vh 0;
+    }
+    #staffWorkReportInfoArea table > tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #staffWorkReportInfoArea tr:first-child {
+        border-radius   : 100vh 0;
+    }
+    #staffWorkReportInfoArea td,
+    #staffWorkReportInfoArea th {
+        width           : 25vmin;
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+        font-weight     : normal;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+    }
+    #staffWorkReportInfoArea th {
+        background : #ececec;
+    }
+    #staffWorkReportInfoArea #dateHeader th,
+    #staffWorkReportInfoArea #breakTimeRow td,
+    #staffWorkReportInfoArea #workTimeRow td {
+        font-weight: bold;
+    }
+    #staffWorkReportInfoArea .borderRight {
+        border-right : 0.1vmin solid #e1e1e1;
+    }
+    #staffWorkReportInfoArea .borderLeftNone {
+        border-left : none;
+    }
+    #staffWorkReportInfoArea .sticky {
+        width           : 20vmin;
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+    }
+
+
+
+/* ───────────────────────────────────────────────────
+   勤怠修正情報
+   ……………………………………………………………………………………………………………………………………… */
+
+    #staffworkReportEditInfoArea {
+        display         : none;
+        margin-top      : 5vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : start; 
+        flex-flow       : column;
+    }
+    #staffworkReportEditInfoArea > p {
+        font-size : 1.5vmin;
+    }
+    #staffworkReportEditInfoArea > div {
+        width           : 100%;
+        margin-top      : 2vmin;
+        overflow-x      : auto;
+    }
+    #staffworkReportEditInfoArea > div::-webkit-scrollbar {
+        display: none;
+    }
+    #staffworkReportEditInfoArea > div > table {
+        width           : 100%;
+        border-collapse : separate;
+        border-spacing  : 0;
+        border-radius   : 100vh 0;
+    }
+    #staffworkReportEditInfoArea table > tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #staffworkReportEditInfoArea tr:first-child {
+        border-radius   : 100vh 0;
+    }
+    #staffworkReportEditInfoArea td,
+    #staffworkReportEditInfoArea th {
+        width           : 15vmin;
+        margin          : 0;
+        padding         : 0 1.5vmin;
+        font-size       : 2vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+    }
+    #staffworkReportEditInfoArea th {
+        background      : #ececec;
+        border-bottom   : none;
+    }
+    #staffworkReportEditInfoArea td .statusB {
+        width           : fit-content;
+        margin          : 0.5vmin auto;
+        padding         : 0.1vmin 1.5vmin;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
+    }
+    #staffworkReportEditInfoArea .w10 {
+        width : 10vmin;
+    }
+    #staffworkReportEditInfoArea .w25 {
+        width : 25vmin;
+    }
+    #staffworkReportEditInfoArea .textStart {
+        text-align: start;
+    }
+    #staffworkReportEditInfoArea .valueTop {
+        padding-top     : 1.5vmin;
+        vertical-align  : top;
+    }
+    #staffworkReportEditInfoArea .sticky1 {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+    }
+    #staffworkReportEditInfoArea .sticky2 {
+        position        : sticky;
+        top             : 0;
+        left            : 18.2vmin;
+    }
+
+
+
+
+/* ───────────────────────────────────────────────────
+   打刻修正
+   ……………………………………………………………………………………………………………………………………… */
+
+    #staffStampEditArea {
+        display         : none;
+        width           : 100%;
+        max-height      : 50%;
+        margin-top      : 5vmin;
+        padding         : 5vmin 0;
+        border          : 0.1vmin solid #666;
+        border-radius   : 10vh;
+        /* display         : flex; */
+        justify-content : start;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #staffStampEditArea > div {
+        width           : 90%;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+        flex-wrap       : wrap;
+    }
+    #staffStampEditArea > div > p {
+        width           : 30%;
+        padding-right   : 2vmin;
+        font-size       : 2vmin;
+        text-align      : end;
+    }
+    #staffStampEditArea > div select,
+    #staffStampEditArea > div input {
+        background          : #ececec;
+        margin              : 0.5vw 0;
+        padding             : 0;
+        width               : 60%;
+        height              : 4vh;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #staffStampEditArea > div > div {
+        width           : 60%;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #staffStampEditArea > div > div > #editStampHour,
+    #staffStampEditArea > div > div > #editStampMinutes {
+        width : 25%;
+    }
+    #staffStampEditArea > div > div > .separator {
+        width       : 10%;
+        text-align  : center;
+    }
+    #staffStampEditArea > div > #staffStampEditMsg {
+        width       : 100%;
+        text-align  : center;
+    }
+    #staffStampEditArea > div > #sendStaffStampEdit {
+        background      : #000;
+        margin-top      : 1vh;
+        padding         : 0 1vw;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
+        font-size       : 2vmin;
+        text-align      : center;
+        color           : #fff;
+        cursor          : pointer;
+    }
+    

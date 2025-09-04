@@ -1,0 +1,543 @@
+@charset "UTF-8";
+
+/* ──モーダル：ログイン─────────────────────────────────────── */
+
+#modal > #eventLogin {
+    width   : 80vmin;
+    height  : 60vmin;
+}
+#modal > #eventLogin > .modalBody {
+    justify-content : space-around;
+}
+#modal > #eventLogin > .modalBody > select,
+#modal > #eventLogin > .modalBody > input {
+    background          : #ececec;
+    margin-bottom       : 2vh;
+    padding             : 0;
+    width               : 80%;
+    height              : 4vh;
+    border              : 0.1vmin solid #666;
+    border-radius       : 100vh;
+    font-size           : 2vmin;
+    text-align          : center;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+}
+#modal > #eventLogin > .modalBody > button {
+    background      : #000;
+    margin-bottom   : 5vmin;
+    padding         : 0 1vw;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    font-size       : 2vmin;
+    text-align      : center;
+    color           : #fff;
+    cursor          : pointer;
+}
+
+
+/* ──モーダル：メニュー─────────────────────────────────────── */
+#modal > #menu {
+    width   : 80vmin;
+    height  : 60vmin;
+
+}
+#modal > #menu > .modalBody > #menuList {
+    margin-top      : 5%;
+    width           : 100%;
+    height          : 95%;
+    display         : flex;
+    justify-content : start;
+    align-items     : center;
+    flex-flow       : column;
+}
+#modal > #menu > .modalBody > #menuList > button {
+    background      : #fff;
+    width           : 70%;
+    height          : 15%;
+    margin          : 1vmin 0;
+    padding         : 0;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    box-shadow      : 0.3vh 0.3vh 0.5vh rgba(0, 0, 0, 0.6);
+    font-size       : 2vmin;
+    font-weight     : bold;
+    text-align      : center;
+    cursor          : pointer;
+}
+
+
+/* ──モーダル：打刻─────────────────────────────────────── */
+#modal > #stamp {
+    height   : 80vh;
+}
+#modal > #stamp > .modalBody button {
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    box-shadow      : 0.3vh 0.3vh 0.5vh rgba(0, 0, 0, 0.6);
+    text-align      : center;
+    cursor          : pointer;
+}
+#modal > #stamp > .modalBody {
+    overflow        : auto;
+}
+#modal > #stamp > .modalBody::-webkit-scrollbar {
+    display: none;
+}
+#modal > #stamp > .modalBody > #stampAreaStaff {
+    width           : 100%;
+    margin-bottom   : 2.5vmin;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+}
+#modal > #stamp > .modalBody > #stampAreaStaff > select {
+    background          : #ececec;
+    padding             : 0;
+    width               : 60%;
+    height              : 4vmin;
+    border              : 0.1vmin solid #666;
+    border-radius       : 100vh;
+    font-size           : 2vmin;
+    font-weight         : bold;
+    text-align          : center;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+}
+#modal > #stamp > .modalBody > #stampAreaButton {
+    display         : none;
+    width           : 100%;
+    margin-bottom   : 2.5vmin;
+    /* display         : flex; */
+    justify-content : center;
+    align-items     : center;
+}
+#modal > #stamp > .modalBody > #stampAreaButton > div {
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    flex-flow       : column;
+}
+#modal > #stamp > .modalBody > #stampAreaButton button {
+    background      : #919191;
+    margin          : 1vmin 2vmin;
+    padding         : 0 2vmin;
+    font-size       : 5vmin;
+    color           : #fff;
+}
+#modal > #stamp > .modalBody > #stampAreaButton #stampBreakS,
+#modal > #stamp > .modalBody > #stampAreaButton #stampBreakE {
+    font-size       : 2.5vmin;
+    color           : #000;
+}
+#modal > #stamp > .modalBody > #stampAreaEdit {
+    display         : none;
+    width           : 100%;
+    margin-bottom   : 2.5vmin;
+    /* display         : flex; */
+    justify-content : center;
+    align-items     : center;
+    flex-flow       : column;
+}
+#modal > #stamp > .modalBody > #stampAreaEdit > button {
+    padding         : 0 2vmin;
+    font-size       : 2.5vmin;
+}
+#modal > #stamp > .modalBody > #stampAreaEdit > #selectEdit {
+    display         : none;
+    width           : 100%;
+    /* display         : flex; */
+    justify-content : center;
+    align-items     : center;
+}
+#modal > #stamp > .modalBody > #stampAreaEdit > div > select {
+    background          : #ececec;
+    margin              : 2.5% 1%;
+    padding             : 0;
+    width               : 30%;
+    height              : 4vmin;
+    border              : 0.1vmin solid #666;
+    border-radius       : 100vh 0 0 100vh;
+    font-size           : 2vmin;
+    text-align          : center;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+}
+#modal > #stamp > .modalBody > #stampAreaEdit > div > #editHour,
+#modal > #stamp > .modalBody > #stampAreaEdit > div > #editMinutes {
+    width           : 5%;
+    border-radius   : 0;
+}
+#modal > #stamp > .modalBody > #stampAreaEdit > div > .separator {
+    width : 2%;
+}
+#modal > #stamp > .modalBody > #stampAreaEdit > div > #sendStampEdit {
+    background      : #fff;
+    margin-left     : 2%;
+    padding         : 0 1vw;
+    border-radius   : 0 100vh 100vh 0;
+    font-size       : 2vmin;
+    color           : #000;    
+}
+#modal > #stamp > .modalBody > #stampAreaInfo {
+    display         : none;
+    width           : 50%;
+    margin-bottom   : 10%;
+    /* display         : flex; */
+    justify-content : center;
+    align-items     : center;
+    flex-flow       : column;
+}
+#modal > #stamp > .modalBody > #stampAreaInfo table {
+    width                       : 100%;
+    border-collapse             : separate;
+    border-spacing              : 0;
+    border-radius               : 100vh 0;
+    white-space                 : nowrap;
+    -webkit-overflow-scrolling  : touch;
+}
+#modal > #stamp > .modalBody > #stampAreaInfo tbody {
+    width        : 100%;
+    display      : table;
+    table-layout : fixed;
+}
+#modal > #stamp > .modalBody > #stampAreaInfo tr:first-child {
+    border-radius   : 100vh 0;
+}
+#modal > #stamp > .modalBody > #stampAreaInfo tr:first-child th:first-child {
+    border-radius   : 100vh 0 0 0;
+}
+#modal > #stamp > .modalBody > #stampAreaInfo tr:first-child td:last-child {
+    border-radius   : 0 100vh 0 0;
+}
+#modal > #stamp > .modalBody > #stampAreaInfo td,
+#modal > #stamp > .modalBody > #stampAreaInfo th {
+    margin          : 0;
+    padding         : 0;
+    font-size       : 2.5vmin;
+    text-align      : center;
+    border          : 0.1vmin solid #666;
+    border-collapse : collapse;
+}
+#modal > #stamp > .modalBody > #stampAreaInfo th {
+    background  : #ececec;
+    font-weight : normal;
+}
+
+
+/* ──モーダル：勤怠修正─────────────────────────────────────── */
+#modal > #edit {
+    height  : 80vh;
+    padding : 0.1vmin 0;
+}
+#modal > #edit > .modalBody button {
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    text-align      : center;
+    cursor          : pointer;
+}
+#modal > #edit > .modalBody {
+    overflow        : auto;
+}
+#modal > #edit > .modalBody::-webkit-scrollbar {
+    display: none;
+}
+#modal > #edit > .modalBody > #editAreaStaff {
+    width           : 100%;
+    margin-bottom   : 2.5vmin;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+}
+#modal > #edit > .modalBody > #editAreaStaff > select {
+    background          : #ececec;
+    padding             : 0;
+    width               : 60%;
+    height              : 4vmin;
+    border              : 0.1vmin solid #666;
+    border-radius       : 100vh;
+    font-size           : 2vmin;
+    font-weight         : bold;
+    text-align          : center;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+}
+#modal > #edit > .modalBody > #editInput {
+    display         : none;
+    width           : 100%;
+    max-height      : 60%;
+    margin-top      : 2vmin;
+    /* display         : flex; */
+    justify-content : start;
+    align-items     : center;
+    flex-flow       : column;
+}
+#modal > #edit > .modalBody > #editInput > div {
+    width           : 60%;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    flex-wrap       : wrap;
+}
+#modal > #edit > .modalBody > #editInput > div > p {
+    width: 30%;
+}
+#modal > #edit > .modalBody > #editInput > div > select,
+#modal > #edit > .modalBody > #editInput > div > input {
+    background          : #ececec;
+    margin              : 0.5vw 0;
+    padding             : 0;
+    width               : 60%;
+    height              : 4vh;
+    border              : 0.1vmin solid #666;
+    border-radius       : 100vh;
+    font-size           : 2vmin;
+    text-align          : center;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+    white-space: normal;
+}
+#modal > #edit > .modalBody > #editInput > div > #editWorkReportHour,
+#modal > #edit > .modalBody > #editInput > div > #editWorkReportMinutes {
+    width : 25%;
+}
+#modal > #edit > .modalBody > #editInput > div > .separator {
+    width : 10%;
+}
+#modal > #edit > .modalBody > #editInput > div > #editMsg {
+    width : 100%;
+}
+#modal > #edit > .modalBody > #editInput > div > #sendEdit {
+    background      : #000;
+    margin-top      : 1vh;
+    padding         : 0 1vw;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    font-size       : 2vmin;
+    text-align      : center;
+    color           : #fff;
+    cursor          : pointer;
+}
+#modal > #edit > .modalBody > #editInfo {
+    display     : none;
+    width       : 90%;
+    margin-top  : 2vmin;
+}
+#modal > #edit > .modalBody > #editInfo > p {
+    text-align: left;
+}
+#modal > #edit > .modalBody > #editList {
+    display         : none;
+    width           : 90%;
+    padding-bottom  : 10vmin;
+    display         : flex;
+    justify-content : start;
+}
+#modal > #edit > .modalBody > #editList > div {
+    width           : 100%;
+    margin-top      : 2vmin;
+    overflow-x      : auto;
+}
+#modal > #edit > .modalBody > #editList > div::-webkit-scrollbar {
+    display: none;
+}
+#modal > #edit > .modalBody > #editList > div > table {
+    width           : 100%;
+    border-collapse : separate;
+    border-spacing  : 0;
+    border-radius   : 100vh 0;
+}
+#modal > #edit > .modalBody > #editList table > tbody {
+    width        : 100%;
+    display      : table;
+    table-layout : fixed;
+}
+#modal > #edit > .modalBody > #editList tr:first-child {
+    border-radius   : 100vh 0;
+}
+#modal > #edit > .modalBody > #editList td,
+#modal > #edit > .modalBody > #editList th {
+    width           : 15vmin;
+    margin          : 0;
+    padding         : 0 1.5vmin;
+    font-size       : 2vmin;
+    text-align      : center;
+    border          : 0.1vmin solid #666;
+    border-collapse : collapse;
+}
+#modal > #edit > .modalBody > #editList th {
+    background      : #ececec;
+    border-bottom   : none;
+}
+#modal > #edit > .modalBody > #editList td .statusB {
+    width           : fit-content;
+    margin          : 0.5vmin auto;
+    padding         : 0.1vmin 1.5vmin;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+}
+#modal > #edit > .modalBody > #editList .w10 {
+    width : 10vmin;
+}
+#modal > #edit > .modalBody > #editList .w25 {
+    width : 25vmin;
+}
+#modal > #edit > .modalBody > #editList .textStart {
+    text-align: start;
+}
+#modal > #edit > .modalBody > #editList .valueTop {
+    padding-top     : 1.5vmin;
+    vertical-align  : top;
+}
+#modal > #edit > .modalBody > #editList .sticky1 {
+    position        : sticky;
+    top             : 0;
+    left            : 0;
+    z-index         : 2;
+}
+#modal > #edit > .modalBody > #editList .sticky2 {
+    position        : sticky;
+    top             : 0;
+    left            : 18.2vmin;
+    z-index         : 2;
+}
+#modal > #edit > .modalBody > #closeEdit {
+    background      : #000;
+    width           : 100%;
+    height          : 10%;
+    margin          : auto 0 0 0;
+    padding         : 0;
+    border          : none;
+    border-radius   : 0 0 5vh 5vh;
+    font-size       : 2vmin;
+    text-align      : center;
+    color           : #fff;
+    cursor          : pointer;
+}
+
+
+
+/* ──メイン─────────────────────────────────────── */
+#menuBar {
+    margin-top      : 3vh;
+}
+#menuBar > #network > #reflevted {
+    font-size       : 1.5vmin;
+    color           : #000;
+}
+#menuBar > #menuOpen {
+    display         : none;
+    width           : 4vmin;
+    height          : 4vmin;
+    margin          : 0;
+    padding         : 0;
+    border          : 0.3vmin solid #000;
+    border-radius   : 100vh;
+    font-size       : 3vmin;
+    text-align      : center;
+    cursor          : pointer;
+}
+
+#info {
+    height          : 15vmin;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    flex-flow       : column;
+}
+#info > div {
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+}
+#info > div > #eventName {
+    min-width       : 15vw;
+    margin          : 0.5vw 0;
+    padding         : 0 3vmin;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    font-size       : 2.5vmin;
+    font-weight     : bold;
+    text-align      : center;
+}
+
+#time {
+    max-height      : 40vh;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    flex-flow       : column;
+}
+#time > #realday {
+    font-size       : 3vmin;
+    font-weight     : bold;
+    text-align      : center;
+}
+#time > #realtime {
+    font-size       : 10vmin;
+    font-weight     : bold;
+    text-align      : center;
+}
+#time > #stampButton {
+    background      : #000;
+    margin          : 1.5vmin 0;
+    padding         : 0 2vmin;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    box-shadow      : 0.3vh 0.3vh 0.5vh rgba(0, 0, 0, 0.6);
+    font-size       : 5vmin;
+    color           : #fff;
+    cursor          : pointer;
+}
+
+#workStatus {
+    width               : 95%;
+    margin              : 5% 0;
+    display             : flex;
+    justify-content     : start;
+    overflow            : auto;
+}
+#workStatus > table {
+    width                       : 100%;
+    border-collapse             : separate;
+    border-spacing              : 0;
+    border-radius               : 100vh 0;
+    white-space                 : nowrap;
+    -webkit-overflow-scrolling  : touch;
+}
+#workStatus > table > tbody {
+    width   : 100%;
+    display : table;
+    table-layout: fixed;
+}
+#workStatus > table > tbody > tr:first-child {
+    border-radius   : 100vh 0;
+}
+#workStatus > table > tbody > tr > td,
+#workStatus > table > tbody > tr > th {
+    width           : 20vw;
+    font-size       : 2.5vmin;
+    font-weight     : bold;
+    text-align      : center;
+    border          : 0.1vmin solid #666;
+    border-collapse : collapse;
+}
+#workStatus > table > tbody > tr > th {
+    background : #ececec;
+}
+#workStatus > table > tbody > tr > th:first-child {
+    border-radius   : 100vh 0 0 0;
+}
+#workStatus > table > tbody > tr > th:last-child {
+    border-radius   : 0 100vh 0 0;
+}

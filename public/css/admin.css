@@ -1,0 +1,627 @@
+@charset "UTF-8";
+
+button {
+    padding         : 0 1vw;
+    font-size       : 2vmin;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    text-align      : center;
+    cursor          : pointer;
+}
+
+#main {
+    margin      : 5vmin 0 10vmin 0;
+    overflow-y  : auto;
+}
+
+#menuBar > #adminLogout{
+    font-size: 1.5vmin;
+}
+
+
+#main::-webkit-scrollbar,
+html::-webkit-scrollbar {
+    display: none;
+}
+
+.colorOrange {
+    color: #dc4618ff;
+}
+
+.itemName {
+    margin-top      : 10vmin;
+    display         : flex;
+    justify-content : center;
+    align-items     : end;
+    flex-flow       : column;
+    cursor          : pointer;
+}
+.itemName > p {
+    padding     : 0.5vmin 2vmin;
+    font-size   : 2vmin;
+}
+.itemName > p:first-child {
+    background  : #000;
+    width       : 100%;
+    color       : #fff;   
+}
+.itemName > p > span {
+    padding-right   : 3vmin;
+    font-weight     : bold;
+    color           : #000;   
+}
+
+
+
+/* ───────────────────────────────────────────────────
+   ログイン
+   ……………………………………………………………………………………………………………………………………… */
+
+#modal > #adminLogin {
+    width   : 80vmin;
+    height  : 60vmin;
+    display : flex;
+}
+#modal > #adminLogin > .modalBody {
+    justify-content : space-around;
+}
+#modal > #adminLogin > .modalBody > input {
+    background          : #ececec;
+    margin-bottom       : 2vh;
+    padding             : 0;
+    width               : 80%;
+    height              : 4vh;
+    border              : 0.1vmin solid #666;
+    border-radius       : 100vh;
+    font-size           : 2vmin;
+    text-align          : center;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+}
+#modal > #adminLogin > .modalBody > button {
+    background      : #000;
+    margin-bottom   : 5vmin;
+    padding         : 0 1vw;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    font-size       : 2vmin;
+    text-align      : center;
+    color           : #fff;
+    cursor          : pointer;
+}
+
+
+/* ───────────────────────────────────────────────────
+   イベント選択
+   ……………………………………………………………………………………………………………………………………… */
+
+    #selectEventArea {
+        display         : flex;
+        justify-content : start;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #selectEventArea > div {
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #selectEventArea > div > #selectEvent {
+        background          : #ececec;
+        padding             : 0.5vmin 3vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh 0 0 100vh;
+        font-size           : 2vmin;
+        font-weight         : bold;
+        text-align          : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #selectEventArea > div > #sendSelectEvent {
+        background      : #fff;
+        margin-left     : 1vmin;
+        padding         : 0 1vw;
+        border-radius   : 0 100vh 100vh 0;
+        font-size       : 2vmin;
+        white-space     : nowrap;
+        color           : #000;    
+    }
+
+
+/* ───────────────────────────────────────────────────
+   イベント情報
+   ……………………………………………………………………………………………………………………………………… */
+
+   #eventInfoArea {
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #eventInfoArea > #eventEditMenu {
+        width           : 70%;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+    }
+    #eventInfoArea > #eventEditMenu > #eventEditMsg {
+        width           : 70%;
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+    }
+    #eventInfoArea > #eventEditMenu > #eventEdit {
+        width           : 30%;
+        display         : flex;
+        justify-content : end;
+        align-items     : center;
+    }
+    #eventInfoArea > #eventEditMenu > #eventEdit button{
+        background      : #fff;
+        margin-left     : 1vmin;
+        color           : #000;
+        border-radius   : 100vh 100vh 100vh 0;
+    }
+    #eventInfoArea > #eventEditMenu > #eventEdit #registerEvent,
+    #eventInfoArea > #eventEditMenu > #eventEdit #deleteEvent,
+    #eventInfoArea > #eventEditMenu > #eventEdit #sendEventEdit {
+        background      : #000;
+        color           : #fff;
+    }
+    #eventInfoArea > dl {
+        width           : 70%;
+        margin          : 1vmin 0;
+        display         : flex;
+        flex-wrap       : wrap;
+    }
+    #eventInfoArea > dl > dt,
+    #eventInfoArea > dl > dd {
+        margin          : 0;
+        padding         : 1vmin;
+        border          : 0.1vmin solid #666; 
+        border-top      : none;
+        font-size       : 1.5vmin;
+        overflow-wrap   : break-word;
+    }
+    #eventInfoArea > dl > dt {
+        width       : 30%;
+        text-align  : center;
+    }
+    #eventInfoArea > dl > dd {
+        width           : 60%;
+        border-left     : none;
+        display         : flex;
+        justify-content : center;
+        align-items     : center; 
+    }
+
+    #eventInfoArea > dl > dd > #staff {
+        width : 100%;
+    }
+    #eventInfoArea > dl > dd > #staff > div {
+        border-bottom   : 0.1vmin solid #e1e1e1; 
+        display         : flex;
+        justify-content : center;
+        align-items     : center; 
+    }
+    #eventInfoArea > dl > dd > #staff > div:last-child {
+        border-bottom   : none; 
+    }
+    #eventInfoArea > dl > dd > #staff > div > #staffName {
+        width           : 30%;
+        padding         : 0.5vmin;
+        border-right    : 0.1vmin solid #e1e1e1;
+        word-break      : break-all;
+    }
+    #eventInfoArea > dl > dd > #staff > div > #staffMail {
+        width           : 45%;
+        padding         : 0.5vmin;
+        border-right    : 0.1vmin solid #e1e1e1;
+        word-break      : break-all;
+    }
+    #eventInfoArea > dl > dd > #staff > div > #staffBirthday {
+        width       : 20%;
+        padding     : 0.5vmin;
+        word-break  : break-all;
+    }
+    #eventInfoArea > dl > dd > #pass {
+        color: #919191;
+    }
+    #eventInfoArea > dl > dd input,
+    #eventInfoArea > dl > dd select,
+    #eventInfoArea > dl > dd textarea {
+        background          : #ececec;
+        margin              : 0;
+        padding             : 0.5vmin 3vmin;
+        width               : 80%;
+        height              : 4vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #eventInfoArea > dl > dd > #inputFirstDayArea,
+    #eventInfoArea > dl > dd > #inputEndDayArea {
+        width           : 100%;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #eventInfoArea > dl > dd > #inputFirstDayArea > select,
+    #eventInfoArea > dl > dd > #inputEndDayArea > select {
+        width       : 25%;
+        margin      : 0 1vmin;
+        text-align  : center;
+    }
+    #eventInfoArea > dl > dd textarea {
+        height          : 15vmin;
+        border-radius   : 3vh;
+    }
+        #eventInfoArea > dl > .borderTop {
+        background  : #ececec;
+        border-top  : 0.1vmin solid #666; 
+    }
+    #eventInfoArea > dl > .topLeft {
+        border-radius   : 100vh 0 0 0;
+    }
+    #eventInfoArea > dl > .topRight {
+        border-radius   : 0 100vh 0 0;
+        text-align      : center;
+    }
+
+    
+/* ───────────────────────────────────────────────────
+   勤怠情報
+   ……………………………………………………………………………………………………………………………………… */
+
+    #workReportInfoAreaOpen {
+        display: none;
+    }
+    #workReportInfoArea {
+        display         : none;
+        margin-top      : 2vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : start; 
+        flex-flow       : column;
+    }
+    #workReportInfoArea > p {
+        font-size : 1.5vmin;
+    }
+    #workReportInfoArea > div {
+        width           : 100%;
+        margin-top : 2vmin;
+        overflow-x      : auto;
+    }
+    #workReportInfoArea > div::-webkit-scrollbar {
+        display: none;
+    }
+    #workReportInfoArea > div > table {
+        width           : 100%;
+        border-collapse : separate;
+        border-spacing  : 0;
+        border-radius   : 100vh 0;
+    }
+    #workReportInfoArea table > tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #workReportInfoArea td,
+    #workReportInfoArea th {
+        background      : #fff;
+        width           : 15vw;
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+    }
+    #workReportInfoArea th {
+        background : #ececec;
+    }
+    #workReportInfoArea #workReportInfoHeader2 th,
+    #workReportInfoArea #workReportInfoHeader3 th {
+        font-weight: normal;
+    }
+    #workReportInfoArea .borderTop {
+        border-top : 0.1vmin solid #e1e1e1;
+    }
+    #workReportInfoArea .borderLeft {
+        border-left : 0.1vmin solid #e1e1e1;
+    }
+    #workReportInfoArea .borderRight {
+        border-right : 0.1vmin solid #e1e1e1;
+    }
+    #workReportInfoArea .borderBottom {
+        border-bottom : 0.1vmin solid #e1e1e1;
+    }
+    #workReportInfoArea .sticky {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+    }
+    
+
+
+/* ───────────────────────────────────────────────────
+   打刻情報
+   ……………………………………………………………………………………………………………………………………… */
+
+    #stampInfoAreaOpen {
+        display: none;
+    }
+    #stampInfoArea {
+        display         : none;
+        margin-top      : 2vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : center; 
+        flex-flow       : column;
+    }
+    #stampInfoArea > #stampInfoSelect {
+        display         : flex;
+        justify-content : center;
+        align-items     : center; 
+    }
+    #stampInfoArea > #stampInfoSelect > div {
+        display         : flex;
+        justify-content : center;
+        align-items     : end; 
+        flex-flow       : column;
+    }
+    #stampInfoArea > #stampInfoSelect select {
+        background          : #ececec;
+        margin              : 0.5vmin 0;
+        padding             : 0.5vmin 3vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh 0 0 100vh;
+        font-size           : 2vmin;
+        font-weight         : bold;
+        text-align          : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #stampInfoArea > #stampInfoSelect button {
+        background      : #fff;
+        height          : 8vmin;
+        margin-left     : 1vmin;
+        padding         : 0 1vw;
+        border-radius   : 0 100vh 100vh 0;
+        font-size       : 2vmin;
+        white-space     : nowrap;
+        color           : #000;    
+    }
+    #stampInfoArea > #stampInfoEditMenu {
+        width           : 40%;
+        margin-top      : 2vmin;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+    }
+    #stampInfoArea > #stampInfoEditMenu > div {
+        width : 70%;
+    }
+    #stampInfoArea > #stampInfoEditMenu > #stampInfoEdit {
+        width           : 30%;
+        display         : flex;
+        justify-content : end;
+        align-items     : center;
+    }
+    #stampInfoArea > #stampInfoEditMenu > #stampInfoEdit button{
+        background      : #fff;
+        margin-left     : 1vmin;
+        color           : #000;
+        white-space     : nowrap;
+        border-radius   : 100vh 100vh 100vh 0;
+    }
+    #stampInfoArea > #stampInfoEditMenu > #stampInfoEdit #sendStampInfoEdit {
+        background      : #000;
+        color           : #fff;
+    }
+    #stampInfoArea > #stampInfoEditMsg {
+        width           : 50%;
+        margin          : 1vmin 0 0 0;
+        padding         : 0;
+        font-size       : 2vmin;
+    }
+    #stampInfoArea > table {
+        width                       : 50%;
+        margin-top                  : 2vmin;
+        border-collapse             : separate;
+        border-spacing              : 0;
+        border-radius               : 100vh 0;
+        white-space                 : nowrap;
+        -webkit-overflow-scrolling  : touch;
+    }
+    #stampInfoArea > table tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #stampInfoArea > table tr:first-child {
+        border-radius   : 100vh 0;
+    }
+    #stampInfoArea > table tr:first-child th:first-child {
+        border-radius   : 100vh 0 0 0;
+    }
+    #stampInfoArea > table tr:first-child td:last-child {
+        border-radius   : 0 100vh 0 0;
+    }
+    #stampInfoArea > table td,
+    #stampInfoArea > table th {
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+    }
+    #stampInfoArea > table th {
+        background  : #ececec;
+        font-weight : normal;
+    }
+    #stampInfoArea > table select,
+    #stampInfoArea > table input {
+        background          : #ececec;
+        width               : 5vmin;
+        margin              : 0.5vw 0;
+        padding             : 0;
+        height              : 4vh;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #stampInfoArea > table input {
+        width : 90%;
+    }
+    #stampInfoArea > table .separator {
+        width : 2vmin;
+    }
+    #stampInfoArea > table #editStampInfoStart div,
+    #stampInfoArea > table #editStampInfoBreak1s div,
+    #stampInfoArea > table #editStampInfoBreak1e div,
+    #stampInfoArea > table #editStampInfoBreak2s div,
+    #stampInfoArea > table #editStampInfoBreak2e div,
+    #stampInfoArea > table #editStampInfoBreak3s div,
+    #stampInfoArea > table #editStampInfoBreak3e div,
+    #stampInfoArea > table #editStampInfoEnd div {
+        display         : flex;
+        justify-content : center;
+        align-items     : center; 
+    }
+    #stampInfoArea > table #stampInfoEvent {
+        padding         : 0 5vmin;
+        white-space     : normal;
+    }
+
+
+
+/* ───────────────────────────────────────────────────
+   勤怠修正情報
+   ……………………………………………………………………………………………………………………………………… */
+
+    #workReportInfoEditAreaOpen {
+        display: none;
+    }
+    #workReportInfoEditArea {
+        display         : none;
+        margin-top      : 2vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : start; 
+        flex-flow       : column;
+    }
+    #workReportInfoEditArea > div {
+        width           : 100%;
+        margin-top      : 2vmin;
+        overflow-x      : auto;
+    }
+    #workReportInfoEditArea > div::-webkit-scrollbar {
+        display: none;
+    }
+    #workReportInfoEditArea > #workReportInfoEditMenu {
+        /* width           : 40%; */
+        margin-top      : 2vmin;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+    }
+    #workReportInfoEditArea > #workReportInfoEditMenu > #workReportInfoEditMsg {
+        width           : 70%;
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+    }
+    #workReportInfoEditArea > #workReportInfoEditMenu > #workReportInfoEdit {
+        width           : 30%;
+        display         : flex;
+        justify-content : end;
+        align-items     : center;
+    }
+    #workReportInfoEditArea > #workReportInfoEditMenu > #workReportInfoEdit button{
+        background      : #fff;
+        margin-left     : 1vmin;
+        color           : #000;
+        white-space     : nowrap;
+        border-radius   : 100vh 100vh 100vh 0;
+    }
+    #workReportInfoEditArea > #workReportInfoEditMenu > #workReportInfoEdit #sendWorkReportInfo {
+        background      : #000;
+        color           : #fff;
+    }
+    #workReportInfoEditArea > div > table {
+        width           : 100%;
+        border-collapse : separate;
+        border-spacing  : 0;
+        border-radius   : 100vh 0;
+    }
+    #workReportInfoEditArea table > tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #workReportInfoEditArea td,
+    #workReportInfoEditArea th {
+        width           : 15vmin;
+        margin          : 0;
+        padding         : 0 1.5vmin;
+        font-size       : 2vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+    }
+    #workReportInfoEditArea th {
+        background : #ececec;
+    }
+    #workReportInfoEditArea .status {
+        width : 10vmin;
+    }
+    #workReportInfoEditArea td .statusB {
+        width           : fit-content;
+        margin          : 0.5vmin auto;
+        padding         : 0.1vmin 1.5vmin;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
+    }
+    #workReportInfoEditArea .valueTop {
+        padding-top     : 1.5vmin;
+        vertical-align  : top;
+    }
+    #workReportInfoEditArea .w25 {
+        width: 25vmin;
+    }
+    #workReportInfoEditArea .textLeft {
+        text-align: left;
+    }
+    #workReportInfoEditArea .sticky1 {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+    }
+    #workReportInfoEditArea .sticky2 {
+        position        : sticky;
+        top             : 0;
+        left            : 18.2vmin;
+    }
+    #workReportInfoEditArea .sticky3 {
+        position        : sticky;
+        top             : 0;
+        left            : 36.4vmin;
+        z-index         : 2;
+    }

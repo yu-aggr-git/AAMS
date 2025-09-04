@@ -1,0 +1,17 @@
+{
+    "short_name": "aams",
+    "name": "AAMS",
+    "display": "standalone",
+    "icons": [{
+            "src": "public/img/aams-icon-192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "public/img/aams-icon-256.png",
+            "type": "image/png",
+            "sizes": "256x256"
+        }
+    ],
+    "start_url": "http://localhost/aams/index.php"
+}
