@@ -805,7 +805,6 @@ function opDB(op, paramDB) {
             ;
 
             xmlhttp.onreadystatechange = function() {
-                console.log(this.response);
                 if (this.readyState == 4 && this.status == 200) {
 
                     // 登録完了

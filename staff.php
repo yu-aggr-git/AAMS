@@ -148,6 +148,7 @@
             <!-- 修正申請情報 -->
             <div id="staffworkReportEditInfoArea">
                 <p>● 打刻端末がオフライン状態の場合など、データ反映にタイムラグがあります。</p>
+                <p>● 状態が「承認済・訂正済」になるまで勤怠情報には反映されません。</p>
                 <div>
                     <table id="workReportEditInfoTable">
                         <tbody>

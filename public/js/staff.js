@@ -208,7 +208,6 @@ function getWorkReport(id, event, name) {
             }
             break;
 
-
         case 'stampEditOpen':
             if (stampEditValue == 'false') {
                 document.getElementById("staffWorkReportInfoArea").style.display = 'none';
@@ -554,44 +553,42 @@ function opDB(op, paramDB) {
                                         var hour        = Number(itemDataA[0]) + Number((min == 60 ? 1 : 0));
 
                                         dataClac = hour + ':' + (min == 60 ? '00' : min.toString().padStart(2, '0'));
-                                        clacList[itemName] = dataClac;   
                                     }
+                                    clacList[itemName] = dataClac; 
                                     document.getElementById(workReportId).innerText = dataClac;
                                 }
                             });
 
                             // 休憩
                             var dataB = '';
-                            if (clacList.start) {
-                                if (
-                                    (clacList.break1s && clacList.break1s.startsWith('＊')) ||
-                                    (clacList.break1e && clacList.break1e.startsWith('＊')) ||
-                                    (clacList.break2s && clacList.break2s.startsWith('＊')) ||
-                                    (clacList.break2e && clacList.break2e.startsWith('＊')) ||
-                                    (clacList.break3s && clacList.break3s.startsWith('＊')) ||
-                                    (clacList.break3e && clacList.break3e.startsWith('＊')) ||
-                                    (clacList.break1s && !clacList.break1e) ||
-                                    (clacList.break2s && !clacList.break2e) ||
-                                    (clacList.break3s && !clacList.break3e) 
-                                ) {
-                                    dataB = '＊';
-                                } else {
-                                    dataB = '0:00';
+                            if (
+                                (clacList.break1s && clacList.break1s.startsWith('＊')) ||
+                                (clacList.break1e && clacList.break1e.startsWith('＊')) ||
+                                (clacList.break2s && clacList.break2s.startsWith('＊')) ||
+                                (clacList.break2e && clacList.break2e.startsWith('＊')) ||
+                                (clacList.break3s && clacList.break3s.startsWith('＊')) ||
+                                (clacList.break3e && clacList.break3e.startsWith('＊')) ||
+                                (clacList.break1s && !clacList.break1e) ||
+                                (clacList.break2s && !clacList.break2e) ||
+                                (clacList.break3s && !clacList.break3e) 
+                            ) {
+                                dataB = '＊';
+                            } else {
+                                dataB = '0:00';
 
-                                    if (clacList.break1s && clacList.break1e) {
-                                        var break1 = clac(data[key].day, clacList.break1s, clacList.break1e, 'diff');
-                                        dataB = break1;
-                                    }                                                
+                                if (clacList.break1s && clacList.break1e) {
+                                    var break1 = clac(data[key].day, clacList.break1s, clacList.break1e, 'diff');
+                                    dataB = break1;
+                                }                                                
 
-                                    if (clacList.break2s && clacList.break2e) {
-                                        var break2 = clac(data[key].day, clacList.break2s, clacList.break2e, 'diff');
-                                        dataB = clac(data[key].day, dataB, break2, 'sum');
-                                    }
+                                if (clacList.break2s && clacList.break2e) {
+                                    var break2 = clac(data[key].day, clacList.break2s, clacList.break2e, 'diff');
+                                    dataB = clac(data[key].day, dataB, break2, 'sum');
+                                }
 
-                                    if (clacList.break3s && clacList.break3e) {
-                                        var break3 = clac(data[key].day, clacList.break3s, clacList.break3e, 'diff');
-                                        dataB = clac(data[key].day, dataB, break3, 'sum');;
-                                    }
+                                if (clacList.break3s && clacList.break3e) {
+                                    var break3 = clac(data[key].day, clacList.break3s, clacList.break3e, 'diff');
+                                    dataB = clac(data[key].day, dataB, break3, 'sum');;
                                 }
                             }
 
