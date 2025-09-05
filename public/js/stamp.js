@@ -1,10 +1,6 @@
 window.onload = () => {
     let paramIndexedDB = {};
 
-    // ───Service Worker 登録スクリプト ─────────────────────────────────────────────
-    navigator.serviceWorker.register('./sw.js').catch(console.error.bind(console));
-
-
     // ───日時の表示─────────────────────────────────────────────────────────────────
     document.getElementById("realday").innerHTML = date().yyyymmdd;
     setInterval(
@@ -238,6 +234,9 @@ function online(event) {
         // ログイン
         checkLoginEvent(); 
     } else {
+        // Service Worker 登録スクリプト
+        navigator.serviceWorker.register('./sw.js').catch(console.error.bind(console));
+
         // スタッフリストの取得
         paramDB = { 'event': event, };
         opDB('getStaffList', paramDB);

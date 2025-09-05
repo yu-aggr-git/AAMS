@@ -1,14 +1,14 @@
 @charset "UTF-8";
 
-#main > div {
+#main > #link {
     width           : 100%;
-    height          : 95%;
+    height          : 80%;
     display         : flex;
     justify-content : center;
     align-items     : center;
     flex-flow       : column;
 }
-#main > div > button {
+#main > #link > button {
     background      : #fff;
     width           : 50vmin;
     height          : 10vmin;

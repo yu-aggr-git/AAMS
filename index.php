@@ -14,7 +14,15 @@
 
         <!-- メイン -->
         <div id="main">
-            <div>
+            <!-- メニュー -->
+            <div id="menuBar">
+                <div id="network">
+                    <p id="networkStatus"></p>
+                    <p id="reflevted"></p>
+                </div>
+            </div>
+
+            <div id="link">
                 <button type="button" id="redirectStaff">スタッフ</button>
                 <button type="button" id="redirectStamp">打刻画面</button>
                 <button type="button" id="redirectAdmin">管理者</button>
