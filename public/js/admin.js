@@ -871,6 +871,7 @@ function opDB(op, paramDB) {
                         Object.keys(data).forEach(function(key) {
 
                             staffList = staffList 
+                                + data[key].no + ':' 
                                 + data[key].name + ':' 
                                 + data[key].mail + ':' 
                                 + data[key].birthday + '\n' ;
@@ -879,7 +880,7 @@ function opDB(op, paramDB) {
                             var name = document.createElement("p");
                             var mail = document.createElement("p");
                             var birthday = document.createElement("p");
-                            name.innerText = data[key].name;
+                            name.innerText = data[key].no + '.' + data[key].name;
                             name.id = 'staffName';
                             mail.innerText = data[key].mail;
                             mail.id = 'staffMail';
@@ -916,7 +917,6 @@ function opDB(op, paramDB) {
                     }
 
                     // イベント情報表示
-                    // document.getElementById("staff").innerText      = staffList;
                     document.getElementById("inputStaff").innerHTML = staffList;
                 }
             }
@@ -980,10 +980,13 @@ function opDB(op, paramDB) {
 
                                             if (!dataE.startsWith('＊')) {
                                                 var endA    = dataE.split(/:/);
-                                                var min     = Math.ceil(endA[1] / 15) * 15;
-                                                var hour    = Number(endA[0]) + Number((min == 60 ? 1 : 0));
-
-                                                dataE = hour + ':' + (min == 60 ? '00' : min.toString().padStart(2, '0'));
+                                                var min         = Math.floor(endA[1] / 15) * 15;
+                                                var hour        = Number(endA[0]);
+                                                if (dataS) {
+                                                    var clacStartA = dataS.split(/:/);
+                                                    hour = hour + (Number(clacStartA[0]) > hour ? 24 : 0);
+                                                }
+                                                dataE = hour + ':' + min.toString().padStart(2, '0');
                                             }
                                         }
 

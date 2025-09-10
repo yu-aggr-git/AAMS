@@ -340,7 +340,7 @@
     display         : none;
     width           : 90%;
     padding-bottom  : 10vmin;
-    display         : flex;
+    /* display         : flex; */
     justify-content : start;
 }
 #modal > #edit > .modalBody > #editList > div {

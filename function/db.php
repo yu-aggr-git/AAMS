@@ -255,10 +255,11 @@
     // ────スタッフリスト：取得─────────────────────────────
     function get_staff_list($dbh, $param) {
         $query = "
-            SELECT name, mail, birthday
+            SELECT no, name, mail, birthday
             FROM staff_list
             WHERE
                     event = :event
+            ORDER BY no asc
         ";
 
         $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
@@ -384,16 +385,17 @@
         foreach (explode(",", $param['staffList']) as $staff) {
             if ($staff) {
                 $staffArray = explode(":", $staff);
-                $name = $staffArray[0];
-                $mail = $staffArray[1] ? $staffArray[1] : null;
-                $birthday = $staffArray[2] ? $staffArray[2] : null;
-                $arrayValues[] = "('{$param['event']}', '{$name}', '{$mail}', '{$birthday}')";
+                $no   = $staffArray[0];
+                $name = $staffArray[1];
+                $mail = $staffArray[2] ? $staffArray[2] : null;
+                $birthday = $staffArray[3] ? $staffArray[3] : null;
+                $arrayValues[] = "('{$param['event']}', '{$no}', '{$name}', '{$mail}', '{$birthday}')";
             }
         }
         if ($arrayValues) {
             $query2 = "
                 INSERT INTO
-                    staff_list(event, name, mail, birthday)
+                    staff_list(event, no, name, mail, birthday)
                 VALUES "
                     . join(",", $arrayValues);
                 ;
@@ -585,7 +587,7 @@
         // 勤怠修正情報
         $query4 = "
             DELETE FROM
-                work_report
+                work_report_edit
             WHERE
                 event = :event
         ";

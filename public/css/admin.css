@@ -198,7 +198,9 @@ html::-webkit-scrollbar {
         justify-content : center;
         align-items     : center; 
     }
-
+    #eventInfoArea > dl > dd > #shiftUrl {
+        overflow: auto;
+    }
     #eventInfoArea > dl > dd > #staff {
         width : 100%;
     }
