@@ -155,7 +155,7 @@
 
                     <dt>シフトURL</dt>
                     <dd>
-                        <p hidden id="shiftUrl"></p>
+                        <p hidden id="shiftUrl"><a href="" target="_blank"></a></p>
                         <input type="text" id="inputShiftUrl">
                     </dd>
 

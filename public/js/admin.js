@@ -653,7 +653,8 @@ function opDB(op, paramDB) {
                 document.getElementById("eventName").innerText = '';
                 document.getElementById("firstDay").innerText  = '';
                 document.getElementById("endDay").innerText  = '';
-                document.getElementById("shiftUrl").innerText  = '';
+                document.getElementById("shiftUrl").querySelector("a").href = '';
+                document.getElementById("shiftUrl").querySelector("a").innerText = '';
 
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
@@ -662,7 +663,10 @@ function opDB(op, paramDB) {
                     document.getElementById("eventName").innerText  = data.event;
                     document.getElementById("firstDay").innerText   = data.first_day;
                     document.getElementById("endDay").innerText     = data.end_day;
-                    document.getElementById("shiftUrl").innerText   = data.shift_url;
+                    if (data.shift_url) {
+                        document.getElementById("shiftUrl").querySelector("a").href = data.shift_url;
+                        document.getElementById("shiftUrl").querySelector("a").innerText = data.shift_url;
+                    }
 
 
                     // イベント情報修正
