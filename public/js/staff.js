@@ -321,7 +321,7 @@ function opDB(op, paramDB) {
 
                         getSelectEvent(paramDB['inputStaffEventName'], paramDB['inputStaffMail']);
                     } else {
-                        msg = 'パスワードが誤っています。';
+                        msg = '入力値が誤っています。';
                     }
                     document.getElementById("staffLoginMsg").innerHTML = msg;
                 }
