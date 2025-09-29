@@ -38,7 +38,7 @@ function online() {
 
 
     // ログイン
-    const staffUser = window.localStorage.getItem("staffUser");
+    let staffUser = window.localStorage.getItem("staffUser");
     if (!staffUser) {
         staffLogin();
     } else {
@@ -56,6 +56,7 @@ function online() {
 
     // パスワードの設定
     document.getElementById("setPassOpen").onclick = function() {
+        staffUser = window.localStorage.getItem("staffUser");
         paramDB = {
             'mail'  : staffUser,
             'pass'  : document.getElementById("inputStaffPass").value
@@ -66,6 +67,7 @@ function online() {
 
     // イベントの選択
     document.getElementById("sendSelectStaffEvent").onclick = function() {
+        staffUser = window.localStorage.getItem("staffUser");
         const selectEvent = document.getElementById("selectStaffEvent").value;
         getSelectEvent(selectEvent, staffUser);
     }
