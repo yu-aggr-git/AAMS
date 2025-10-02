@@ -600,7 +600,7 @@ function workReportInfoEdit(id) {
                         'name'          : valArray[2],
                         'day'           : valArray[3],
                         'item'          : valArray[4],
-                        'dataAfter'     : valArray[5],
+                        'dataAfter'     : statusAfter == '却下済' ? valArray[5] : valArray[6],
                     };
                     opDB('updateWorkReport', paramDB);
                 }
@@ -966,7 +966,7 @@ function opDB(op, paramDB) {
                                         var dataW = '';
 
                                         // 出勤
-                                        if (data[key].start) {
+                                        if (data[key].start && data[key].start != '-') {
                                             dataS = data[key].start;
 
                                             if (!dataS.startsWith('＊')) {
@@ -979,7 +979,7 @@ function opDB(op, paramDB) {
                                         }
 
                                         // 退勤
-                                        if (data[key].end) {
+                                        if (data[key].end && data[key].end != '-') {
                                             dataE = data[key].end;
 
                                             if (!dataE.startsWith('＊')) {
@@ -995,13 +995,13 @@ function opDB(op, paramDB) {
                                         }
 
                                         // 休憩
-                                        var break1s = data[key].break1s ?? '';
-                                        var break1e = data[key].break1e ?? '';
-                                        var break2s = data[key].break2s ?? '';
-                                        var break2e = data[key].break2e ?? '';
-                                        var break3s = data[key].break3s ?? '';
-                                        var break3e = data[key].break3e ?? '';
-                                        if (data[key].start) {
+                                        var break1s = data[key].break1s && data[key].break1s != '-' ? data[key].break1s : '';
+                                        var break1e = data[key].break1e && data[key].break1e != '-' ? data[key].break1e : '';
+                                        var break2s = data[key].break2s && data[key].break2s != '-' ? data[key].break2s : '';
+                                        var break2e = data[key].break2e && data[key].break2e != '-' ? data[key].break2e : '';
+                                        var break3s = data[key].break3s && data[key].break3s != '-' ? data[key].break3s : '';
+                                        var break3e = data[key].break3e && data[key].break3e != '-' ? data[key].break3e : '';
+                                        if (data[key].start && data[key].start != '-') {
                                             if (
                                                 (break1s && break1s.startsWith('＊')) ||
                                                 (break1e && break1e.startsWith('＊')) ||
@@ -1193,6 +1193,7 @@ function opDB(op, paramDB) {
                                                 + ',' + nameKey
                                                 + ',' + dayKey
                                                 + ',' + itemKey
+                                                + ',' + dataItem[key].data_before
                                                 + ',' + dataItem[key].data_after
                                             ;
                                             statusB.className = 'statusB selectStatusB';

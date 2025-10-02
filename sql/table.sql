@@ -46,7 +46,7 @@ create table aams.work_report_edit(
     data_after  VARCHAR(8)                                      COMMENT '修正後(hh:mm:ss)',
     reason      VARCHAR(100)                                    COMMENT '理由',
     status      VARCHAR(10)                                     COMMENT '状態',
-    approval_d  VARCHAR(10)                                     COMMENT '承認日',
+    approval_d  VARCHAR(10)                                     COMMENT '処理日',
     PRIMARY KEY (request_dt, event, name, day, item)
 );
 

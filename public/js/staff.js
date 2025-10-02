@@ -547,28 +547,30 @@ function opDB(op, paramDB) {
                                     var stampId = 'stamp_' + data[key].day + '_' + itemName;
                                     document.getElementById(stampId).innerText = itemData;
 
-                                    var workReportId = 'workReport_' + data[key].day + '_' + itemName;
-                                    var dataClac = '＊';
-                                    if (!itemData.startsWith('＊')) {
-                                        var itemDataA   = itemData.split(/:/);
-                                        if (itemName != 'end') {
-                                            // 切り上げ
-                                            var min         = Math.ceil(itemDataA[1] / 15) * 15;
-                                            var hour        = Number(itemDataA[0]) + Number((min == 60 ? 1 : 0));
-                                            dataClac = hour + ':' + (min == 60 ? '00' : min.toString().padStart(2, '0'));
-                                        } else {
-                                            // 切り捨て
-                                            var min         = Math.floor(itemDataA[1] / 15) * 15;
-                                            var hour        = Number(itemDataA[0]);
-                                            if (clacList.start) {
-                                                var clacStartA = clacList.start.split(/:/);
-                                                hour = hour + (Number(clacStartA[0]) > hour ? 24 : 0);
+                                    if (itemData != '-') {
+                                        var workReportId = 'workReport_' + data[key].day + '_' + itemName;
+                                        var dataClac = '＊';
+                                        if (!itemData.startsWith('＊')) {
+                                            var itemDataA   = itemData.split(/:/);
+                                            if (itemName != 'end') {
+                                                // 切り上げ
+                                                var min         = Math.ceil(itemDataA[1] / 15) * 15;
+                                                var hour        = Number(itemDataA[0]) + Number((min == 60 ? 1 : 0));
+                                                dataClac = hour + ':' + (min == 60 ? '00' : min.toString().padStart(2, '0'));
+                                            } else {
+                                                // 切り捨て
+                                                var min         = Math.floor(itemDataA[1] / 15) * 15;
+                                                var hour        = Number(itemDataA[0]);
+                                                if (clacList.start) {
+                                                    var clacStartA = clacList.start.split(/:/);
+                                                    hour = hour + (Number(clacStartA[0]) > hour ? 24 : 0);
+                                                }
+                                                dataClac = hour + ':' + min.toString().padStart(2, '0');
                                             }
-                                            dataClac = hour + ':' + min.toString().padStart(2, '0');
                                         }
+                                        clacList[itemName] = dataClac; 
+                                        document.getElementById(workReportId).innerText = dataClac;
                                     }
-                                    clacList[itemName] = dataClac; 
-                                    document.getElementById(workReportId).innerText = dataClac;
                                 }
                             });
 

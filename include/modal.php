@@ -204,7 +204,7 @@
                                 <th>修正後</th>
                                 <th class="w25">理由</th>
                                 <th class="w25">申請日</th>
-                                <th>承認日</th>
+                                <th>処理日</th>
                             </tr>
                         </tbody>
                 </table>

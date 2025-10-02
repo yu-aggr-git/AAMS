@@ -725,41 +725,40 @@
             'approvalD'     => $param['approvalD'],
         ]);
 
-        if ($param['statusAfter'] == '承認済' || $param['statusAfter'] == '訂正済') {
-            $query2 = "
-                INSERT INTO
-                    work_report(event, name, day, start, end, break1s, break1e, break2s, break2e, break3s, break3e)
-                VALUES
-                    (:event, :name, :day, :start, :end, :break1s, :break1e, :break2s, :break2e, :break3s, :break3e)
-                ON DUPLICATE KEY UPDATE
-                    start   = IF(VALUES(start)   IS NULL, start,   IF(VALUES(start)     = '×:×', null,   VALUES(start))),
-                    end     = IF(VALUES(end)     IS NULL, end,     IF(VALUES(end)       = '×:×', null,   VALUES(end))),
-                    break1s = IF(VALUES(break1s) IS NULL, break1s, IF(VALUES(break1s)   = '×:×', null,   VALUES(break1s))),
-                    break1e = IF(VALUES(break1e) IS NULL, break1e, IF(VALUES(break1e)   = '×:×', null,   VALUES(break1e))),
-                    break2s = IF(VALUES(break2s) IS NULL, break2s, IF(VALUES(break2s)   = '×:×', null,   VALUES(break2s))),
-                    break2e = IF(VALUES(break2e) IS NULL, break2e, IF(VALUES(break2e)   = '×:×', null,   VALUES(break2e))),
-                    break3s = IF(VALUES(break3s) IS NULL, break3s, IF(VALUES(break3s)   = '×:×', null,   VALUES(break3s))),
-                    break3e = IF(VALUES(break3e) IS NULL, break3e, IF(VALUES(break3e)   = '×:×', null,   VALUES(break3e)))
-            ";
+        $query2 = "
+            INSERT INTO
+                work_report(event, name, day, start, end, break1s, break1e, break2s, break2e, break3s, break3e)
+            VALUES
+                (:event, :name, :day, :start, :end, :break1s, :break1e, :break2s, :break2e, :break3s, :break3e)
+            ON DUPLICATE KEY UPDATE
+                start   = IF(VALUES(start)   IS NULL, start,   IF(VALUES(start)     = '×:×', '-', VALUES(start))),
+                end     = IF(VALUES(end)     IS NULL, end,     IF(VALUES(end)       = '×:×', '-', VALUES(end))),
+                break1s = IF(VALUES(break1s) IS NULL, break1s, IF(VALUES(break1s)   = '×:×', '-', VALUES(break1s))),
+                break1e = IF(VALUES(break1e) IS NULL, break1e, IF(VALUES(break1e)   = '×:×', '-', VALUES(break1e))),
+                break2s = IF(VALUES(break2s) IS NULL, break2s, IF(VALUES(break2s)   = '×:×', '-', VALUES(break2s))),
+                break2e = IF(VALUES(break2e) IS NULL, break2e, IF(VALUES(break2e)   = '×:×', '-', VALUES(break2e))),
+                break3s = IF(VALUES(break3s) IS NULL, break3s, IF(VALUES(break3s)   = '×:×', '-', VALUES(break3s))),
+                break3e = IF(VALUES(break3e) IS NULL, break3e, IF(VALUES(break3e)   = '×:×', '-', VALUES(break3e)))
+        ";
 
-            $nextParam = [
-                'event'     => $param['event'],
-                'name'      => $param['name'],
-                'day'       => $param['day'],
-                'start'     => null,
-                'end'       => null,
-                'break1s'   => null,
-                'break1e'   => null,
-                'break2s'   => null,
-                'break2e'   => null,
-                'break3s'   => null,
-                'break3e'   => null
-            ];
-            $nextParam[$param['item']] = $param['after'];
+        $nextParam = [
+            'event'     => $param['event'],
+            'name'      => $param['name'],
+            'day'       => $param['day'],
+            'start'     => null,
+            'end'       => null,
+            'break1s'   => null,
+            'break1e'   => null,
+            'break2s'   => null,
+            'break2e'   => null,
+            'break3s'   => null,
+            'break3e'   => null
+        ];
+        $nextParam[$param['item']] = $param['after'];
 
-            $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-            $sth2->execute($nextParam);
-        }
+        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth2->execute($nextParam);
+
         echo $count;
     }
 
