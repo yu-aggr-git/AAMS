@@ -419,6 +419,7 @@ function editData(event) {
         document.getElementById("editInput").style.display = 'none';
         document.getElementById("editInfo").style.display = 'none';
         document.getElementById("editList").style.display = 'none';
+        document.getElementById("editWorkReportReason").value = '';
     }
 }
 
@@ -1377,6 +1378,7 @@ function opDB(op, paramDB) {
                             opDB('getWorkReportEdit', nextParamDB);
                         }
 
+                        document.getElementById("editWorkReportReason").value = '';
                         document.getElementById("editMsg").innerHTML = '';
                     } else {
                         document.getElementById("editMsg").innerHTML = '申請登録できませんでした。';
