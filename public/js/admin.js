@@ -283,7 +283,11 @@ function eventEdit(id) {
             var result = window.confirm('イベントを削除すると、\n関連する打刻データなどがすべて消去されます。\nイベントを削除してよろしいですか？');
 
             if (result) {
-                opDB('deleteEvent', paramDB);
+                var result2 = window.confirm('「' + inputEvent + '」を\n本当に削除してよろしいですか・・・？');
+
+                if (result2) {
+                    opDB('deleteEvent', paramDB);
+                }
             }
             break;
 
