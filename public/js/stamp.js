@@ -1157,7 +1157,7 @@ function opDB(op, paramDB) {
                     }
 
                     if (data) {
-                        Object.keys(data).forEach(function(key) {
+                        Object.keys(data).reverse().forEach(function(key) {
                             var value = "day["      + data[key].day     +  "]day_"
                                 +       "start["    + data[key].start   +  "]start_"
                                 +       "end["      + data[key].end     +  "]end_"
@@ -1237,7 +1237,7 @@ function opDB(op, paramDB) {
                         let i = 0;
                         let dayNum = [];
                         let itemNum = [];
-                        Object.keys(data).forEach(function(dayKey) {
+                        Object.keys(data).reverse().forEach(function(dayKey) {
                             i++;
                             dayNum[dayKey] = 0;
                             var dataDay = data[dayKey];
