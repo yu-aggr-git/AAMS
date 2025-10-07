@@ -248,6 +248,24 @@
         } else {
             $check = $param['inputStaffPass'] == $result[$param['inputStaffEventName']]['birthday'] ? true : false;
         }
+
+        // ログイン日時の更新
+        if ($check) {
+            $query2 = "
+                UPDATE
+                    staff_list
+                SET
+                    login_dt = :loginDt
+                WHERE
+                    mail = :mail
+            ";
+            $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+            $sth2->execute([
+                'mail'      => $param['inputStaffMail'],
+                'loginDt'   => $param['loginDt'],
+            ]);
+        }
+
         echo $check ? 'true' : 'false';
     }
 

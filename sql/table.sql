@@ -32,6 +32,7 @@ create table aams.staff_list(
     mail        VARCHAR(255)                                     COMMENT 'メールアドレス',
     birthday    VARCHAR(8)                                       COMMENT '生年月日',
     pass        VARCHAR(255)                                     COMMENT 'パスワード',
+    login_dt    VARCHAR(19)                                      COMMENT 'ログイン日時',
     PRIMARY KEY (event, no, name)
 );
 

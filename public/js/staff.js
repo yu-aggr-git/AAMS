@@ -303,6 +303,7 @@ function opDB(op, paramDB) {
                 + "&inputStaffEventName="   + encodeURIComponent(paramDB['inputStaffEventName']) 
                 + "&inputStaffMail="        + encodeURIComponent(paramDB['inputStaffMail']) 
                 + "&inputStaffPass="        + encodeURIComponent(paramDB['inputStaffPass']) 
+                + "&loginDt="               + encodeURIComponent(date().yyyymmddhhmmss) 
             ;
 
             xmlhttp.onreadystatechange = function() {
