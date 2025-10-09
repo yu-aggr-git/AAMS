@@ -1,0 +1,291 @@
+@charset "UTF-8";
+
+p {
+    font-size: 2vmin;
+}
+img {
+    width       : 100%;
+    height      : 100%;
+    margin      : 0;
+    padding     : 0;
+    object-fit  : contain;
+    cursor      : pointer;
+}
+
+#main {
+    justify-content : space-around;
+}
+
+#main > .text > p {
+    font-size   : 1.5vmin;
+    text-align  : center;
+}
+#main > #text1 {
+    height: 3vmin;
+}
+#main > #text2 {
+    margin : 2vmin 0;
+}
+
+
+/* ヘルプ */
+#main > #help {
+    width           : 90%;
+    margin          : 1vmin auto;
+    display         : flex;
+    justify-content : end;
+    flex-wrap       : wrap;
+}
+#main > #help > button {
+    margin-left     : 1vmin;
+    padding         : 0 1vw;
+    font-size       : 2vmin;
+    font-weight     : bold;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    text-align      : center;
+    box-shadow      : 0.3vh 0.3vh 0.5vh rgba(0, 0, 0, 0.6);
+    cursor          : pointer;
+}
+#main > #helpImg {
+    display         : none;
+    background      : #232323dd;
+    width           : 80%;
+    height          : auto;
+    padding         : 1vmin;
+    border          : 0.3vmin solid #000;
+    border-radius   : 5vh;
+    position        : fixed;
+    left            : 10%;
+    /* display         : flex; */
+    justify-content : space-around;
+    align-items     : center;
+    z-index     : 10;
+}
+#main > #helpImg > img {
+    height      : 60vmin;
+}
+
+
+/* プレイエリア */
+#main > #field {
+    width           : 90%;
+    height          : 70%;
+    margin          : 0 auto;
+    border          : 0.1vmin solid #666;
+    display         : flex;
+    flex-wrap       : wrap;
+}
+#main > #field div {
+    border          : 0.1vmin solid #666;
+    box-sizing      : border-box;
+}
+#main > #field .card {
+    display         : none;
+    background      : #e0e0e0;
+    width           : 5vmin;
+    aspect-ratio    : 91 / 146;
+    margin          : 1vmin;
+    border          : none;
+    /* display         : flex; */
+    justify-content : center;
+    align-items     : center;
+    cursor          : pointer;
+}
+#main > #field .pointer {
+    position        : absolute;
+    transform       : rotate(45deg);
+    font-size       : 4vmin;
+    top             : -8%;
+    left            : 2%;
+}
+
+#main > #field > #aria_point {
+    background      : #000;
+    width           : 100%;
+    height          : 10%;
+    padding         : 0 3vmin;
+    display         : flex;
+    justify-content : space-between;
+    align-items     : center;
+}
+#main > #field > #aria_point > p {
+    color: #fff;
+}
+
+#main > #field > #area_tori {
+    width           : 20%;
+    height          : 90%;
+    display         : flex;
+    justify-content : space-evenly;
+    align-items     : center;
+    flex-flow       : column;
+}
+#main > #field > #area_tori > div {
+    width           : 100%;
+    padding         : 5%;
+    border          : none;
+    display         : flex;
+    justify-content : right;
+    align-items     : center;
+    flex-wrap       : wrap;
+}
+#main > #field > #area_tori > div > .card {
+    width           : 2.5vmin;
+    aspect-ratio    : 91 / 146;
+    margin          : 0;
+}
+
+#main > #field > #area_play {
+    width           : 80%;
+    height          : 90%;
+    display         : flex;
+    flex-wrap       : wrap;
+}
+
+#main > #field > #area_play > #area_yama {
+    width           : 20%;
+    height          : 70%;
+    display         : flex;
+    justify-content : space-evenly;
+    align-items     : center;
+    flex-flow       : column;
+}
+#main > #field > #area_play > #area_yama > #yamafuda {
+    position        : relative;
+    display         : flex;
+    background      : none;
+    width           : 9vmin;
+}
+#main > #field > #area_play > #area_yama > #addfuda {
+    display         : flex;
+}
+#main > #field > #area_play > #area_yama > #addfuda {
+    display         : flex;
+}
+
+#main > #field > #area_play > #area_ba {
+    position        : relative;
+    width           : 80%;
+    height          : 70%;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+}
+#main > #field > #area_play > #area_ba > div {
+    width           : 56vmin;
+    border          : none;
+    display         : flex;
+    justify-content : start;
+    align-items     : center;
+    flex-wrap       : wrap;
+}
+#main > #field > #area_play > #area_ba > .pointer {
+   top : 0;
+}
+
+#main > #field > #area_play > #area_te {
+    position        : relative;
+    width           : 100%;
+    height          : 30%;
+    display         : flex;
+    justify-content : space-evenly;
+    align-items     : center;
+}
+
+
+/* 結果 */
+#main > #result {
+    display         : none;
+    background      : #232323dd;
+    width           : 80%;
+    height          : 50vmin;
+    border          : 0.3vmin solid #000;
+    border-radius   : 5vh;
+    position        : fixed;
+    top             : 25%;
+    left            : 10%;
+    /* display         : flex; */
+    justify-content : space-around;
+    align-items     : center;
+    flex-flow       : column;
+    color           : #fff
+}
+#main > #result > p {
+    font-size       : 2.5vmin;
+    text-decoration : underline;
+}
+#main > #result > div > p {
+    font-size: 1.5vmin;
+    text-align: center;
+}
+#main > #result > button {
+    padding         : 0 1vw;
+    font-size       : 2vmin;
+    font-weight     : bold;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    text-align      : center;
+    box-shadow      : 0.3vh 0.3vh 0.5vh rgba(0, 0, 0, 0.6);
+    cursor          : pointer;
+}
+
+
+/* タイトル */
+.glitch-wrapper {
+   width: 100%;
+   /* height: 100%; */
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   /* background-color: #39B7FF; */
+   margin      : 2vmin 0;
+}
+.glitch {
+   position: relative;
+   font-size: 5vmin;
+   font-weight: bold;
+   color: #ff6f6f;
+   letter-spacing: 0.5vmin;
+   z-index: 1;
+}
+.glitch:before,
+.glitch:after {
+   display: block;
+   content: attr(data-text);
+   position: absolute;
+   top: 0;
+   left: 0;
+   opacity: 0.8;
+}
+.glitch:before {
+   animation: glitch-it 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+   color: #000;
+   z-index: -1;
+}
+.glitch:after {
+   animation: glitch-it 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+   color: #C6FBFF;
+   z-index: -2;
+}
+@keyframes glitch-it {
+   0% {
+      transform: translate(0);
+   }
+   /* 20% {
+      transform: translate(-2px, 2px);
+   } */
+   40% {
+      transform: translate(-1px, -1px);
+   }
+   /* 60% {
+      transform: translate(2px, 2px);
+   } */
+   80% {
+      transform: translate(1px, -1px);
+   }
+   to {
+      transform: translate(0);
+   }
+}

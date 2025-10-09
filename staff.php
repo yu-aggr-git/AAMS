@@ -47,7 +47,12 @@
                 <div id="network">
                     <p id="networkStatus"></p>
                 </div>
-                <button type="button" id="staffLogout">ログアウト</button>
+
+                <div id="menuButton">
+                    <!-- <button type="button" id="news">i</button> -->
+                    <a id="game" href="nomonomo.php" target="_blank">G</a>
+                    <button type="button" id="staffLogout">ログアウト</button>
+                </div>                
             </div>
 
 
@@ -161,7 +166,7 @@
                                 <th>修正後</th>
                                 <th class="w25">理由</th>
                                 <th class="w25">申請日</th>
-                                <th>承認日</th>
+                                <th>処理日</th>
                             </tr>
                         </tbody>
                     </table>

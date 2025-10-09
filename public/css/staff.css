@@ -9,16 +9,44 @@ button {
     cursor          : pointer;
 }
 
+a {
+    text-decoration: none;
+}
+a:active{
+  filter: brightness(50%);
+}
+
 #main {
     height      : 80vh;
     margin      : 5vmin 0;
     overflow-y  : auto;
 }
 
-#menuBar > #staffLogout{
-    font-size: 1.5vmin;
+#menuBar > #menuButton {
+    display         : flex;
+    justify-content : start;
+    align-items     : center;
 }
-
+#menuBar > #menuButton > #staffLogout {
+    font-size   : 1.5vmin;
+    box-shadow  : 0.2vh 0.2vh 0.5vh rgba(0, 0, 0, 0.3);
+}
+#menuBar > #menuButton > #news,
+#menuBar > #menuButton > #game {
+    background      : #fff;
+    width           : 2.5vmin;
+    height          : 2.5vmin;
+    margin-right    : 2vmin;
+    padding         : 0;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    box-shadow      : 0.2vh 0.2vh 0.5vh rgba(0, 0, 0, 0.3);
+    color           : #000;
+    font-size       : 2vmin;
+    line-height     : 2.25vmin;
+    text-align      : center;
+    cursor          : pointer;
+}
 
 #main::-webkit-scrollbar,
 html::-webkit-scrollbar {
