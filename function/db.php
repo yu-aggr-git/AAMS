@@ -99,7 +99,17 @@
     } catch (PDOException $e) {
         $dbh->rollBack();
 
-        print("データベースの接続に失敗しました" . $e->getMessage());
+        // print("データベースの接続に失敗しました" . $e->getMessage());
+
+        date_default_timezone_set('Asia/Tokyo');
+        $msg = 
+            "{" . date('Y-m-d H:i:s') . "}" . 
+            "{" . $function . "}" . 
+            "{" . var_export($_POST , true) . "}" .
+            "{" . $e->getMessage() . "}" . "\n"
+        ;
+        file_put_contents('../log/error_log.txt', print_r($msg, true), FILE_APPEND);
+
         die();
     }
 
@@ -215,6 +225,15 @@
         ]);
 
         echo $count;
+
+        // ログ
+        // date_default_timezone_set('Asia/Tokyo');
+        // $msg = 
+        //     "{" . date('Y-m-d H:i:s') . "}" . 
+        //     "{" . var_export($param , true) . "}" .
+        //     "{" . $count . "}" . "\n"
+        // ;
+        // file_put_contents('../log/register_work_report.txt', print_r($msg, true), FILE_APPEND);
     }
 
 
