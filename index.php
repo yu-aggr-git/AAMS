@@ -25,6 +25,7 @@
             <div id="link">
                 <button type="button" id="redirectStaff">スタッフ</button>
                 <button type="button" id="redirectStamp">打刻画面</button>
+                <button type="button" id="redirectNomonomo">のものも！</button>
                 <button type="button" id="redirectAdmin">管理者</button>
             </div>
         </div>

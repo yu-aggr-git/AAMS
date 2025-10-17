@@ -44,4 +44,9 @@ function online() {
     document.getElementById("redirectAdmin").onclick = function() {
         location.assign('admin.php');
     }
+
+    // 画面遷移：のものも
+    document.getElementById("redirectNomonomo").onclick = function() {
+        location.assign('nomonomo.php');
+    }
 }
