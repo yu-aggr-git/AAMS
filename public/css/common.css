@@ -5,6 +5,10 @@ body, div, p, img {
   padding   : 0;
 }
 
+button {
+  color: #000;
+}
+
 button:active {
     filter: brightness(50%);
 }

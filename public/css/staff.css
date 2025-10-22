@@ -31,19 +31,16 @@ a:active{
     font-size   : 1.5vmin;
     box-shadow  : 0.2vh 0.2vh 0.5vh rgba(0, 0, 0, 0.3);
 }
-#menuBar > #menuButton > #news,
+#menuBar > #menuButton > #openNews,
 #menuBar > #menuButton > #game {
     background      : #fff;
-    width           : 2.5vmin;
-    height          : 2.5vmin;
     margin-right    : 2vmin;
-    padding         : 0;
+    padding         : 0 1vw;
     border          : 0.1vmin solid #666;
     border-radius   : 100vh;
     box-shadow      : 0.2vh 0.2vh 0.5vh rgba(0, 0, 0, 0.3);
     color           : #000;
-    font-size       : 2vmin;
-    line-height     : 2.25vmin;
+    font-size   : 1.5vmin;
     text-align      : center;
     cursor          : pointer;
 }
@@ -59,9 +56,10 @@ html::-webkit-scrollbar {
    ……………………………………………………………………………………………………………………………………… */
 
     #modal > #staffLogin {
+        display : none;
         width   : 80vmin;
         height  : 60vmin;
-        display : flex;
+        /* display : flex; */
     }
     #modal > #staffLogin > .modalBody {
         justify-content : space-around;
@@ -96,10 +94,55 @@ html::-webkit-scrollbar {
 
 
 /* ───────────────────────────────────────────────────
+   お知らせ
+   ……………………………………………………………………………………………………………………………………… */
+
+    #modal > #news {
+        display : none;
+        width   : 80vmin;
+        /* display : flex; */
+    }
+    #modal > #news > .modalBody > #newsList {
+        width           : 80%;
+        height          : 80%;
+        margin-top      : 5%;
+        display         : flex;
+        justify-content : start;
+        align-items     : start;
+        overflow-x      : auto;
+        
+    }
+    #modal > #news > .modalBody > #newsList dl {
+        width : 100%;
+        font-size       : 1.5vmin;
+    }
+    #modal > #news > .modalBody > #newsList dd {
+        width           : 85%;
+        margin          : 0 0 2.5vmin 0;
+        padding         : 1vmin 5%;
+        border-bottom   :  0.1vmin solid #666;
+        cursor          : pointer;
+    }
+    #modal > #news > .modalBody > #newsList p {
+        font-size   : 1.5vmin;
+        text-align  : start;
+    }
+    #modal > #news > .modalBody > #newsList .newsTitle {
+        margin-bottom   : 1.5vmin;
+        font-weight     : bold;
+    }
+    #modal > #news > .modalBody > #newsList a {
+        margin-top : 1vmin;
+    }
+
+
+
+/* ───────────────────────────────────────────────────
    イベント選択
    ……………………………………………………………………………………………………………………………………… */
 
     #selectStaffEventArea {
+        margin-top      : 1vmin;
         display         : flex;
         justify-content : start;
         align-items     : center;
@@ -421,7 +464,7 @@ html::-webkit-scrollbar {
         margin-top      : 5vmin;
         padding         : 5vmin 0;
         border          : 0.1vmin solid #666;
-        border-radius   : 10vh;
+        border-radius   : 5vh;
         /* display         : flex; */
         justify-content : start;
         align-items     : center;

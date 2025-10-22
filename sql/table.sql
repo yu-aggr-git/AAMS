@@ -59,3 +59,12 @@ create table aams.admin_user(
 );
 
 
+drop table aams.news;
+create table aams.news(
+    register_dt VARCHAR(19) NOT NULL                            COMMENT '登録日時',
+    title       VARCHAR(100) NOT NULL                           COMMENT 'タイトル',
+    body        VARCHAR(1000)                                   COMMENT '内容',
+    link        VARCHAR(255)                                    COMMENT 'リンク',
+    status      VARCHAR(10) NOT NULL                            COMMENT '状態',
+    PRIMARY KEY (title)
+);

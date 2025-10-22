@@ -17,6 +17,7 @@
 
             <!-- モーダル -->
             <div id="modal">
+                <!-- ログイン -->
                 <div id="staffLogin">
                     <div class="modalTitle">
                         <p class="title">スタッフ画面</p>
@@ -39,6 +40,21 @@
                         <button id="sendStaffLogin" type="button" >送信</button>
                     </div>
                 </div>
+
+                <!-- お知らせ -->
+                <div id="news">
+                    <div class="modalTitle">
+                        <p class="title">お知らせ</p>
+                    </div>
+
+                    <div class="modalBody">
+                        <div id="newsList">
+                            <dl></dl>
+                        </div>
+                    </div>
+
+                    <button type="button" id="closeNews" class="closeModal">閉じる</button>
+                </div>
             </div>
 
             
@@ -49,8 +65,8 @@
                 </div>
 
                 <div id="menuButton">
-                    <!-- <button type="button" id="news">i</button> -->
-                    <a id="game" href="nomonomo.php" target="_blank">G</a>
+                    <button type="button" id="openNews">お知らせ</button>
+                    <a id="game" href="nomonomo.php" target="_blank">ゲームで遊ぶ！</a>
                     <button type="button" id="staffLogout">ログアウト</button>
                 </div>                
             </div>

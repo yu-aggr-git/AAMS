@@ -59,6 +59,9 @@ function online() {
     document.getElementById("workReportInfoEditAreaOpen").onclick = function() {
         areaOpen(this, ['workReportInfoEditArea']);
     }
+    document.getElementById("newsAreaOpen").onclick = function() {
+        areaOpen(this, ['newsArea']);
+    }
 
 
     // ───イベントの取得──────────────────────────────────────────────────────────────    
@@ -126,6 +129,27 @@ function online() {
     document.getElementById("rejectWorkReportInfo").onclick = function() {
         workReportInfoEdit(this.id);
     }
+
+
+    // お知らせの操作──────────────────────────────────────────────────────────────
+    document.getElementById("newsMenu").addEventListener('click', (e) => {
+        id = e.target.id;
+        if (id) {
+            news(id);
+        }
+    })
+    document.getElementById("newsSelect").addEventListener('click', (e) => {
+        id = e.target.id;
+        if (id) {
+            news(id);
+        }
+    })
+    document.getElementById("newsTable").addEventListener('click', (e) => {
+        id = e.target.id;
+        if (e.target.tagName  === 'BUTTON') {
+            news(id);
+        }
+    })
 }
 
 
@@ -221,7 +245,9 @@ function getSelectEvent(selectEvent) {
                 'inputStaff',
                 'registerEvent',
                 'cancelEventEdit',
-                'sendEventEdit'
+                'sendEventEdit',
+                'newsAreaOpen',
+                'newsArea'
             ],
             'flex'  : [
                 'workReportInfoAreaOpen',
@@ -614,6 +640,138 @@ function workReportInfoEdit(id) {
 
 }
 
+
+// お知らせ
+function news(id) {
+    const disp = document.getElementById('dispNews');
+    const dispValue = disp.value;
+    const none = document.getElementById('noneNews');
+    const noneValue = none.value;
+
+    let inputTitle    = '';
+    let inputBody     = document.getElementById("inputBody").value.replaceAll("\n", "<br>");
+    let inputLink     = document.getElementById("inputLink").value;
+    let status = document.getElementsByName('inputStatus');
+    let inputStatus = '';
+    for (let i = 0; i < status.length; i++){
+        if (status.item(i).checked){
+            inputStatus = status.item(i).value;
+        }
+    }
+    
+    switch (id) {
+        case 'dispNews':
+            if (dispValue != 'true') {
+                disp.value = 'true';
+                disp.style.color = '#fff';
+                disp.style.background = '#000';
+
+                if (noneValue == 'true') {
+                    none.value = 'false';
+                    none.style.color = '#000';
+                    none.style.background = '#fff';
+                }
+
+                // お知らせの取得
+                var paramDB = { 'status': '公開' };
+                opDB('getNewsList', paramDB);
+            }
+            break;
+    
+        case 'noneNews':
+            if (noneValue != 'true') {
+                none.value = 'true';
+                none.style.color = '#fff';
+                none.style.background = '#000';
+
+                if (dispValue == 'true') {
+                    disp.value = 'false';
+                    disp.style.color = '#000';
+                    disp.style.background = '#fff';
+                }
+
+                // お知らせの取得
+                var paramDB = { 'status': '非公開' };
+                opDB('getNewsList', paramDB);
+            }
+            break;
+
+        case 'registerNews':
+            document.getElementById("newsMsg").innerText = '';
+            inputTitle = document.getElementById("inputTitle").value;
+
+            if (inputTitle) {
+                var result = window.confirm('お知らせを登録してよろしいですか？');
+
+                if (result) {
+                    var paramDB = {
+                        'title' : inputTitle,
+                        'body'  : inputBody,
+                        'link'  : inputLink,
+                        'status': inputStatus,
+                    };
+                    opDB('registerNews', paramDB);
+                }
+            } else {
+                document.getElementById("newsMsg").innerText = '*タイトルの入力は必須です。';
+            }
+            break;
+
+        case 'updateNews':
+            document.getElementById("newsMsg").innerText = '';
+            inputTitle = document.getElementById("newsTitle").innerText;
+
+            if (inputTitle) {
+                var result = window.confirm('お知らせを更新してよろしいですか？');
+
+                if (result) {
+                    var paramDB = {
+                        'title' : inputTitle,
+                        'body'  : inputBody,
+                        'link'  : inputLink,
+                        'status': inputStatus,
+                    };
+                    opDB('registerNews', paramDB);
+                }
+            }
+            break;
+
+        case 'deleteNews':
+            document.getElementById("newsMsg").innerText = '';
+
+            inputTitle = document.getElementById("newsTitle").innerText;
+            if (inputTitle) {
+                var result = window.confirm('お知らせを削除してよろしいですか？');
+
+                if (result) {
+                    var paramDB = {
+                        'title' : inputTitle
+                    };
+                    opDB('deleteNews', paramDB);
+                }
+            }
+            break;
+    }
+
+
+    // 編集モード
+    if (id.startsWith("news_")) {
+        document.getElementById("newsTitle").style.display      = 'block';
+        document.getElementById("inputTitle").style.display     = 'none';
+        document.getElementById("registerNews").style.display   = 'none';
+        document.getElementById("deleteNews").style.display     = 'block';
+        document.getElementById("updateNews").style.display     = 'block';
+
+        document.getElementById("newsTitle").innerText = document.getElementById(id).innerText;
+        document.getElementById("inputBody").value = document.getElementById(id.replace("title", "body")).innerText;
+        document.getElementById("inputLink").value = document.getElementById(id.replace("title", "link")).innerText;
+        if (dispValue == 'true') {
+            document.getElementsByName('inputStatus').item(0).checked = true;
+        } else if (noneValue == 'true') {
+            document.getElementsByName('inputStatus').item(1).checked = true;
+        }
+    }
+}
 
 
 // ──────────────────────────────────────────────────────
@@ -1317,6 +1475,195 @@ function opDB(op, paramDB) {
                 }
             }
             break;
+
+        case 'getNewsList':
+            var param   = "function=" + "get_news_list"
+                + "&status=" + encodeURIComponent(paramDB['status'])
+            ;
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    const data = JSON.parse(this.response);
+                    const tbl = document.getElementById("newsTable").querySelector("tbody");
+
+                    Array.from(tbl.querySelectorAll("tr")).forEach(function(e) {
+                        if (!e.id) {
+                            e.remove();
+                        }
+                    });
+
+                    if (data) {  
+                        let i = 0;                      
+                        Object.keys(data).forEach(function(key) {
+                            i++;
+
+                            var tr = document.createElement("tr");
+
+                            var registerDt = document.createElement("td");
+                            registerDt.innerText = data[key].register_dt;
+                            registerDt.id = 'news_' + i + '_registerDt';
+                            tr.appendChild(registerDt);
+
+                            var button = document.createElement("button");
+                            button.innerText = data[key].title;
+                            button.id = 'news_' + i + '_title';
+                            var title = document.createElement("td");
+                            title.className = 'w50 textLeft';
+                            title.appendChild(button);
+                            tr.appendChild(title);
+
+                            var body = document.createElement("td");
+                            body.innerHTML = data[key].body;
+                            body.className = 'w70 textLeft';
+                            body.id = 'news_' + i + '_body';
+                            tr.appendChild(body);
+
+                            var a = document.createElement("a");
+                            a.innerText = data[key].link;
+                            a.href = data[key].link;
+                            a.target = "_blank";
+                            a.id = 'news_' + i + '_link';
+                            var link = document.createElement("td");
+                            link.className = 'w50 textLeft';
+                            link.appendChild(a);
+                            tr.appendChild(link);
+
+                            tbl.appendChild(tr);
+                        });
+                    }
+                }
+            }
+            break;
+
+        case 'registerNews':
+            var param = "function=" + "register_news"
+                + "&requestDt=" + encodeURIComponent(date().yyyymmddhhmmss)
+                + "&title="     + encodeURIComponent(paramDB.title)
+                + "&body="      + encodeURIComponent(paramDB.body)
+                + "&link="      + encodeURIComponent(paramDB.link)
+                + "&status="    + encodeURIComponent(paramDB.status)
+            ;
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    // 登録完了
+                    if (this.response == 1) {
+                        // console.log(this.response, '登録');
+
+                        let status = document.getElementsByName('inputStatus');
+                        let inputStatus = '';
+                        for (let i = 0; i < status.length; i++){
+                            if (status.item(i).checked){
+                                inputStatus = status.item(i).value;
+                            }
+                        }
+
+                        const disp = document.getElementById('dispNews');
+                        const none = document.getElementById('noneNews');
+                        switch (inputStatus) {
+                            case '公開':
+                                disp.value = 'true';
+                                disp.style.color = '#fff';
+                                disp.style.background = '#000';
+                                none.value = 'false';
+                                none.style.color = '#000';
+                                none.style.background = '#fff';
+                                break;
+                        
+                            case '非公開':
+                                none.value = 'true';
+                                none.style.color = '#fff';
+                                none.style.background = '#000';
+                                disp.value = 'false';
+                                disp.style.color = '#000';
+                                disp.style.background = '#fff';
+                                break;
+                        }
+                        var nextParam = { 'status': inputStatus };
+                        opDB('getNewsList', nextParam);
+
+                        document.getElementById("newsMsg").innerText = '';
+                        document.getElementById("newsTitle").innerText = '';
+                        document.getElementById("inputTitle").value = '';
+                        document.getElementById("inputBody").value = '';
+                        document.getElementById("inputLink").value = '';
+                        document.getElementsByName('inputStatus').item(0).checked = true;
+
+                        document.getElementById("newsTitle").style.display      = 'none';
+                        document.getElementById("inputTitle").style.display     = 'block';
+                        document.getElementById("registerNews").style.display   = 'block';
+                        document.getElementById("deleteNews").style.display     = 'none';
+                        document.getElementById("updateNews").style.display     = 'none';
+                    } else {
+                        document.getElementById("newsMsg").innerText = 'お知らせの登録ができませんでした。';
+                    }
+                }
+            }
+            break;
+
+        case 'deleteNews':
+            var param = "function=" + "delete_news"
+                + "&title="     + encodeURIComponent(paramDB.title)
+            ;
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    // 登録完了
+                    if (this.response == 1) {
+                        // console.log(this.response, '登録');
+
+                        let status = document.getElementsByName('inputStatus');
+                        let inputStatus = '';
+                        for (let i = 0; i < status.length; i++){
+                            if (status.item(i).checked){
+                                inputStatus = status.item(i).value;
+                            }
+                        }
+
+                        const disp = document.getElementById('dispNews');
+                        const none = document.getElementById('noneNews');
+                        switch (inputStatus) {
+                            case '公開':
+                                disp.value = 'true';
+                                disp.style.color = '#fff';
+                                disp.style.background = '#000';
+                                none.value = 'false';
+                                none.style.color = '#000';
+                                none.style.background = '#fff';
+                                break;
+                        
+                            case '非公開':
+                                none.value = 'true';
+                                none.style.color = '#fff';
+                                none.style.background = '#000';
+                                disp.value = 'false';
+                                disp.style.color = '#000';
+                                disp.style.background = '#fff';
+                                break;
+                        }
+                        var nextParam = { 'status': inputStatus };
+                        opDB('getNewsList', nextParam);
+
+                        document.getElementById("newsMsg").innerText = '';
+                        document.getElementById("newsTitle").innerText = '';
+                        document.getElementById("inputTitle").value = '';
+                        document.getElementById("inputBody").value = '';
+                        document.getElementById("inputLink").value = '';
+                        document.getElementsByName('inputStatus').item(0).checked = true;
+
+                        document.getElementById("newsTitle").style.display      = 'none';
+                        document.getElementById("inputTitle").style.display     = 'block';
+                        document.getElementById("registerNews").style.display   = 'block';
+                        document.getElementById("deleteNews").style.display     = 'none';
+                        document.getElementById("updateNews").style.display     = 'none';
+                    } else {
+                        document.getElementById("newsMsg").innerText = '*お知らせの削除に失敗しました。';
+                    }
+                }
+            }
+            break;
+
     }
 
     xmlhttp.open("POST", strUrl, true);

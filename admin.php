@@ -472,6 +472,73 @@
                 
             </div>
 
+
+            <!-- お知らせ -->
+            <div class="itemName" id="newsAreaOpen">
+                <p>お知らせ</p>
+                <p><span>▼</span></p>
+            </div>
+            <div id="newsArea">
+                <div id="newsMenu">
+                    <p id="newsMsg" class="errorMsg"></p>
+                    <div>
+                        <button type="button" id="registerNews"         >登録</button>
+                        <button type="button" id="deleteNews"   hidden  >削除</button>
+                        <button type="button" id="updateNews"   hidden  >更新</button>
+                    </div>
+                </div>
+
+                <div id="newsRegister">
+                    <dl>
+                        <dt class="borderTop topLeft">項目</dt>
+                        <dd class="borderTop topRight">内容</dd>
+
+                        <dt>タイトル</dt>
+                        <dd>
+                            <p hidden id="newsTitle"></p>
+                            <input type="text" id="inputTitle">
+                        </dd>
+
+                        <dt>内容</dt>
+                        <dd>
+                            <textarea id="inputBody"></textarea>
+                        </dd>
+
+                        <dt>URL</dt>
+                        <dd>
+                            <input type="text" id="inputLink">
+                        </dd>
+
+                        <dt>状態</dt>
+                        <dd>
+                            <input type="radio" name="inputStatus" value="公開" checked>公開
+                            <input type="radio" name="inputStatus" value="非公開">非公開
+                        </dd>
+                    </dl>
+                </div>
+
+                <div id="newsSelect">
+                    <div>
+                        <button type="button" id="dispNews">公開</button>
+                        <button type="button" id="noneNews">非公開</button>
+                    </div>
+                </div>
+
+                <div id="newsList">
+                    <table id="newsTable">
+                        <tbody>
+                            <tr id="newsTableHeader">
+                                <th>登録日</th>
+                                <th class="w50">タイトル</th>
+                                <th class="w70">内容</th>
+                                <th class="w50">URL</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+            </div>
+
             
 
         </div>

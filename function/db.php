@@ -93,6 +93,18 @@
             case 'check_admin_login' :
                 check_admin_login($dbh, $_POST);
                 break;
+
+            case 'get_news_list' :
+                get_news_list($dbh, $_POST);
+                break;
+
+            case 'register_news' :
+                register_news($dbh, $_POST);
+                break;
+
+            case 'delete_news' :
+                delete_news($dbh, $_POST);
+                break;
         }
 
         $dbh->commit();
@@ -818,4 +830,68 @@
         $result = $sth->fetch(PDO::FETCH_ASSOC);
         $check = password_verify($param['inputAdminUserPass'], $result['pass']);
         echo $check ? 'true' : 'false';
+    }
+
+    // ────お知らせ：リスト取得─────────────────────────────
+    function get_news_list($dbh, $param) {
+        $query = "
+            SELECT *
+            FROM news
+            WHERE status = :status 
+            ORDER BY register_dt desc 
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute([
+            'status' => $param['status']
+        ]);
+
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData[] = $row;
+        }
+
+        $json = json_encode($employeeData);
+        echo $json;
+    }
+
+    // ────お知らせ：登録─────────────────────────────
+    function register_news($dbh, $param) {
+        $query = "
+            INSERT INTO
+                news(register_dt, title, body, link, status)
+            VALUES
+                (:requestDt, :title, :body, :link, :status)
+            ON DUPLICATE KEY UPDATE
+                body    = VALUES(body),
+                link    = VALUES(link),
+                status  = VALUES(status)
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $count = $sth->execute([
+            'requestDt'     => $param['requestDt'],
+            'title'         => $param['title'],
+            'body'          => $param['body'],
+            'link'          => $param['link'],
+            'status'        => $param['status']
+        ]);
+
+        echo $count;
+    }
+
+    // ────お知らせ：削除─────────────────────────────
+    function delete_news($dbh, $param) {
+
+        $query = "
+            DELETE FROM
+                news
+            WHERE
+                title = :title
+        ";
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $count = $sth->execute([
+            'title'     => $param['title'],
+        ]);
+
+        echo $count;
     }

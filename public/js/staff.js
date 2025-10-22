@@ -52,6 +52,28 @@ function online() {
         localStorage.removeItem('staffUser');
         window.location.reload();
     }
+
+
+    // お知らせ
+    document.getElementById("openNews").onclick = function() {
+        dispNews();
+    }
+    document.getElementById("closeNews").onclick = function() {
+        document.getElementById("modal").style.display = 'none';
+        document.getElementById("news").style.display = 'none';
+        document.body.style.overflow = 'visible';
+    }
+    document.getElementById("newsList").addEventListener('click', (e) => {
+        const newsId = e.target.id;
+
+        if (newsId.startsWith("newsTitle_")) {
+            document.getElementById(newsId.replace("Title", "Body")).style.display = 'block';
+            document.getElementById(newsId.replace("Title", "Link")).style.display = 'block';   
+        } else if (newsId.startsWith("newsBody_")) {
+            document.getElementById(newsId).style.display = 'none';
+            document.getElementById(newsId.replace("Body", "Link")).style.display = 'none';   
+        }
+    });
     
 
     // パスワードの設定
@@ -101,6 +123,7 @@ function online() {
 // スタッフログイン
 function staffLogin() {
     document.getElementById("modal").style.display = 'flex';
+    document.getElementById("staffLogin").style.display = 'flex';
     document.body.style.overflow = 'hidden';
 
     // イベントリストの取得
@@ -124,6 +147,17 @@ function staffLogin() {
     }    
 }
 
+
+// お知らせの表示
+function dispNews() {
+    document.getElementById("modal").style.display = 'flex';
+    document.getElementById("news").style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // お知らせの取得
+    var paramDB = { 'status': '公開' };
+    opDB('getNewsList', paramDB);
+}
 
 // イベントの選択
 function getSelectEvent(selectEvent, staffUser) {
@@ -317,6 +351,7 @@ function opDB(op, paramDB) {
 
                         // 初期表示
                         document.getElementById("modal").style.display = 'none';
+                        document.getElementById("staffLogin").style.display = 'none';
                         document.body.style.overflow = 'visible';
 
                         var nextParamDB = { 'staffUser': paramDB['inputStaffMail'] };
@@ -871,6 +906,57 @@ function opDB(op, paramDB) {
             }
             break;
 
+        case 'getNewsList':
+            var param   = "function=" + "get_news_list"
+                + "&status=" + encodeURIComponent(paramDB['status'])
+            ;
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    const data = JSON.parse(this.response);
+                    const dl = document.getElementById("newsList").querySelector("dl");
+
+                    Array.from(dl.querySelectorAll("dt")).forEach(function(e) {
+                        e.remove();
+                    });
+                    Array.from(dl.querySelectorAll("dd")).forEach(function(e) {
+                        e.remove();
+                    });
+
+                    let i = 1;
+                    Object.keys(data).forEach(function(key) {
+                        var dt = document.createElement("dt");
+                        dt.textContent = data[key].register_dt.substring(0, 10);
+
+                        var dd = document.createElement("dd");
+
+                        var title = document.createElement("p");
+                        title.textContent = '『 ' + data[key].title + ' 』';
+                        title.className = 'newsTitle';
+                        title.id = 'newsTitle_' + i;
+                        dd.appendChild(title);
+
+                        var body = document.createElement("p");
+                        body.innerHTML = data[key].body;
+                        body.style.display = 'none';
+                        body.id = 'newsBody_' + i;
+                        dd.appendChild(body);
+
+                        var link = document.createElement("a");
+                        link.textContent = data[key].link;
+                        link.href = data[key].link;
+                        link.target = "_blank";
+                        link.style.display = 'none';
+                        link.id = 'newsLink_' + i;
+                        dd.appendChild(link);
+                        
+                        dl.appendChild(dt);
+                        dl.appendChild(dd);
+
+                        i++;
+                    });
+                }
+            }
+            break;
 
     }
 

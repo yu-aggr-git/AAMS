@@ -627,3 +627,168 @@ html::-webkit-scrollbar {
         left            : 36.4vmin;
         z-index         : 2;
     }
+
+
+
+/* ───────────────────────────────────────────────────
+   お知らせ
+   ……………………………………………………………………………………………………………………………………… */
+
+    #newsArea {
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #newsArea > #newsMenu {
+        width           : 70%;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+    }
+    #newsArea > #newsMenu > #newsMsg {
+        width           : 70%;
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+    }
+    #newsArea > #newsMenu > div {
+        width           : 30%;
+        display         : flex;
+        justify-content : end;
+        align-items     : center;
+    }
+    #newsArea > #newsMenu > div button{
+        background      : #000;
+        margin-left     : 1vmin;
+        color           : #fff;
+        border-radius   : 100vh 100vh 100vh 0;
+    }
+    #newsArea > #newsRegister {
+        width           : 100%;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #newsArea > #newsRegister > dl {
+        width           : 70%;
+        margin          : 1vmin 0;
+        display         : flex;
+        flex-wrap       : wrap;
+    }
+    #newsArea > #newsRegister > dl > dt,
+    #newsArea > #newsRegister > dl > dd {
+        margin          : 0;
+        padding         : 1vmin;
+        border          : 0.1vmin solid #666; 
+        border-top      : none;
+        font-size       : 1.5vmin;
+        overflow-wrap   : break-word;
+    }
+    #newsArea > #newsRegister > dl > dt {
+        width       : 30%;
+        text-align  : center;
+    }
+    #newsArea > #newsRegister > dl > dd {
+        width           : 60%;
+        border-left     : none;
+        display         : flex;
+        justify-content : center;
+        align-items     : center; 
+    }
+    #newsArea > #newsRegister > dl > dd input[type=text],
+    #newsArea > #newsRegister > dl > dd textarea {
+        background          : #ececec;
+        margin              : 0;
+        padding             : 0.5vmin 3vmin;
+        width               : 80%;
+        height              : 4vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #newsArea > #newsRegister > dl > dd textarea {
+        height          : 15vmin;
+        border-radius   : 3vh;
+    }
+    #newsArea > #newsRegister > dl > dd input[type=radio] {
+        accent-color: #000;
+        width       : 2vmin;
+        height      : 2vmin;
+        margin      : 0 1vmin 0 5vmin;
+        padding     : 0;
+    }
+    #newsArea > #newsRegister > dl > .borderTop {
+        background  : #ececec;
+        border-top  : 0.1vmin solid #666; 
+    }
+    #newsArea > #newsRegister > dl > .topLeft {
+        border-radius   : 100vh 0 0 0;
+    }
+    #newsArea > #newsRegister > dl > .topRight {
+        border-radius   : 0 100vh 0 0;
+        text-align      : center;
+    }
+    #newsArea > #newsSelect {
+        width           : 100%;
+        margin-top      : 5vmin;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #newsArea > #newsSelect > div {
+        width           : 30%;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #newsArea > #newsSelect > div button{
+        background      : #fff;
+        margin          : 0 1vmin;
+        color           : #000;
+        border-radius   : 100vh;
+    }
+    #newsArea > #newsList {
+        width           : 100%;
+        margin-top      : 2vmin;
+        overflow-x      : auto;
+    }
+    #newsArea > #newsList > table {
+        width           : 100%;
+        margin-bottom   : 2vmin;
+        border-collapse : separate;
+        border-spacing  : 0;
+        border-radius   : 100vh 0;
+    }
+    #newsArea table > tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #newsArea td,
+    #newsArea th {
+        width           : 15vmin;
+        margin          : 0;
+        padding         : 0 1.5vmin;
+        font-size       : 2vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+        overflow-wrap   : anywhere;
+    }
+    #newsArea th {
+        background : #ececec;
+    }
+    #newsArea .w50 {
+        width : 50vmin;
+    }
+    #newsArea .w70 {
+        width : 70vmin;
+    }
+    #newsArea .textLeft {
+        text-align : left;
+    }
