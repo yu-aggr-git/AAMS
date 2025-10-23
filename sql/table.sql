@@ -33,7 +33,7 @@ create table aams.staff_list(
     birthday    VARCHAR(8)                                       COMMENT '生年月日',
     pass        VARCHAR(255)                                     COMMENT 'パスワード',
     login_dt    VARCHAR(19)                                      COMMENT 'ログイン日時',
-    PRIMARY KEY (event, no, name)
+    PRIMARY KEY (event, name)
 );
 
 drop table aams.work_report_edit;

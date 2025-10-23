@@ -419,39 +419,52 @@
 
     // ────スタッフリスト：登録─────────────────────────────
     function register_staff_list($dbh, $param) {
-        $query1 = "
-            DELETE FROM
-                staff_list
-            WHERE
-                event = :event
-        ";
-        $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $sth1->execute([
-            'event'     => $param['event'],
-        ]);
 
-
+        $names = [];
         foreach (explode(",", $param['staffList']) as $staff) {
             if ($staff) {
                 $staffArray = explode(":", $staff);
                 $no   = $staffArray[0];
                 $name = $staffArray[1];
-                $mail = $staffArray[2] ? $staffArray[2] : null;
-                $birthday = $staffArray[3] ? $staffArray[3] : null;
-                $arrayValues[] = "('{$param['event']}', '{$no}', '{$name}', '{$mail}', '{$birthday}')";
+                $mail = $staffArray[2] ? $staffArray[2] : '';
+                $birthday = $staffArray[3] ? $staffArray[3] : '';
+
+                $query1 = "
+                    INSERT INTO
+                        staff_list(event, no, name, mail, birthday)
+                    VALUES
+                        (:event, :no, :name, :mail, :birthday)
+                    ON DUPLICATE KEY UPDATE
+                        no          = VALUES(no),
+                        mail        = VALUES(mail),
+                        birthday    = VALUES(birthday)
+                ";
+                $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+                $sth1->execute([
+                    'event'     => $param['event'],
+                    'no'        => $no,
+                    'name'      => $name,
+                    'mail'      => $mail,
+                    'birthday'  => $birthday
+                ]);
+
+                $names[] = $name;
             }
         }
-        if ($arrayValues) {
-            $query2 = "
-                INSERT INTO
-                    staff_list(event, no, name, mail, birthday)
-                VALUES "
-                    . join(",", $arrayValues);
-                ;
 
-            $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-            $sth2->execute();
+        $namesNum = count($names);
+        array_unshift($names, $param['event']);
+        $query2 = "
+            DELETE FROM
+                staff_list
+            WHERE
+                event = ?
+        ";
+        if ($namesNum >= 1) {
+            $query2 .= " AND name NOT IN (" . substr(str_repeat(',?', $namesNum), 1) . ")";
         }
+        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth2->execute($names);
     }
 
 
