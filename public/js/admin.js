@@ -1168,15 +1168,17 @@ function opDB(op, paramDB) {
                             var payslipUrl = document.createElement("td");
                             payslipUrl.className = 'w70 textLeft';
 
-                            data[key].payslip.split(/\n/).forEach(function(val) {
-                                var a = document.createElement("a");
-                                a.innerText = val;
-                                a.href = val;
-                                a.target = "_blank";
-                                a.style.display = "block";
-                                payslipUrl.appendChild(a);
-                            });
-
+                            if (data[key].payslip) {
+                                data[key].payslip.split(/\n/).forEach(function(val) {
+                                    var a = document.createElement("a");
+                                    a.innerText = val;
+                                    a.href = val;
+                                    a.target = "_blank";
+                                    a.style.display = "block";
+                                    payslipUrl.appendChild(a);
+                                });
+                            }
+                            
                             var textarea = document.createElement("textarea");
                             textarea.innerHTML = data[key].payslip;
                             textarea.name = "payslip";
