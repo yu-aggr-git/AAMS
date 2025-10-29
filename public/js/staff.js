@@ -727,7 +727,7 @@ function opDB(op, paramDB) {
                             document.getElementById("payslip").appendChild(a);
                         });
                     } else {
-                        document.getElementById("payslip").innerText  = '＊給料明細は公開前です。';
+                        document.getElementById("payslip").innerText  = '＊給与明細は公開前です。';
                     }
                     
                     

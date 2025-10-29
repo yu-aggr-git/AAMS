@@ -134,7 +134,7 @@ function online() {
     }
 
 
-    // ───給料明細の操作──────────────────────────────────────────────────────────────
+    // ───給与明細の操作──────────────────────────────────────────────────────────────
     document.getElementById("editPayslip").onclick = function() {
         payslipEdit(this.id);
     }
@@ -1158,7 +1158,7 @@ function opDB(op, paramDB) {
                             selectStaff.appendChild(option);
 
 
-                            // 給料明細
+                            // 給与明細
                             var tr3 = document.createElement("tr");
                             var staffName = document.createElement("td");
                             staffName.innerText = data[key].name;

@@ -473,13 +473,13 @@
             </div>
 
 
-            <!-- 給料明細 -->
+            <!-- 給与明細 -->
             <div class="itemName" id="payslipAreaOpen">
-                <p>給料明細</p>
+                <p>給与明細</p>
                 <p><span>▲</span></p>
             </div>
             <div id="payslipArea">
-                <p>● 給料明細を複数登録する場合は入力欄で改行して登録してください。</p>
+                <p>● 給与明細を複数登録する場合は入力欄で改行して登録してください。</p>
                 <div id="payslipMenu">
                     <p id="payslipMsg" class="errorMsg"></p>
                     <div>
