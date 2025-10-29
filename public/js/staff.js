@@ -710,11 +710,27 @@ function opDB(op, paramDB) {
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
 
-                    document.getElementById("mail").innerText = data.mail;
                     document.getElementById("staffName").innerText  = data.name;
+                    document.getElementById("mail").innerText = data.mail;
                     document.getElementById("birthday").innerText  = data.birthday.substr(0, 4) + '年' 
                         + data.birthday.substr(4, 2) + '月' 
                         + data.birthday.substr(6, 2) + '日生';
+
+
+                    if (data.payslip) {
+                        data.payslip.split(/\n/).forEach(function(val) {
+                            var a = document.createElement("a");
+                            a.innerText = val;
+                            a.href = val;
+                            a.target = "_blank";
+                            a.style.display = "block";
+                            document.getElementById("payslip").appendChild(a);
+                        });
+                    } else {
+                        document.getElementById("payslip").innerText  = '＊給料明細は公開前です。';
+                    }
+                    
+                    
 
                     // 勤怠情報の表示
                     getWorkReport("workReportOpen", paramDB['event'], data.name);

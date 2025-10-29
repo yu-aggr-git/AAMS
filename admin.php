@@ -473,6 +473,34 @@
             </div>
 
 
+            <!-- 給料明細 -->
+            <div class="itemName" id="payslipAreaOpen">
+                <p>給料明細</p>
+                <p><span>▲</span></p>
+            </div>
+            <div id="payslipArea">
+                <p>● 給料明細を複数登録する場合は入力欄で改行して登録してください。</p>
+                <div id="payslipMenu">
+                    <p id="payslipMsg" class="errorMsg"></p>
+                    <div>
+                        <button type="button" id="editPayslip">編集</button>
+                        <button type="button" id="cancelPayslip" hidden>取消</button>
+                        <button type="button" id="updatePayslip" hidden>更新</button>
+                    </div>
+                </div>
+                <div id="payslipList">
+                    <table id="payslipTable">
+                        <tbody>
+                            <tr id="payslipTableHeader">
+                                <th class="w15">スタッフ名</th>
+                                <th class="w70">URL</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
             <!-- お知らせ -->
             <div class="itemName" id="newsAreaOpen">
                 <p>お知らせ</p>

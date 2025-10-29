@@ -59,6 +59,9 @@ function online() {
     document.getElementById("workReportInfoEditAreaOpen").onclick = function() {
         areaOpen(this, ['workReportInfoEditArea']);
     }
+    document.getElementById("payslipAreaOpen").onclick = function() {
+        areaOpen(this, ['payslipArea']);
+    }
     document.getElementById("newsAreaOpen").onclick = function() {
         areaOpen(this, ['newsArea']);
     }
@@ -128,6 +131,18 @@ function online() {
     }
     document.getElementById("rejectWorkReportInfo").onclick = function() {
         workReportInfoEdit(this.id);
+    }
+
+
+    // ───給料明細の操作──────────────────────────────────────────────────────────────
+    document.getElementById("editPayslip").onclick = function() {
+        payslipEdit(this.id);
+    }
+    document.getElementById("cancelPayslip").onclick = function() {
+        payslipEdit(this.id);
+    }
+    document.getElementById("updatePayslip").onclick = function() {
+        payslipEdit(this.id);
     }
 
 
@@ -214,6 +229,7 @@ function getSelectEvent(selectEvent) {
     document.getElementById("stampInfoBreak3e").innerText       = '';
     document.getElementById("stampInfoEnd").innerText           = '';
     document.getElementById("workReportInfoEditMsg").innerText  = '';
+    document.getElementById("payslipMsg").innerText             = '';
     const approve = document.getElementById('approveWorkReportInfo');
     approve.value            = 'false';
     approve.style.color      = '#000';
@@ -222,7 +238,6 @@ function getSelectEvent(selectEvent) {
     reject.value            = 'false';
     reject.style.color      = '#000';
     reject.style.background = '#fff';
-    
 
     if (selectEvent) {
         var itemList = {
@@ -234,7 +249,8 @@ function getSelectEvent(selectEvent) {
                 'shiftUrl',
                 'staff',
                 'deleteEvent',
-                'editEventEdit'
+                'editEventEdit',
+                'editPayslip'
             ],
             'none'  : [
                 'inputEventName',
@@ -247,12 +263,15 @@ function getSelectEvent(selectEvent) {
                 'cancelEventEdit',
                 'sendEventEdit',
                 'newsAreaOpen',
-                'newsArea'
+                'newsArea',
+                'cancelPayslip',
+                'updatePayslip'
             ],
             'flex'  : [
                 'workReportInfoAreaOpen',
                 'stampInfoAreaOpen',
                 'workReportInfoEditAreaOpen',
+                'payslipAreaOpen'
             ]
         }
         opView(itemList);
@@ -641,6 +660,55 @@ function workReportInfoEdit(id) {
 }
 
 
+// 給与明細の修正
+function payslipEdit(id) {
+    const selectEvent = document.getElementById("eventName").textContent;
+
+    switch (id) {
+        case 'editPayslip':
+            var itemList = {
+                'block' : ['cancelPayslip', 'updatePayslip'],
+                'none'  : ['editPayslip']
+            }
+            opView(itemList);
+
+            Array.from(document.getElementById("payslipTable").querySelectorAll("a")).forEach(function(e) {
+                e.style.display = 'none';
+            });
+            Array.from(document.getElementById("payslipTable").querySelectorAll("textarea")).forEach(function(e) {
+                e.style.display = 'block';
+            });
+            break;
+
+        case 'cancelPayslip':
+            getSelectEvent(selectEvent);
+            break;
+
+        case 'updatePayslip':
+            let payslipList = [];
+            Array.from(document.getElementById("payslipTable").querySelectorAll("tr")).forEach(function(e) {
+                if (!e.id) {
+                    payslipList.push(
+                        e.querySelectorAll("td")[0].textContent + '|'
+                        + e.querySelectorAll("td")[1].querySelector("textarea").value,
+                    );
+                }
+            });
+
+            const result = window.confirm('URLが入っているスタッフに給与明細を公開してよろしいですか？');
+            if (result) {
+                var paramDB = {
+                    'event'         : selectEvent,
+                    'payslipList'   : payslipList
+                };
+                opDB('updateStaffListPayslip', paramDB);
+            }
+            break;
+    }
+
+}
+
+
 // お知らせ
 function news(id) {
     const disp = document.getElementById('dispNews');
@@ -1022,8 +1090,15 @@ function opDB(op, paramDB) {
                     e.remove();
                 });
 
-                const tbl = document.getElementById("workReportInfoArea").querySelector("tbody");
-                Array.from(tbl.querySelectorAll("tr")).forEach(function(e) {
+                const workReportInfoTable = document.getElementById("workReportInfoArea").querySelector("tbody");
+                Array.from(workReportInfoTable.querySelectorAll("tr")).forEach(function(e) {
+                    if (!e.id) {
+                        e.remove();
+                    }
+                });
+
+                const payslipTable = document.getElementById("payslipArea").querySelector("tbody");
+                Array.from(payslipTable.querySelectorAll("tr")).forEach(function(e) {
                     if (!e.id) {
                         e.remove();
                     }
@@ -1036,12 +1111,13 @@ function opDB(op, paramDB) {
                     if (data) {
                         Object.keys(data).forEach(function(key) {
 
+                            // イベント情報用のリスト作成
                             staffList = staffList 
                                 + data[key].no + ':' 
                                 + data[key].name + ':' 
                                 + data[key].mail + ':' 
-                                + data[key].birthday + '\n' ;
-                            
+                                + data[key].birthday + '\n'
+                            ;
                             var div = document.createElement("div");
                             var name = document.createElement("p");
                             var mail = document.createElement("p");
@@ -1059,11 +1135,12 @@ function opDB(op, paramDB) {
                             div.appendChild(birthday);
                             staff.appendChild(div);
 
+
                             // 勤怠情報表示
                             var tr = document.createElement("tr");
                             var tr2 = document.createElement("tr");
-                            tbl.appendChild(tr);
-                            tbl.appendChild(tr2);
+                            workReportInfoTable.appendChild(tr);
+                            workReportInfoTable.appendChild(tr2);
 
                             var nextParamDB = {
                                 'event' : paramDB['event'],
@@ -1079,11 +1156,59 @@ function opDB(op, paramDB) {
                             option.text = data[key].name;
                             option.value = data[key].name;
                             selectStaff.appendChild(option);
+
+
+                            // 給料明細
+                            var tr3 = document.createElement("tr");
+                            var staffName = document.createElement("td");
+                            staffName.innerText = data[key].name;
+                            staffName.className = 'w15';
+                            tr3.appendChild(staffName);
+
+                            var payslipUrl = document.createElement("td");
+                            payslipUrl.className = 'w70 textLeft';
+
+                            data[key].payslip.split(/\n/).forEach(function(val) {
+                                var a = document.createElement("a");
+                                a.innerText = val;
+                                a.href = val;
+                                a.target = "_blank";
+                                a.style.display = "block";
+                                payslipUrl.appendChild(a);
+                            });
+
+                            var textarea = document.createElement("textarea");
+                            textarea.innerHTML = data[key].payslip;
+                            textarea.name = "payslip";
+                            payslipUrl.appendChild(textarea);
+                            tr3.appendChild(payslipUrl);
+
+                            payslipTable.appendChild(tr3);
                         });
                     }
 
                     // イベント情報表示
                     document.getElementById("inputStaff").innerHTML = staffList;
+                }
+            }
+            break;
+
+        case 'updateStaffListPayslip':
+            var param = "function=" + "update_staff_list_payslip"
+                + "&event="         + encodeURIComponent(paramDB.event)
+                + "&payslipList="   + encodeURIComponent(paramDB.payslipList)
+            ;
+
+            xmlhttp.onreadystatechange = function() {
+                    console.log(this.readyState + ':' + this.response);
+                if (this.readyState == 4 && this.status == 200) {
+                    if (this.response == 1) {
+                        // console.log(this.response, '登録');
+
+                        getSelectEvent(paramDB.event);
+                    } else {
+                        document.getElementById("payslipMsg").innerText = '給与明細が更新できませんでした。';
+                    }
                 }
             }
             break;
@@ -1469,9 +1594,9 @@ function opDB(op, paramDB) {
 
                         stampInfoEdit('cancelStampInfoEdit');
                         getSelectEvent(paramDB.event);
+                    } else {
+                        document.getElementById("workReportInfoEditMsg").innerText = 'ステータス変更ができませんでした。';
                     }
-                } else {
-                    document.getElementById("workReportInfoEditMsg").innerText = 'ステータス変更ができませんでした。';
                 }
             }
             break;

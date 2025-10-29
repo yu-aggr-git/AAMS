@@ -92,7 +92,7 @@
                     <tbody>
                         <tr>
                             <th>イベント</th>
-                            <td id="eventName"></td>
+                            <td colspan="2" id="eventName"></td>
                             <td id="firstDay"></td>
                             <td id="separator">～</td>
                             <td id="endDay"></td>
@@ -100,9 +100,13 @@
                         </tr>
                         <tr>
                             <th>登録情報</th>
-                            <td id="mail"></td>
-                            <td colspan="2" id="staffName"></td>
+                            <td  id="staffName"></td>
+                            <td colspan="3" id="mail"></td>
                             <td colspan="2" id="birthday"></td>
+                        </tr>
+                        <tr>
+                            <th>給与明細</th>
+                            <td colspan="6" id="payslip"></td>
                         </tr>
                     </tbody>
                 </table>

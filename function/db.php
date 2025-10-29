@@ -62,6 +62,10 @@
                 get_shift_url($dbh, $_POST);
                 break;
 
+            case 'update_staff_list_payslip' :
+                update_staff_list_payslip($dbh, $_POST);
+                break;
+
             case 'register_event' :
                 register_event($dbh, $_POST);
                 break;
@@ -304,7 +308,7 @@
     // ────スタッフリスト：取得─────────────────────────────
     function get_staff_list($dbh, $param) {
         $query = "
-            SELECT no, name, mail, birthday
+            SELECT no, name, mail, birthday, payslip
             FROM staff_list
             WHERE
                     event = :event
@@ -465,6 +469,37 @@
         }
         $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $sth2->execute($names);
+    }
+
+
+    // ────スタッフリスト：更新（給与明細）─────────────────────────────
+    function update_staff_list_payslip($dbh, $param) {
+
+        foreach (explode(",", $param['payslipList']) as $staff) {
+            if ($staff) {
+                $staffArray = explode("|", $staff);
+                $name    = $staffArray[0];
+                $payslip = $staffArray[1];
+                
+                $query = "
+                    UPDATE
+                        staff_list
+                    SET
+                        payslip = :payslip
+                    WHERE
+                            event = :event
+                        AND name = :name
+                ";
+                $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+                $count = $sth->execute([
+                    'event'     => $param['event'],
+                    'name'      => $name,
+                    'payslip'   => $payslip
+                ]);
+            }
+        }
+
+        echo $count;
     }
 
 

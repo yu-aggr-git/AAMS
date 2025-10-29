@@ -631,6 +631,113 @@ html::-webkit-scrollbar {
 
 
 /* ───────────────────────────────────────────────────
+   給料明細
+   ……………………………………………………………………………………………………………………………………… */
+    #payslipAreaOpen {
+        display: none;
+    }
+    #payslipArea {
+        display         : none;
+        margin-top      : 2vmin;
+        /* display         : flex; */
+        justify-content : space-between;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #payslipArea > p {
+        font-size   : 1.5vmin;
+        width       : 100%;
+    }
+    #payslipArea > #payslipMenu {
+        width           : 100%;
+        margin-top      : 2vmin;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+    }
+    #payslipArea > #payslipMenu > #payslipMsg {
+        width           : 70%;
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+    }
+    #payslipArea > #payslipMenu > div {
+        width           : 30%;
+        display         : flex;
+        justify-content : end;
+        align-items     : center;
+    }
+    #payslipArea > #payslipMenu > div button{
+        background      : #000;
+        margin-left     : 1vmin;
+        color           : #fff;
+        border-radius   : 100vh 100vh 100vh 0;
+    }
+    #payslipArea > #payslipMenu > div #editPayslip,
+    #payslipArea > #payslipMenu > div #cancelPayslip {
+        background      : #fff;
+        color           : #000;
+    }
+    #payslipArea > #payslipList {
+        width           : 100%;
+        margin-top      : 2vmin;
+        overflow-x      : auto;
+    }
+    #payslipArea > #payslipList > table {
+        width           : 100%;
+        margin-bottom   : 2vmin;
+        border-collapse : separate;
+        border-spacing  : 0;
+        border-radius   : 100vh 0;
+    }
+    #payslipArea table > tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #payslipArea td,
+    #payslipArea th {
+        width           : 15vmin;
+        margin          : 0;
+        padding         : 0 1.5vmin;
+        font-size       : 2vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+        overflow-wrap   : anywhere;
+    }
+    #payslipArea th {
+        background : #ececec;
+    }
+    #payslipArea .w15 {
+        width : 20%;
+    }
+    #payslipArea .w70 {
+        width   : 80%;
+        padding : 0.5vmin 1.5vmin;
+    }
+    #payslipArea .textLeft {
+        text-align : left;
+    }
+    #payslipArea > #payslipList > table textarea {
+        display             : none;
+        background          : #ececec;
+        width               : 95%;
+        margin              : 0.5vmin 0;
+        padding             : 0.5vmin 2.5%;
+        height              : 4vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : left;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+
+
+/* ───────────────────────────────────────────────────
    お知らせ
    ……………………………………………………………………………………………………………………………………… */
 

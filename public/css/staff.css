@@ -222,6 +222,10 @@ html::-webkit-scrollbar {
         width       : 45%;
         text-align  : start;
     }
+    #staffEventInfoArea > table #staffName,
+    #staffEventInfoArea > table #payslip {
+        text-align  : start;
+    }
     #staffEventInfoArea > table #firstDay,
     #staffEventInfoArea > table #endDay,
     #staffEventInfoArea > table #birthday {

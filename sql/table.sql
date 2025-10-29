@@ -31,6 +31,7 @@ create table aams.staff_list(
     name        VARCHAR(30)  NOT NULL                            COMMENT '氏名',
     mail        VARCHAR(255)                                     COMMENT 'メールアドレス',
     birthday    VARCHAR(8)                                       COMMENT '生年月日',
+    payslip     VARCHAR(255)                                     COMMENT '給与明細',
     pass        VARCHAR(255)                                     COMMENT 'パスワード',
     login_dt    VARCHAR(19)                                      COMMENT 'ログイン日時',
     PRIMARY KEY (event, name)
