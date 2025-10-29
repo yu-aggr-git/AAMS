@@ -706,6 +706,7 @@ function opDB(op, paramDB) {
                 document.getElementById("mail").innerText = '';
                 document.getElementById("staffName").innerText  = '';
                 document.getElementById("birthday").innerText  = '';
+                document.getElementById("payslip").innerText  = '';
 
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
