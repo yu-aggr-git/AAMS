@@ -155,7 +155,10 @@ function dispNews() {
     document.body.style.overflow = 'hidden';
 
     // お知らせの取得
-    var paramDB = { 'status': '公開' };
+    var paramDB = {
+        'status'   : '公開' ,
+        'op'       : 'disp' ,
+    };
     opDB('getNewsList', paramDB);
 }
 
@@ -179,6 +182,13 @@ function getSelectEvent(selectEvent, staffUser) {
     opDB('checkStaffListPass', paramDB);
 
     document.getElementById("selectItemArea").style.display = 'flex';
+
+    // お知らせ確認
+    paramDB = {
+        'status'   : '公開' ,
+        'op'       : 'check' ,
+    };
+    opDB('getNewsList', paramDB);
 }
 
 
@@ -941,33 +951,61 @@ function opDB(op, paramDB) {
 
                     let i = 1;
                     Object.keys(data).forEach(function(key) {
-                        var dt = document.createElement("dt");
-                        dt.textContent = data[key].register_dt.substring(0, 10);
 
-                        var dd = document.createElement("dd");
+                        animeNewsStart= document.getElementById("openNews").animate(
+                            [{ background : '#fff' }, { background : '#dc4618ff' }],
+                            { duration: 2000, iterations: Infinity }
+                        );
+                        animeNewsStart.cancel();
 
-                        var title = document.createElement("p");
-                        title.textContent = '『 ' + data[key].title + ' 』';
-                        title.className = 'newsTitle';
-                        title.id = 'newsTitle_' + i;
-                        dd.appendChild(title);
+                        if (paramDB['op'] == 'check') {
 
-                        var body = document.createElement("p");
-                        body.innerHTML = data[key].body;
-                        body.style.display = 'none';
-                        body.id = 'newsBody_' + i;
-                        dd.appendChild(body);
+                            // 既読チェック
+                            if (i == 1) {
+                                if (localStorage.getItem("readNews") != data[key].register_dt) {
+                                    animeNewsStart.play();
+                                }
+                            }
 
-                        var link = document.createElement("a");
-                        link.textContent = data[key].link;
-                        link.href = data[key].link;
-                        link.target = "_blank";
-                        link.style.display = 'none';
-                        link.id = 'newsLink_' + i;
-                        dd.appendChild(link);
-                        
-                        dl.appendChild(dt);
-                        dl.appendChild(dd);
+                        } else if (paramDB['op'] == 'disp') {
+
+                            // 既読フラグ
+                            if (i == 1) {
+                                localStorage.setItem("readNews", data[key].register_dt);
+                                animeNewsStart.currentTime = 0;
+                            }
+
+
+                            // お知らせリスト表示
+                            var dt = document.createElement("dt");
+                            dt.textContent = data[key].register_dt.substring(0, 10);
+
+                            var dd = document.createElement("dd");
+
+                            var title = document.createElement("p");
+                            title.textContent = '『 ' + data[key].title + ' 』';
+                            title.className = 'newsTitle';
+                            title.id = 'newsTitle_' + i;
+                            dd.appendChild(title);
+
+                            var body = document.createElement("p");
+                            body.innerHTML = data[key].body;
+                            body.style.display = 'none';
+                            body.id = 'newsBody_' + i;
+                            dd.appendChild(body);
+
+                            var link = document.createElement("a");
+                            link.textContent = data[key].link;
+                            link.href = data[key].link;
+                            link.target = "_blank";
+                            link.style.display = 'none';
+                            link.id = 'newsLink_' + i;
+                            dd.appendChild(link);
+                            
+                            dl.appendChild(dt);
+                            dl.appendChild(dd);
+
+                        }
 
                         i++;
                     });
