@@ -47,6 +47,11 @@ function online() {
         opDB('getStaffListEvent', paramDB);
     }
 
+    // パスワードのリセット
+    document.getElementById("resetPassword").onclick = function() {
+        resetPassword();
+    }
+
     // ログアウト
     document.getElementById("staffLogout").onclick = function() {
         localStorage.removeItem('staffUser');
@@ -147,6 +152,37 @@ function staffLogin() {
     }    
 }
 
+
+// パスワードリセット
+function resetPassword() {
+    const inputStaffEventName = document.getElementById("staffEventName").value;
+    const inputStaffMail = document.getElementById("staffMail").value;
+
+    if (!inputStaffMail) {
+        document.getElementById("resetPasswordMsg").innerText = 'リセットしたいメールアドレスを入力してください。';
+    } else {
+        const result = window.confirm(
+                'パスワードをリセットすると初期値に変更されます。' + '\n' 
+            + '\n'
+            + '※初期値は、イベントのLINEグループでお知らせされたものです。' + '\n'
+            + '\n'
+            + '※初期値が分からない場合' + '\n'
+            + '「イベント名」「氏名」「メールアドレス」を記入の上、' + '\n'
+            + 'baito-staff@aggr.jpまでお問い合わせください。' + '\n'
+            + '\n'
+            + 'パスワードをリセットしてよろしいですか？'
+        );
+
+        if (result) {   
+            var paramDB = {
+                'inputStaffEventName'   : inputStaffEventName,
+                'inputStaffMail'        : inputStaffMail,
+            };
+            opDB('resetPassword', paramDB);
+        }
+
+    }
+}
 
 // お知らせの表示
 function dispNews() {
@@ -372,6 +408,27 @@ function opDB(op, paramDB) {
                         msg = '入力値が誤っています。';
                     }
                     document.getElementById("staffLoginMsg").innerHTML = msg;
+                }
+            }
+            break;
+
+        case 'resetPassword':
+            var param   = "function=" + "reset_password"
+                + "&inputStaffEventName="   + encodeURIComponent(paramDB['inputStaffEventName'])
+                + "&inputStaffMail="        + encodeURIComponent(paramDB['inputStaffMail'])
+            ;
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    const result = this.responseText;
+
+                    let msg = '';
+                    if (result != 0) {
+                        msg = 'パスワードがリセットされました。';
+                    } else {
+                        msg = 'このメールアドレスは未登録、またはパスワードは初期値に設定されています。';
+                    }
+                    document.getElementById("resetPasswordMsg").innerHTML = msg;
                 }
             }
             break;

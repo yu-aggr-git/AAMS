@@ -38,6 +38,9 @@
                         <p id="staffLoginMsg" class="errorMsg"></p>
 
                         <button id="sendStaffLogin" type="button" >送信</button>
+
+                        <p id="resetPasswordMsg" class="errorMsg"></p>
+                        <button id="resetPassword" type="button" >パスワードを忘れた場合はこちら</button>
                     </div>
                 </div>
 

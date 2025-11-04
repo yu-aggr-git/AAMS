@@ -54,6 +54,10 @@
                 check_staff_list_pass($dbh, $_POST);
                 break;
 
+            case 'reset_password' :
+                reset_password($dbh, $_POST);
+                break;
+
             case 'register_staff_list_pass' :
                 register_staff_list_pass($dbh, $_POST);
                 break;
@@ -398,6 +402,27 @@
         }
 
         echo $resultPass ? 'true' : 'false';
+    }
+
+    
+    // ────スタッフリスト：パスワードリセット─────────────────
+    function reset_password($dbh, $param) {
+        $query = "
+            UPDATE
+                staff_list
+            SET
+                pass = null
+            WHERE
+                    event = :event
+                AND mail = :mail
+        ";
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute([
+            'event'     => $param['inputStaffEventName'],
+            'mail'      =>  $param['inputStaffMail']
+        ]);
+
+        echo $sth->rowCount();
     }
 
 

@@ -58,7 +58,7 @@ html::-webkit-scrollbar {
     #modal > #staffLogin {
         display : none;
         width   : 80vmin;
-        height  : 60vmin;
+        height  : 70vmin;
         /* display : flex; */
     }
     #modal > #staffLogin > .modalBody {
@@ -90,6 +90,12 @@ html::-webkit-scrollbar {
         text-align      : center;
         color           : #fff;
         cursor          : pointer;
+    }
+    #modal > #staffLogin > .modalBody > #resetPassword {
+        background      : #fff;
+        border          : none;
+        color           : #000;
+        text-decoration : underline;
     }
 
 
