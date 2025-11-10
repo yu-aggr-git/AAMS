@@ -531,14 +531,16 @@ html::-webkit-scrollbar {
     }
     #workReportInfoEditArea > div {
         width           : 100%;
+        height          : 60vmin;
         margin-top      : 2vmin;
-        overflow-x      : auto;
+        overflow        : auto;
     }
     #workReportInfoEditArea > div::-webkit-scrollbar {
         display: none;
     }
     #workReportInfoEditArea > #workReportInfoEditMenu {
         /* width           : 40%; */
+        height          : 5vmin;
         margin-top      : 2vmin;
         display         : flex;
         justify-content : space-between;
@@ -626,6 +628,16 @@ html::-webkit-scrollbar {
         top             : 0;
         left            : 36.4vmin;
         z-index         : 2;
+    }
+    #workReportInfoEditArea .sticky8 {
+        position        : sticky;
+        top             : 0;
+        z-index         : 8;
+    }
+    #workReportInfoEditArea .sticky9 {
+        position        : sticky;
+        top             : 0;
+        z-index         : 9;
     }
 
 

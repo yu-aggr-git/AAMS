@@ -36,6 +36,7 @@ create table aams.staff_list(
     login_dt    VARCHAR(19)                                      COMMENT 'ログイン日時',
     PRIMARY KEY (event, name)
 );
+ALTER TABLE aams.staff_list ADD INDEX index_staff_list_no(event, no);
 
 drop table aams.work_report_edit;
 create table aams.work_report_edit(

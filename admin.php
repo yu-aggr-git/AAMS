@@ -456,15 +456,15 @@
                     <table id="workReportInfoEditTable">
                         <tbody>
                             <tr>
-                                <th class="sticky1">スタッフ名</th>
-                                <th class="sticky2">対象日</th>
-                                <th class="sticky3">項目</th>
-                                <th class="status">状態</th>
-                                <th>修正前</th>
-                                <th>修正後</th>
-                                <th class="w25">理由</th>
-                                <th class="w25">申請日</th>
-                                <th>処理日</th>
+                                <th class="sticky1 sticky9">スタッフ名</th>
+                                <th class="sticky2 sticky9">対象日</th>
+                                <th class="sticky3 sticky9">項目</th>
+                                <th class="status sticky8">状態</th>
+                                <th class="sticky8">修正前</th>
+                                <th class="sticky8">修正後</th>
+                                <th class="w25 sticky8">理由</th>
+                                <th class="w25 sticky8">申請日</th>
+                                <th class="sticky8">処理日</th>
                             </tr>
                         </tbody>
                     </table>
