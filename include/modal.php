@@ -189,6 +189,8 @@
             </div>
 
             <div id="editInfo">
+                <p class="guidance">※打刻を「取消」申請したい場合は、「×:×」を選択してください。</p>
+
                 <p class="guidance">※状態が「承認済・訂正済」になるまで勤怠表には反映されません。</p>
             </div>
 

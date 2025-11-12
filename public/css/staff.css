@@ -472,23 +472,28 @@ html::-webkit-scrollbar {
         width           : 100%;
         max-height      : 50%;
         margin-top      : 5vmin;
-        padding         : 5vmin 0;
-        border          : 0.1vmin solid #666;
-        border-radius   : 5vh;
         /* display         : flex; */
         justify-content : start;
         align-items     : center;
         flex-flow       : column;
     }
+    #staffStampEditArea > p {
+        width       : 100%;
+        font-size   : 1.5vmin;
+    }
     #staffStampEditArea > div {
         width           : 90%;
+        margin-top      : 2vmin;
+        padding         : 5vmin 0;
+        border          : 0.1vmin solid #666;
+        border-radius   : 5vh;
         display         : flex;
         justify-content : center;
         align-items     : center;
         flex-wrap       : wrap;
     }
     #staffStampEditArea > div > p {
-        width           : 30%;
+        width           : 20%;
         padding-right   : 2vmin;
         font-size       : 2vmin;
         text-align      : end;
@@ -498,7 +503,7 @@ html::-webkit-scrollbar {
         background          : #ececec;
         margin              : 0.5vw 0;
         padding             : 0;
-        width               : 60%;
+        width               : 70%;
         height              : 4vh;
         border              : 0.1vmin solid #666;
         border-radius       : 100vh;
@@ -510,7 +515,7 @@ html::-webkit-scrollbar {
         appearance          : none;
     }
     #staffStampEditArea > div > div {
-        width           : 60%;
+        width           : 70%;
         display         : flex;
         justify-content : center;
         align-items     : center;

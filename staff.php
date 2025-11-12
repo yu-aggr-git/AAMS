@@ -199,6 +199,7 @@
 
             <!-- 打刻修正 -->
             <div id="staffStampEditArea">
+                <p>● 打刻を「取消」申請したい場合は、「×:×」を選択してください。</p>
                 <div>
                     <p>修正対象日：</p>
                     <select id="editStampDay"></select>
