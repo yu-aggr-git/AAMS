@@ -355,13 +355,13 @@ html::-webkit-scrollbar {
     }
     #workReportInfoArea .sticky1_2 {
         position        : sticky;
-        top             : 3vmin;
+        top             : 3.1vmin;
         left            : 0;
         z-index         : 1;
     }
     #workReportInfoArea .sticky1_3 {
         position        : sticky;
-        top             : 6.1vmin;
+        top             : 6.2vmin;
         left            : 0;
         z-index         : 1;
     }
