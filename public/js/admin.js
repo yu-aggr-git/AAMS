@@ -933,7 +933,7 @@ function opDB(op, paramDB) {
                     var th = document.createElement("th");
                     th.innerText = 'スタッフ名';
                     th.rowSpan = "3";
-                    th.className = "sticky";
+                    th.className = "sticky3";
                     tr.appendChild(th);
 
                     for (
@@ -944,26 +944,27 @@ function opDB(op, paramDB) {
                         var th = document.createElement("th");
                         th.innerText = date.toLocaleDateString('sv-SE');
                         th.colSpan = "2";
+                        th.className = "sticky1_1";
                         tr.appendChild(th);
 
                         var th = document.createElement("th");
                         th.innerText = '出勤';
-                        th.className = 'borderRight borderBottom';
+                        th.className = 'borderRight borderBottom sticky1_2';
                         tr2.appendChild(th);
 
                         var th = document.createElement("th");
                         th.innerText = '退勤';
-                        th.className = 'borderLeft borderBottom';
+                        th.className = 'borderLeft borderBottom sticky1_2';
                         tr2.appendChild(th);
 
                         var th = document.createElement("th");
                         th.innerText = '休憩';
-                        th.className = 'borderTop borderRight';
+                        th.className = 'borderTop borderRight sticky1_3';
                         tr3.appendChild(th);
 
                         var th = document.createElement("th");
                         th.innerText = '実働';
-                        th.className = 'borderTop borderLeft';
+                        th.className = 'borderTop borderLeft sticky1_3';
                         tr3.appendChild(th);
 
                         var option = document.createElement("option");
@@ -1144,6 +1145,7 @@ function opDB(op, paramDB) {
 
                             var nextParamDB = {
                                 'event' : paramDB['event'],
+                                'no'    : data[key].no,
                                 'name'  : data[key].name,
                                 'tr'    : tr,
                                 'tr2'   : tr2
@@ -1153,7 +1155,7 @@ function opDB(op, paramDB) {
 
                             // 打刻情報表示
                             var option = document.createElement("option");
-                            option.text = data[key].name;
+                            option.text = data[key].no + '.' + data[key].name;
                             option.value = data[key].name;
                             selectStaff.appendChild(option);
 
@@ -1230,9 +1232,9 @@ function opDB(op, paramDB) {
                         var tr2 = paramDB['tr2'];
 
                         var name = document.createElement("td");
-                        name.innerText = paramDB['name'];
+                        name.innerText = paramDB['no'] + '.' + paramDB['name'];
                         name.rowSpan = "2";
-                        name.className = "sticky";
+                        name.className = "sticky2";
                         tr.appendChild(name);
 
                         Array.from(document.getElementById("workReportInfoHeader").querySelectorAll("th")).forEach(function(e) {
