@@ -336,10 +336,17 @@
     // ────スタッフリスト：取得（イベント）──────────────────
     function get_staff_list_event($dbh, $param) {
         $query = "
-            SELECT event
-            FROM staff_list
-            WHERE mail = :mail
-            ORDER BY event desc 
+            SELECT
+                e.event
+            FROM
+                staff_list s
+            LEFT JOIN
+                event e
+                ON s.event = e.event
+            WHERE
+                s.mail = :mail
+            ORDER
+                BY e.first_day desc 
         ";
 
         $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);

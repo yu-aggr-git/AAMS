@@ -254,14 +254,15 @@ function getWorkReport(id, event, name) {
                 stampEdit.value = 'false';
                 stampEdit.style.color = '#000';
                 stampEdit.style.background = '#fff';
-
-                // 勤怠情報の表示
-                var paramDB = {
-                    'event' : event,
-                    'name'  : name
-                };
-                opDB('getWorkReport', paramDB);
             }
+
+            // 勤怠情報の表示
+            var paramDB = {
+                'event' : event,
+                'name'  : name
+            };
+            opDB('getWorkReport', paramDB);
+
             break;
 
         case 'workReportEditOpen':
@@ -280,14 +281,15 @@ function getWorkReport(id, event, name) {
                 stampEdit.value = 'false';
                 stampEdit.style.color = '#000';
                 stampEdit.style.background = '#fff';
-
-                // 修正申請情報の表示
-                var paramDB = {
-                    'event' : event,
-                    'name'  : name
-                };
-                opDB('getWorkReportEdit', paramDB);
             }
+            
+            // 修正申請情報の表示
+            var paramDB = {
+                'event' : event,
+                'name'  : name
+            };
+            opDB('getWorkReportEdit', paramDB);
+            
             break;
 
         case 'stampEditOpen':
