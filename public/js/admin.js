@@ -1326,8 +1326,8 @@ function opDB(op, paramDB) {
 
                                                 if (break3s && break3e) {
                                                     // 切り上げ
-                                                    break3s = ceil(break2s);
-                                                    break3e = ceil(break2e);
+                                                    break3s = ceil(break3s);
+                                                    break3e = ceil(break3e);
 
                                                     var break3 = clac(e.textContent, break3s, break3e, 'diff');
                                                     dataB = clac(e.textContent, dataB, break3, 'sum');;
