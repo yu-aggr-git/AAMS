@@ -1261,11 +1261,8 @@ function opDB(op, paramDB) {
                                             dataS = data[key].start;
 
                                             if (!dataS.startsWith('＊')) {
-                                                var startA  = dataS.split(/:/);
-                                                var min     = Math.ceil(startA[1] / 15) * 15;
-                                                var hour    = Number(startA[0]) + Number((min == 60 ? 1 : 0));
-
-                                                dataS = hour + ':' + (min == 60 ? '00' : min.toString().padStart(2, '0'));
+                                                // 切り上げ
+                                                dataS = ceil(dataS);
                                             }
                                         }
 
@@ -1274,6 +1271,7 @@ function opDB(op, paramDB) {
                                             dataE = data[key].end;
 
                                             if (!dataE.startsWith('＊')) {
+                                                // 切り捨て
                                                 var endA    = dataE.split(/:/);
                                                 var min         = Math.floor(endA[1] / 15) * 15;
                                                 var hour        = Number(endA[0]);
@@ -1309,16 +1307,28 @@ function opDB(op, paramDB) {
                                                 dataB = '0:00';
 
                                                 if (break1s && break1e) {
+                                                    // 切り上げ
+                                                    break1s = ceil(break1s);
+                                                    break1e = ceil(break1e);
+
                                                     var break1 = clac(e.textContent, break1s, break1e, 'diff');
                                                     dataB = break1;
                                                 }                                                
 
                                                 if (break2s && break2e) {
+                                                    // 切り上げ
+                                                    break2s = ceil(break2s);
+                                                    break2e = ceil(break2e);
+
                                                     var break2 = clac(e.textContent, break2s, break2e, 'diff');
                                                     dataB = clac(e.textContent, dataB, break2, 'sum');
                                                 }
 
                                                 if (break3s && break3e) {
+                                                    // 切り上げ
+                                                    break3s = ceil(break2s);
+                                                    break3e = ceil(break2e);
+
                                                     var break3 = clac(e.textContent, break3s, break3e, 'diff');
                                                     dataB = clac(e.textContent, dataB, break3, 'sum');;
                                                 }
@@ -1850,6 +1860,19 @@ function clac(day, bt, at, method) {
     
     return hour + ':' +  (min == 60 ? '00' : min.toString().padStart(2, '0'));
 }
+
+
+// 切り上げ
+function ceil(data) {
+    var dataA  = data.split(/:/);
+
+    var min  = Math.ceil(dataA[1] / 15) * 15;
+    var hour = Number(dataA[0]) + Number((min == 60 ? 1 : 0));
+    dataClac = hour + ':' + (min == 60 ? '00' : min.toString().padStart(2, '0'));
+    
+    return dataClac;
+}
+
 
 
 // 項目名
