@@ -420,12 +420,10 @@
             SET
                 pass = null
             WHERE
-                    event = :event
-                AND mail = :mail
+                mail = :mail
         ";
         $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $sth->execute([
-            'event'     => $param['inputStaffEventName'],
             'mail'      =>  $param['inputStaffMail']
         ]);
 

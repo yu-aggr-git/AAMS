@@ -155,7 +155,6 @@ function staffLogin() {
 
 // パスワードリセット
 function resetPassword() {
-    const inputStaffEventName = document.getElementById("staffEventName").value;
     const inputStaffMail = document.getElementById("staffMail").value;
 
     if (!inputStaffMail) {
@@ -175,8 +174,7 @@ function resetPassword() {
 
         if (result) {   
             var paramDB = {
-                'inputStaffEventName'   : inputStaffEventName,
-                'inputStaffMail'        : inputStaffMail,
+                'inputStaffMail' : inputStaffMail,
             };
             opDB('resetPassword', paramDB);
         }
@@ -416,7 +414,6 @@ function opDB(op, paramDB) {
 
         case 'resetPassword':
             var param   = "function=" + "reset_password"
-                + "&inputStaffEventName="   + encodeURIComponent(paramDB['inputStaffEventName'])
                 + "&inputStaffMail="        + encodeURIComponent(paramDB['inputStaffMail'])
             ;
 
