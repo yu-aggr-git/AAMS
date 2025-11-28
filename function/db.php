@@ -1,4 +1,6 @@
 <?php
+    $config = parse_ini_file("../config.ini");
+
     $function = $_POST['function'];
 
     try {
@@ -18,6 +20,8 @@
                 register_work_report($dbh, $_POST);
                 break;
 
+
+
             case 'check_staff_list' :
                 check_staff_list($dbh, $_POST);
                 break;
@@ -30,6 +34,8 @@
                 register_staff_list($dbh, $_POST);
                 break;   
 
+
+
             case 'check_login_event' :
                 check_login_event($dbh, $_POST);
                 break;
@@ -41,6 +47,12 @@
             case 'get_event_list' :
                 get_event_list($dbh);
                 break;
+
+            case 'get_event_list_recruit' :
+                get_event_list_recruit($dbh);
+                break;                
+
+
 
             case 'get_staff_list_event' :
                 get_staff_list_event($dbh, $_POST);
@@ -70,6 +82,8 @@
                 update_staff_list_payslip($dbh, $_POST);
                 break;
 
+
+
             case 'register_event' :
                 register_event($dbh, $_POST);
                 break;
@@ -81,6 +95,8 @@
             case 'delete_event' :
                 delete_event($dbh, $_POST);
                 break;
+
+
 
             case 'register_work_report_edit' :
                 register_work_report_edit($dbh, $_POST);
@@ -94,6 +110,8 @@
                 get_work_report_edit($dbh, $_POST);
                 break;
 
+
+
             case 'update_work_report' :
                 update_work_report($dbh, $_POST);
                 break;
@@ -101,6 +119,8 @@
             case 'check_admin_login' :
                 check_admin_login($dbh, $_POST);
                 break;
+
+
 
             case 'get_news_list' :
                 get_news_list($dbh, $_POST);
@@ -112,6 +132,16 @@
 
             case 'delete_news' :
                 delete_news($dbh, $_POST);
+                break;
+
+
+                
+            case 'get_application_list' :
+                get_application_list($dbh, $_POST);
+                break;
+
+            case 'register_application' :
+                register_application($dbh, $_POST);
                 break;
         }
 
@@ -138,15 +168,18 @@
 
     // ────DB接続─────────────────────────────
     function pdo() {
-        $servername = "localhost";
-        $username   = "root";
-        $password   = "root";
-        $port       = 3306; 
-        $dbname     = "aams";
+        global $config;
+
+        $servername = $config['servername'];
+        $username   = $config['username'];
+        $password   = $config['password'];
+        $port       = $config['port']; 
+        $dbname     = $config['dbname'];
 
         $dbh = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $password);
         return $dbh;
     }
+
 
 
     // ────勤怠情報：取得─────────────────────────────
@@ -187,7 +220,6 @@
         echo $json;
     }
 
-
     // ────勤怠情報：取得（1日）───────────────────────
     function get_work_report_day($dbh, $param) {
         $query = "
@@ -209,7 +241,6 @@
         $result = $sth->fetch(PDO::FETCH_ASSOC);
         echo $result ? json_encode($result) : '';
     }
-
 
     // ────勤怠情報：登録─────────────────────────────
     function register_work_report($dbh, $param) {
@@ -245,16 +276,8 @@
         ]);
 
         echo $count;
-
-        // ログ
-        // date_default_timezone_set('Asia/Tokyo');
-        // $msg = 
-        //     "{" . date('Y-m-d H:i:s') . "}" . 
-        //     "{" . var_export($param , true) . "}" .
-        //     "{" . $count . "}" . "\n"
-        // ;
-        // file_put_contents('../log/register_work_report.txt', print_r($msg, true), FILE_APPEND);
     }
+
 
 
     // ────スタッフリスト：確認─────────────────────────────
@@ -308,7 +331,6 @@
         echo $check ? 'true' : 'false';
     }
 
-
     // ────スタッフリスト：取得─────────────────────────────
     function get_staff_list($dbh, $param) {
         $query = "
@@ -331,7 +353,6 @@
         $json = json_encode($employeeData);
         echo $json;
     }
-
 
     // ────スタッフリスト：取得（イベント）──────────────────
     function get_staff_list_event($dbh, $param) {
@@ -362,7 +383,6 @@
         echo $json;
     }
 
-
     // ────スタッフリスト：取得（名前）──────────────────────
     function get_staff_list_name($dbh, $param) {
         $query = "
@@ -384,7 +404,6 @@
         $json = json_encode($result);
         echo $json;
     }
-
     
     // ────スタッフリスト：取得（パス）──────────────────────
     function check_staff_list_pass($dbh, $param) {
@@ -411,7 +430,6 @@
         echo $resultPass ? 'true' : 'false';
     }
 
-    
     // ────スタッフリスト：パスワードリセット─────────────────
     function reset_password($dbh, $param) {
         $query = "
@@ -429,7 +447,6 @@
 
         echo $sth->rowCount();
     }
-
 
     // ────スタッフリスト：登録（パス）─────────────────────────────
     function register_staff_list_pass($dbh, $param) {
@@ -449,7 +466,6 @@
 
         echo $count;
     }
-
 
     // ────スタッフリスト：登録─────────────────────────────
     function register_staff_list($dbh, $param) {
@@ -501,7 +517,6 @@
         $sth2->execute($names);
     }
 
-
     // ────スタッフリスト：更新（給与明細）─────────────────────────────
     function update_staff_list_payslip($dbh, $param) {
 
@@ -533,6 +548,7 @@
     }
 
 
+
     // ────イベント：ログイン───────────────────────────────
     function check_login_event($dbh, $param) {
         $query = "
@@ -553,7 +569,6 @@
         echo $check ? 'true' : 'false';
     }
 
-
     // ────イベント：取得─────────────────────────────
     function get_event($dbh, $param) {
         $query = "
@@ -572,7 +587,6 @@
         $json = json_encode($result);
         echo $json;
     }
-
 
     // ────イベント：リスト取得─────────────────────────────
     function get_event_list($dbh) {
@@ -593,6 +607,25 @@
         echo $json;
     }
 
+    // ────イベント：リスト取得（募集中）─────────────────────────────
+    function get_event_list_recruit($dbh) {
+        $query = "
+            SELECT event
+            FROM event
+            WHERE recruit = '募集中'
+            ORDER BY first_day desc 
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute();
+
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData[] = $row['event'];
+        }
+
+        $json = json_encode($employeeData);
+        echo $json;
+    }
 
     // ────イベント：URL取得─────────────────────────────
     function get_shift_url($dbh, $param) {
@@ -616,18 +649,21 @@
     function register_event($dbh, $param) {
         $query = "
             INSERT INTO
-                event(event, pass, first_day, end_day, shift_url)
+                event(event, pass, first_day, end_day, start_time, end_time, shift_url, recruit)
             VALUES
-                (:event, :pass, :firstDay, :endDay, :shiftUrl)
+                (:event, :pass, :firstDay, :endDay, :start_time, :end_time, :shiftUrl, :recruit)
         ";
 
         $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $count = $sth->execute([
-            'event'     => $param['event'],
-            'pass'      => password_hash($param['pass'], PASSWORD_DEFAULT),
-            'firstDay'  => $param['firstDay'],
-            'endDay'    => $param['endDay'],
-            'shiftUrl'  => $param['shiftUrl']
+            'recruit'       => $param['recruit'],
+            'event'         => $param['event'],
+            'pass'          => password_hash($param['pass'], PASSWORD_DEFAULT),
+            'firstDay'      => $param['firstDay'],
+            'endDay'        => $param['endDay'],
+            'start_time'    => $param['start_time'],
+            'end_time'      => $param['end_time'],
+            'shiftUrl'      => $param['shiftUrl']
         ]);
 
         $nextParam = [
@@ -638,7 +674,6 @@
 
         echo $count;
     }
-
 
     // ────イベント：更新─────────────────────────────
     function update_event($dbh, $param) {
@@ -649,18 +684,24 @@
                 pass        = IF(:pass IS NULL, pass, :pass),
                 first_day   = :firstDay,
                 end_day     = :endDay,
-                shift_url   = :shiftUrl
+                start_time  = :start_time,
+                end_time    = :end_time,
+                shift_url   = :shiftUrl,
+                recruit     = :recruit
             WHERE
                 event = :event
         ";
 
         $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $count = $sth->execute([
-            'event'     => $param['event'],
-            'pass'      => $param['pass'] ? password_hash($param['pass'], PASSWORD_DEFAULT) : null,
-            'firstDay'  => $param['firstDay'],
-            'endDay'    => $param['endDay'],
-            'shiftUrl'  => $param['shiftUrl']
+            'recruit'       => $param['recruit'],
+            'event'         => $param['event'],
+            'pass'          => $param['pass'] ? password_hash($param['pass'], PASSWORD_DEFAULT) : null,
+            'firstDay'      => $param['firstDay'],
+            'endDay'        => $param['endDay'],
+            'start_time'    => $param['start_time'],
+            'end_time'      => $param['end_time'],
+            'shiftUrl'      => $param['shiftUrl']
         ]);
 
         $nextParam = [
@@ -671,7 +712,6 @@
 
         echo $count;
     }
-
 
     // ────イベント：削除─────────────────────────────
     function delete_event($dbh, $param) {
@@ -726,6 +766,7 @@
         echo $count;
     }
 
+
     
     // ────勤怠修正情報：登録─────────────────────────────
     function register_work_report_edit($dbh, $param) {
@@ -752,7 +793,6 @@
 
         echo $count;
     }
-
 
     // ────勤怠修正情報：取得─────────────────────────────
     function get_work_report_edit_all($dbh, $param) {
@@ -788,7 +828,6 @@
 
         echo $json;
     }
-
     
     // ────勤怠修正情報：取得（名前）──────────────────────────
     function get_work_report_edit($dbh, $param) {
@@ -823,7 +862,6 @@
         $json = json_encode($employeeData);
         echo $json;
     }
-
 
     // ────勤怠情報・勤怠修正情報：更新─────────────────────────────
     function update_work_report($dbh, $param) {
@@ -890,6 +928,7 @@
     }
 
 
+
     // ────管理者ユーザー：ログイン─────────────────────────────────
     function check_admin_login($dbh, $param) {
         $query = "
@@ -909,6 +948,8 @@
         $check = password_verify($param['inputAdminUserPass'], $result['pass']);
         echo $check ? 'true' : 'false';
     }
+
+
 
     // ────お知らせ：リスト取得─────────────────────────────
     function get_news_list($dbh, $param) {
@@ -973,3 +1014,122 @@
 
         echo $count;
     }
+
+
+
+    // ────応募リスト：個人取得─────────────────────────────
+    function get_application_list($dbh, $param) {
+        global $config;
+
+        $query = "
+            SELECT *
+            FROM application_list
+            WHERE
+                    event = :event
+                AND mail = :mail
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute([
+            'event' => $param['event'],
+            'mail' => $param['mail']
+        ]);
+
+        // 結果を返却
+        $result = $sth->fetch(PDO::FETCH_ASSOC);
+        $result = array(
+            'application'   => $result,
+            'form'          => array(
+                'url'   => $config['photo_form'],
+                'event' => $config['photo_form_event'],
+                'mail'  => $config['photo_form_mail'],
+                'name'  => $config['photo_form_name']
+            )
+        );
+
+        $json = json_encode($result);
+        echo $json;
+    }
+
+    // ────応募リスト：登録─────────────────────────────
+    function register_application($dbh, $param) {
+        $query = "
+            INSERT INTO
+                application_list(
+                    event,
+                    no,
+                    name,
+                    mail,
+                    birthday,
+                    job,
+                    tell,
+                    closest_station,
+                    available,
+                    memo,
+                    platform,
+                    created_dt,
+                    updated_dt,
+                    status
+                )
+            VALUES
+                (
+                    :event,
+                    (
+                        SELECT
+                            CASE
+                                WHEN EXISTS (SELECT 1 FROM application_list al WHERE al.event = :event) 
+                                THEN (
+                                    SELECT al2.no 
+                                    FROM application_list al2 
+                                    WHERE al2.event = :event 
+                                    ORDER BY al2.no DESC 
+                                    LIMIT 1
+                                ) + 1 
+
+                                ELSE 1
+                            END AS newNo
+                    ),
+                    :name,
+                    :mail,
+                    :birthday,
+                    :job,
+                    :tell,
+                    :closestStation,
+                    :available,
+                    :memo,
+                    :platform,
+                    :applicationDt,
+                    :applicationDt,
+                    '応募受付'
+                )
+            ON DUPLICATE KEY UPDATE
+                name            = VALUES(name),
+                mail            = VALUES(mail),
+                birthday        = VALUES(birthday),
+                job             = VALUES(job),
+                tell            = VALUES(tell),
+                closest_station = VALUES(closest_station),
+                available       = VALUES(available),
+                memo            = VALUES(memo),
+                platform        = VALUES(platform),
+                updated_dt      = VALUES(updated_dt)
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $count = $sth->execute([
+            'event'             => $param['event'],
+            'mail'              => $param['mail'],
+            'name'              => $param['name'],
+            'birthday'          => $param['birthday'],
+            'job'               => $param['job'],
+            'tell'              => $param['tell'],
+            'closestStation'    => $param['closestStation'],
+            'available'         => $param['available'],
+            'memo'              => $param['memo'],
+            'platform'          => $param['platform'],
+            'applicationDt'     => $param['applicationDt']
+        ]);
+
+        echo $count;
+    }
+    

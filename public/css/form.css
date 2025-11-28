@@ -1,0 +1,191 @@
+@charset "UTF-8";
+
+
+#main {
+    margin      : 5vmin 0 10vmin 0;
+    overflow-y  : auto;
+}
+
+#main::-webkit-scrollbar,
+html::-webkit-scrollbar {
+    display: none;
+}
+
+#main .text {
+    width : 100%;
+}
+#main .text > p {
+    margin-bottom   : 5vmin;
+    font-size       : 2vmin;
+    text-align      : center;
+}
+
+#main button {
+    background      : #000;
+    margin-bottom   : 5vmin;
+    padding         : 0 1vw;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    font-size       : 2vmin;
+    text-align      : center;
+    color           : #fff;
+    cursor          : pointer;
+}
+#main .cancelButton {
+    background      : #fff;
+    margin-right    : 3vmin;
+    color           : #000;
+}
+
+
+
+/* ───────────────────────────────────────────────────
+   イベント選択
+   ……………………………………………………………………………………………………………………………………… */
+
+   #eventSelectArea {
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #eventSelectArea > p {
+        font-size       : 2vmin;
+        margin-bottom   : 1vmin;
+    }
+    #eventSelectArea > select,
+    #eventSelectArea > input {
+        background          : #ececec;
+        margin-bottom       : 2vh;
+        padding             : 0;
+        width               : 60%;
+        height              : 4vh;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+
+
+/* ───────────────────────────────────────────────────
+   情報入力
+   ……………………………………………………………………………………………………………………………………… */
+
+    #applicationInfoInputArea {
+        display         : none;
+        /* display         : flex; */
+        justify-content : space-between;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #applicationInfoInputArea > p {
+        font-size       : 2vmin;
+        margin-bottom   : 1vmin;
+    }
+    #applicationInfoInputArea > dl {
+        width           : 70%;
+        margin          : 1vmin 0 5vmin 0;
+        display         : flex;
+        flex-wrap       : wrap;
+    }
+    #applicationInfoInputArea > dl > dt,
+    #applicationInfoInputArea > dl > dd {
+        margin          : 0;
+        padding         : 1vmin;
+        border          : 0.1vmin solid #666; 
+        border-top      : none;
+        font-size       : 1.5vmin;
+        overflow-wrap   : break-word;
+    }
+    #applicationInfoInputArea > dl > dt {
+        width       : 30%;
+        text-align  : center;
+    }
+    #applicationInfoInputArea > dl > dd {
+        width           : 60%;
+        border-left     : none;
+        display         : flex;
+        justify-content : center;
+        align-items     : center; 
+    }
+    #applicationInfoInputArea > dl > dd input,
+    #applicationInfoInputArea > dl > dd select,
+    #applicationInfoInputArea > dl > dd textarea {
+        background          : #ececec;
+        margin              : 0;
+        padding             : 0.5vmin 1vmin;
+        width               : 80%;
+        height              : 4vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #applicationInfoInputArea > dl > dd textarea {
+        height          : 15vmin;
+        border-radius   : 1vh;
+    }
+    #applicationInfoInputArea > dl > dd > #inputBirthdayArea {
+        width           : 100%;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #applicationInfoInputArea > dl > dd > #inputBirthdayArea > select {
+        width       : 25%;
+        margin      : 0 1vmin;
+        text-align  : center;
+    }
+    #applicationInfoInputArea > dl > .borderTop {
+        background  : #ececec;
+        border-top  : 0.1vmin solid #666; 
+    }
+    #applicationInfoInputArea > dl > .topLeft {
+        border-radius   : 100vh 0 0 0;
+    }
+    #applicationInfoInputArea > dl > .topRight {
+        border-radius   : 0 100vh 0 0;
+        text-align      : center;
+    }
+    #applicationInfoInputArea > dl > #availableInputArea {
+        display         : flex;
+        justify-content : center;
+        align-items     : center; 
+        flex-wrap       : wrap;
+    }
+        #applicationInfoInputArea > dl > #photo {
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+        flex-flow       : column;
+    }    
+    #applicationInfoInputArea > dl > #availableInputArea > div {
+        width           : 100%;
+        margin          : 0.5vmin 0;
+        display         : flex;
+        justify-content : space-around;
+        align-items     : center;   
+    }
+    #applicationInfoInputArea > dl > #availableInputArea > div > p {
+        width: 25%;
+    }
+    #applicationInfoInputArea > dl > #availableInputArea > div > span {
+        width       : 5%;
+        text-align  : center;
+    }
+    #applicationInfoInputArea > dl > #availableInputArea > div > select {
+        width       : 25%;
+        text-align  : center;
+    }
+    #applicationInfoInputArea > #buttonArea {
+        display         : flex;
+        justify-content : space-around;
+        align-items     : center;   
+    }

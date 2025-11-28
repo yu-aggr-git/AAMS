@@ -40,13 +40,18 @@ function online() {
         location.assign('staff.php');
     }
 
-    // 画面遷移：管理者
-    document.getElementById("redirectAdmin").onclick = function() {
-        location.assign('admin.php');
-    }
-
     // 画面遷移：のものも
     document.getElementById("redirectNomonomo").onclick = function() {
         location.assign('nomonomo.php');
+    }
+
+    // 画面遷移：応募フォーム
+    document.getElementById("redirectForm").onclick = function() {
+        location.assign('form.php');
+    }
+
+    // 画面遷移：管理者
+    document.getElementById("redirectAdmin").onclick = function() {
+        location.assign('admin.php');
     }
 }

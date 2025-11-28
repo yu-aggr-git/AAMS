@@ -1,37 +1,5 @@
 window.onload = () => {
 
-    // ───ネットワーク判定────────────────────────────────────────
-    var isOnline = navigator.onLine;
-    isOnline ? online() : offline();
-
-    window.addEventListener("online", function(){
-        window.location.reload();
-    }, false);
-
-    window.addEventListener("offline", function() {
-        window.location.reload();
-    }, false)
-}
-
-// オフライン
-function offline() {
-    console.log('インターネットから切断されました');
-
-    // 表示切替
-    document.getElementById("modal").style.display = 'none';
-    document.getElementById("networkStatus").textContent = 'off-line';
-    document.getElementById("networkStatus").style.background = '#41438bff';
-}
-
-// オンライン
-function online() {
-    console.log('インターネットに接続中です');
-    
-    // 表示切替
-    document.getElementById("networkStatus").textContent = 'on-line';
-    document.getElementById("networkStatus").style.background = '#dc4618ff';
-
-
     // ───ログイン───────────────────────────────────────────────────────────────────
     const adminUser = window.localStorage.getItem("adminUser");
     if (!adminUser) {
@@ -146,7 +114,7 @@ function online() {
     }
 
 
-    // お知らせの操作──────────────────────────────────────────────────────────────
+    // ───お知らせの操作──────────────────────────────────────────────────────────────
     document.getElementById("newsMenu").addEventListener('click', (e) => {
         id = e.target.id;
         if (id) {
@@ -165,6 +133,7 @@ function online() {
             news(id);
         }
     })
+
 }
 
 
@@ -242,10 +211,12 @@ function getSelectEvent(selectEvent) {
     if (selectEvent) {
         var itemList = {
             'block' : [
+                'recruit',
                 'eventName',
                 'pass',
                 'firstDay',
                 'endDay',
+                'time',
                 'shiftUrl',
                 'staff',
                 'deleteEvent',
@@ -253,10 +224,12 @@ function getSelectEvent(selectEvent) {
                 'editPayslip'
             ],
             'none'  : [
+                'inputRecruit',
                 'inputEventName',
                 'inputPass',
                 'inputFirstDayArea',
                 'inputEndDayArea',
+                'inputTimeArea',
                 'inputShiftUrl',
                 'inputStaff',
                 'registerEvent',
@@ -295,18 +268,21 @@ function eventEdit(id) {
     const inputStaffList    = inputStaff.split(/\n/);
 
     var paramDB = {
-        'eventName' : inputEvent,
-        'pass'      : document.getElementById("inputPass").value,
-        'firstDay'  :
+        'recruit'       : document.getElementById("inputRecruit").value,
+        'eventName'     : inputEvent,
+        'pass'          : document.getElementById("inputPass").value,
+        'firstDay'      :
               document.getElementById("inputFirstYear").value + '-'
             + document.getElementById("inputFirstMonth").value + '-'
             + document.getElementById("inputFirstDay").value,
-        'endDay'  :
+        'endDay'        :
               document.getElementById("inputEndYear").value + '-'
             + document.getElementById("inputEndMonth").value + '-'
             + document.getElementById("inputEndDay").value,
-        'shiftUrl'  : document.getElementById("inputShiftUrl").value,
-        'staffList' : inputStaffList,
+        'start_time'    : document.getElementById("inputTimeS").value,
+        'end_time'      : document.getElementById("inputTimeE").value,
+        'shiftUrl'      : document.getElementById("inputShiftUrl").value,
+        'staffList'     : inputStaffList,
     };
 
     switch (id) {
@@ -338,9 +314,9 @@ function eventEdit(id) {
 
         case 'editEventEdit':
             var itemList = {
-                'block' : ['eventName', 'inputPass', 'inputShiftUrl', 'inputStaff', 'cancelEventEdit' ,'sendEventEdit'],
-                'none'  : ['pass', 'firstDay', 'endDay', 'shiftUrl', 'staff', 'inputEventName', 'deleteEvent', 'editEventEdit'],
-                'flex'  : ['inputFirstDayArea', 'inputEndDayArea']
+                'block' : ['inputRecruit', 'eventName', 'inputPass', 'inputShiftUrl', 'inputStaff', 'cancelEventEdit' ,'sendEventEdit'],
+                'none'  : ['recruit','pass', 'firstDay', 'endDay', 'time', 'shiftUrl', 'staff', 'inputEventName', 'deleteEvent', 'editEventEdit'],
+                'flex'  : ['inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea']
             }
             opView(itemList);
 
@@ -375,8 +351,8 @@ function eventEdit(id) {
 
         case 'cancelEventEdit':
             var itemList = {
-                'block' : ['pass', 'firstDay', 'endDay', 'shiftUrl', 'staff', 'deleteEvent', 'editEventEdit'],
-                'none'  : ['inputPass', 'inputFirstDayArea', 'inputEndDayArea', 'inputShiftUrl', 'inputStaff', 'cancelEventEdit' ,'sendEventEdit']
+                'block' : ['recruit', 'pass', 'firstDay', 'endDay', 'time', 'shiftUrl', 'staff', 'deleteEvent', 'editEventEdit'],
+                'none'  : ['inputRecruit', 'inputPass', 'inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea', 'inputShiftUrl', 'inputStaff', 'cancelEventEdit' ,'sendEventEdit']
             }
             opView(itemList);
             break;
@@ -880,9 +856,11 @@ function opDB(op, paramDB) {
             ;
 
             xmlhttp.onreadystatechange = function() {
+                document.getElementById("recruit").innerText = '';
                 document.getElementById("eventName").innerText = '';
                 document.getElementById("firstDay").innerText  = '';
                 document.getElementById("endDay").innerText  = '';
+                document.getElementById("time").innerText  = '';
                 document.getElementById("shiftUrl").querySelector("a").href = '';
                 document.getElementById("shiftUrl").querySelector("a").innerText = '';
 
@@ -890,9 +868,11 @@ function opDB(op, paramDB) {
                     const data = JSON.parse(this.response);
 
                     // イベント情報
+                    document.getElementById("recruit").innerText    = data.recruit;
                     document.getElementById("eventName").innerText  = data.event;
                     document.getElementById("firstDay").innerText   = data.first_day;
                     document.getElementById("endDay").innerText     = data.end_day;
+                    document.getElementById("time").innerText       = data.start_time + ' ～ ' + data.end_time;
                     if (data.shift_url) {
                         document.getElementById("shiftUrl").querySelector("a").href = data.shift_url;
                         document.getElementById("shiftUrl").querySelector("a").innerText = data.shift_url;
@@ -900,15 +880,18 @@ function opDB(op, paramDB) {
 
 
                     // イベント情報修正
+                    document.getElementById("inputRecruit").value       = data.recruit;
                     const firstDay = data.first_day.split(/-/);
                     const endDay = data.end_day.split(/-/);
-                    document.getElementById("inputFirstYear").value  = firstDay[0];
-                    document.getElementById("inputFirstMonth").value = firstDay[1];
-                    document.getElementById("inputFirstDay").value   = firstDay[2];                    
-                    document.getElementById("inputEndYear").value    = endDay[0];
-                    document.getElementById("inputEndMonth").value   = endDay[1];
-                    document.getElementById("inputEndDay").value     = endDay[2];
-                    document.getElementById("inputShiftUrl").value   = data.shift_url;
+                    document.getElementById("inputFirstYear").value     = firstDay[0];
+                    document.getElementById("inputFirstMonth").value    = firstDay[1];
+                    document.getElementById("inputFirstDay").value      = firstDay[2];                    
+                    document.getElementById("inputEndYear").value       = endDay[0];
+                    document.getElementById("inputEndMonth").value      = endDay[1];
+                    document.getElementById("inputEndDay").value        = endDay[2];
+                    document.getElementById("inputTimeS").value         = data.start_time;
+                    document.getElementById("inputTimeE").value         = data.end_time;
+                    document.getElementById("inputShiftUrl").value      = data.shift_url;
 
 
                     // 勤怠情報・打刻情報
@@ -1005,10 +988,13 @@ function opDB(op, paramDB) {
 
         case 'registerEvent':
             var param = "function=" + "register_event"
+                + "&recruit="       + encodeURIComponent(paramDB.recruit)
                 + "&event="         + encodeURIComponent(paramDB.eventName)
                 + "&pass="          + encodeURIComponent(paramDB.pass)
                 + "&firstDay="      + encodeURIComponent(paramDB.firstDay)
                 + "&endDay="        + encodeURIComponent(paramDB.endDay)
+                + "&start_time="    + encodeURIComponent(paramDB.start_time)
+                + "&end_time="      + encodeURIComponent(paramDB.end_time)
                 + "&shiftUrl="      + encodeURIComponent(paramDB.shiftUrl)
                 + "&staffList="     + encodeURIComponent(paramDB.staffList)
             ;
@@ -1031,10 +1017,13 @@ function opDB(op, paramDB) {
 
         case 'updateEvent':
             var param = "function=" + "update_event"
+                + "&recruit="       + encodeURIComponent(paramDB.recruit)
                 + "&event="         + encodeURIComponent(paramDB.eventName)
                 + "&pass="          + encodeURIComponent(paramDB.pass)
                 + "&firstDay="      + encodeURIComponent(paramDB.firstDay)
                 + "&endDay="        + encodeURIComponent(paramDB.endDay)
+                + "&start_time="    + encodeURIComponent(paramDB.start_time)
+                + "&end_time="      + encodeURIComponent(paramDB.end_time)
                 + "&shiftUrl="      + encodeURIComponent(paramDB.shiftUrl)
                 + "&staffList="     + encodeURIComponent(paramDB.staffList)
             ;

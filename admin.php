@@ -41,9 +41,6 @@
             
             <!-- メニュー -->
             <div id="menuBar">
-                <div id="network">
-                    <p id="networkStatus"></p>
-                </div>
                 <button type="button" id="adminLogout">ログアウト</button>
             </div>
 
@@ -77,6 +74,15 @@
                 <dl>
                     <dt class="borderTop topLeft">項目</dt>
                     <dd class="borderTop topRight">内容</dd>
+
+                    <dt>募集状況</dt>
+                    <dd>
+                        <p hidden id="recruit"></p>
+                        <select id="inputRecruit">
+                            <option value="募集中">募集中</option>
+                            <option value="募集終了">募集終了</option>
+                        </select>
+                    </dd>
 
                     <dt>イベント名</dt>
                     <dd>
@@ -152,6 +158,32 @@
                         </div>
                     </dd>
 
+                    <dt>営業時間</dt>
+                    <dd>
+                        <p hidden id="time"></p>
+
+                        <div id="inputTimeArea">
+                            <select id="inputTimeS">
+                                <?php for ($h = 0; $h <= 23; $h ++) : ?>
+                                    <?php for ($m = 0; $m <= 45; $m += 15) : ?>
+                                        <?php $m = sprintf('%02d', $m) ?>
+                                        <option value="<?php echo $h . ':' . $m ?>"><?php echo $h . ':' . $m ?></option>
+                                    <?php endfor; ?>
+                                <?php endfor; ?>
+                            </select>
+
+                            <p class="separator">～</p>
+
+                            <select id="inputTimeE">
+                                <?php for ($h = 0; $h <= 23; $h ++) : ?>
+                                    <?php for ($m = 0; $m <= 45; $m += 15) : ?>
+                                        <?php $m = sprintf('%02d', $m) ?>
+                                        <option value="<?php echo $h . ':' . $m ?>"><?php echo $h . ':' . $m ?></option>
+                                    <?php endfor; ?>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                    </dd>
 
                     <dt>シフトURL</dt>
                     <dd>
