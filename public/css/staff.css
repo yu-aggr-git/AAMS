@@ -75,6 +75,7 @@ html::-webkit-scrollbar {
         border-radius       : 100vh;
         font-size           : 2vmin;
         text-align          : center;
+        text-align-last     : center;
         cursor              : pointer;
         outline             : none;
         -webkit-appearance  : none;
@@ -231,6 +232,9 @@ html::-webkit-scrollbar {
     #staffEventInfoArea > table #staffName,
     #staffEventInfoArea > table #payslip {
         text-align  : start;
+    }
+    #staffEventInfoArea > table #payslip > a {
+        word-break : break-all;
     }
     #staffEventInfoArea > table #firstDay,
     #staffEventInfoArea > table #endDay,
@@ -509,6 +513,7 @@ html::-webkit-scrollbar {
         border-radius       : 100vh;
         font-size           : 2vmin;
         text-align          : center;
+        text-align-last     : center;
         cursor              : pointer;
         outline             : none;
         -webkit-appearance  : none;

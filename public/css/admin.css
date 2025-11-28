@@ -117,6 +117,7 @@ html::-webkit-scrollbar {
         font-size           : 2vmin;
         font-weight         : bold;
         text-align          : center;
+        text-align-last     : center;
         cursor              : pointer;
         outline             : none;
         -webkit-appearance  : none;
@@ -261,14 +262,16 @@ html::-webkit-scrollbar {
     #eventInfoArea > dl > dd > #inputFirstDayArea > select,
     #eventInfoArea > dl > dd > #inputEndDayArea > select,
     #eventInfoArea > dl > dd > #inputTimeArea > select {
-        width       : 25%;
-        margin      : 0 1vmin;
-        text-align  : center;
+        width           : 25%;
+        margin          : 0 1vmin;
+        text-align      : center;
+        text-align-last : center;
     }
     #eventInfoArea > dl > dd > #inputRecruit {
-        width       : 40%;
-        margin      : 0 1vmin;
-        text-align  : center;
+        width           : 40%;
+        margin          : 0 1vmin;
+        text-align      : center;
+        text-align-last : center;
     }
     #eventInfoArea > dl > dd textarea {
         height          : 15vmin;
@@ -425,6 +428,7 @@ html::-webkit-scrollbar {
         font-size           : 2vmin;
         font-weight         : bold;
         text-align          : left;
+        text-align-last     : left;
         cursor              : pointer;
         outline             : none;
         -webkit-appearance  : none;
@@ -520,6 +524,7 @@ html::-webkit-scrollbar {
         border-radius       : 100vh;
         font-size           : 2vmin;
         text-align          : center;
+        text-align-last     : center;
         cursor              : pointer;
         outline             : none;
         -webkit-appearance  : none;

@@ -20,6 +20,7 @@
     border-radius       : 100vh;
     font-size           : 2vmin;
     text-align          : center;
+    text-align-last     : center;
     cursor              : pointer;
     outline             : none;
     -webkit-appearance  : none;
@@ -103,6 +104,7 @@
     font-size           : 2vmin;
     font-weight         : bold;
     text-align          : center;
+    text-align-last     : center;
     cursor              : pointer;
     outline             : none;
     -webkit-appearance  : none;
@@ -164,6 +166,7 @@
     border-radius       : 100vh 0 0 100vh;
     font-size           : 2vmin;
     text-align          : center;
+    text-align-last     : center;
     cursor              : pointer;
     outline             : none;
     -webkit-appearance  : none;
@@ -265,6 +268,7 @@
     font-size           : 2vmin;
     font-weight         : bold;
     text-align          : center;
+    text-align-last     : center;
     cursor              : pointer;
     outline             : none;
     -webkit-appearance  : none;
@@ -301,6 +305,7 @@
     border-radius       : 100vh;
     font-size           : 2vmin;
     text-align          : center;
+    text-align-last     : center;
     cursor              : pointer;
     outline             : none;
     -webkit-appearance  : none;

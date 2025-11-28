@@ -5,6 +5,7 @@ body, div, p, img {
   padding   : 0;
 }
 
+select,
 button {
   color: #000;
 }

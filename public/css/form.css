@@ -64,6 +64,7 @@ html::-webkit-scrollbar {
         border-radius       : 100vh;
         font-size           : 2vmin;
         text-align          : center;
+        text-align-last     : center;
         cursor              : pointer;
         outline             : none;
         -webkit-appearance  : none;
@@ -139,9 +140,10 @@ html::-webkit-scrollbar {
         align-items     : center;
     }
     #applicationInfoInputArea > dl > dd > #inputBirthdayArea > select {
-        width       : 25%;
-        margin      : 0 1vmin;
-        text-align  : center;
+        width           : 25%;
+        margin          : 0 1vmin;
+        text-align      : center;
+        text-align-last : center;
     }
     #applicationInfoInputArea > dl > .borderTop {
         background  : #ececec;
@@ -181,8 +183,9 @@ html::-webkit-scrollbar {
         text-align  : center;
     }
     #applicationInfoInputArea > dl > #availableInputArea > div > select {
-        width       : 25%;
-        text-align  : center;
+        width           : 25%;
+        text-align      : center;
+        text-align-last : center;
     }
     #applicationInfoInputArea > #buttonArea {
         display         : flex;
