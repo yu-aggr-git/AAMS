@@ -100,7 +100,7 @@ html::-webkit-scrollbar {
         border          : 0.1vmin solid #666; 
         border-top      : none;
         font-size       : 1.5vmin;
-        overflow-wrap   : break-word;
+        overflow-wrap   : anywhere;
     }
     #applicationInfoInputArea > dl > dt {
         width       : 30%;
@@ -112,6 +112,9 @@ html::-webkit-scrollbar {
         display         : flex;
         justify-content : center;
         align-items     : center; 
+    }
+    #applicationInfoInputArea > dl > dd > p {
+        overflow-wrap   : anywhere;
     }
     #applicationInfoInputArea > dl > dd input,
     #applicationInfoInputArea > dl > dd select,

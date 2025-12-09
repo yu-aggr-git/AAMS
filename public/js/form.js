@@ -52,12 +52,12 @@ function eventSelect() {
             document.getElementById("applicationInfoInputArea").style.display   = 'flex';
             document.getElementById("eventSelectArea").style.display            = 'none';
             document.getElementById("eventName").innerText                      = selectEventName;
-            document.getElementById("mail").innerText                           = inputMail;
+            document.getElementById("mail").innerText                           = inputMail.trim();
 
             // 応募情報の取得
             var paramDB = {
                 'event' : selectEventName,
-                'mail'  : inputMail
+                'mail'  : inputMail.trim()
             };
             opDB('getApplicationList', paramDB);
         }
@@ -70,7 +70,7 @@ function registerApplication() {
     document.getElementById("applicationInfotMsg").innerText = '';
 
     const eventName             = document.getElementById("eventName").textContent;
-    const mail                  = document.getElementById("mail").textContent;
+    const mail                  = document.getElementById("mail").textContent.trim();
     const inputName             = document.getElementById("inputName").value;
     const inputBirthday         = 
         document.getElementById("inputBirthdayYear").value
@@ -307,12 +307,14 @@ function opDB(op, paramDB) {
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
 
-                    const application = data.application;
+                    // 写真フォーム
                     const form_url = data.form['url'] 
                         + '&' + data.form['event']  + '=' + encodeURI(paramDB['event'])
                         + '&' + data.form['mail']   + '=' + encodeURI(paramDB['mail'])
                     ;
+                    document.getElementById("photoUrl").href            = form_url;
 
+                    const application = data.application;
                     if (application) {
                         // 応募済み
                         const availableA = application.available.split(/,/);
@@ -330,11 +332,16 @@ function opDB(op, paramDB) {
                         document.getElementById("available").innerHTML      = availableText;
                         document.getElementById("memo").innerText           = application.memo;
                         document.getElementById("platform").innerText       = application.platform;
-                        document.getElementById("photoUrl").href            = form_url;
                         document.getElementById("applicationDt").innerText  = application.updated_dt;
                         document.getElementById("inputText").innerText      = "下記の内容で応募登録されています。";
 
                         dispConfirm();
+
+                        // 編集ボタンの制限
+                        var statusOption = ['採用', '採用通知済み', '辞退', '不通', '追加済み', '無断蒸発'];
+                        if (statusOption.includes(application.status)) {
+                            document.getElementById("editApplicationInfo").style.display  = 'none';
+                        }
                     } else {
                         dispInput();
                     }

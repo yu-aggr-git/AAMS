@@ -143,17 +143,23 @@
                     <dt>応募元</dt>
                     <dd>
                         <p hidden id="platform"></p>
-                        <input hidden type="text"id="inputPlatform" list="platformList" placeholder="テキスト入力 or 選択">
+                        <input hidden type="text" id="inputPlatform" list="platformList" placeholder="テキスト入力 or 選択">
                         <datalist id="platformList">
                             <option value="Indeed">
                             <option value="Airワーク">
                             <option value="LINEの案内">
                             <option value="AAMSのお知らせ">
+                            <option value="経験者（※前回参加イベント入力）">
                             <option value="紹介（※紹介者の名前入力）">
                         </datalist>
                     </dd>
 
-                    <dt>顔写真</dt>
+                    <dt>
+                        顔写真<br>
+                        <br>
+                        ※弊社イベントの<br>
+                        　経験者は再提出不要
+                    </dt>
                     <dd id="photo">
                         <a id="photoUrl" href="" target="_blank">写真送信フォーム</a>
                         <p>
