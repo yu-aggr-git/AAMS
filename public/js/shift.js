@@ -157,7 +157,7 @@ function checkAdmin() {
         document.getElementById("eventInfoArea").style.display   = 'flex';
         
         // イベント取得
-        opDB('getEventList');
+        opDB('getEventListShift');
     } else {
         const url = new URL(window.location.href);
         const params = url.searchParams;
@@ -192,7 +192,7 @@ function login(id) {
             document.body.style.overflow                        = 'hidden';
 
             // イベントリストの取得
-            opDB('getEventList', null);
+            opDB('getEventListShift', null);
 
             document.getElementById("sendStaffLogin").onclick = function() {
                 var inputStaffEventName = document.getElementById("staffEventName").value;
@@ -1011,8 +1011,8 @@ function opDB(op, paramDB) {
             }
             break;
 
-        case 'getEventList':
-            var param   = "function=" + "get_event_list";
+        case 'getEventListShift':
+            var param   = "function=" + "get_event_list_shift";
             xmlhttp.onreadystatechange = function() {
 
                 // イベント選択

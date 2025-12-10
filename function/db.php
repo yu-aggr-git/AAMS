@@ -95,6 +95,10 @@
                 get_event_list_recruit($dbh);
                 break;
 
+            case 'get_event_list_shift' :
+                get_event_list_shift($dbh);
+                break;                
+
             case 'register_event' :
                 register_event($dbh, $_POST);
                 break;
@@ -789,6 +793,26 @@
             SELECT event
             FROM event
             WHERE recruit = '募集中'
+            ORDER BY first_day desc 
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute();
+
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData[] = $row['event'];
+        }
+
+        $json = json_encode($employeeData);
+        echo $json;
+    }
+
+    // ────イベント：リスト取得（シフト）─────────────────────────────
+    function get_event_list_shift($dbh) {
+        $query = "
+            SELECT event
+            FROM event
+            WHERE shift_url LIKE '%shift.php%'
             ORDER BY first_day desc 
         ";
 
