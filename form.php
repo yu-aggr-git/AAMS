@@ -149,7 +149,6 @@
                             <option value="Airワーク">
                             <option value="LINEの案内">
                             <option value="AAMSのお知らせ">
-                            <option value="経験者（※前回参加イベント入力）">
                             <option value="紹介（※紹介者の名前入力）">
                         </datalist>
                     </dd>

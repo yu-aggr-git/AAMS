@@ -42,24 +42,18 @@ function eventSelect() {
             // メールバリデーション
             document.getElementById("eventSelectMsg").innerText = 'メールアドレスは半角かつ正しい形式で入力してください。';
         } else {
-            // イベント情報の取得
-            var paramDB = {
-                'event' : selectEventName
-            };
-            opDB('getEvent', paramDB);
-
             // 表示切替
             document.getElementById("applicationInfoInputArea").style.display   = 'flex';
             document.getElementById("eventSelectArea").style.display            = 'none';
             document.getElementById("eventName").innerText                      = selectEventName;
             document.getElementById("mail").innerText                           = inputMail.trim();
-
-            // 応募情報の取得
+            
+            // イベント情報の取得
             var paramDB = {
                 'event' : selectEventName,
-                'mail'  : inputMail.trim()
+                'mail'  : inputMail
             };
-            opDB('getApplicationList', paramDB);
+            opDB('getEvent', paramDB);
         }
     }
 }
@@ -293,6 +287,13 @@ function opDB(op, paramDB) {
                         div.style.display = "none";
                         availableInputArea.appendChild(div);
                     }
+
+                    // 応募情報の取得
+                    var nextParam = {
+                        'event' : paramDB['event'],
+                        'mail'  : paramDB['mail'].trim()
+                    };
+                    opDB('getApplicationList', nextParam);
                 }
             }
             break;
@@ -344,6 +345,18 @@ function opDB(op, paramDB) {
                         }
                     } else {
                         dispInput();
+
+                        // 応募フォーム
+                        const url = new URL(window.location.href);
+                        const params = url.searchParams;
+                        if (params.get('platform')) {
+                            console.log(0);
+                            document.getElementById("platform").innerText       = params.get('platform');                            
+                            document.getElementById("platform").style.display   = 'block';
+
+                            document.getElementById("inputPlatform").value          = params.get('platform');
+                            document.getElementById("inputPlatform").style.display  = 'none';
+                        }
                     }
                 }
             }
