@@ -50,8 +50,14 @@ function online() {
         location.assign('form.php');
     }
 
+    // 画面遷移：シフト
+    document.getElementById("redirectShift").onclick = function() {
+        location.assign('shift.php');
+    }
+
     // 画面遷移：管理者
     document.getElementById("redirectAdmin").onclick = function() {
         location.assign('admin.php');
     }
+
 }

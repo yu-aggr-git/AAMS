@@ -27,6 +27,7 @@
                 <button type="button" id="redirectStamp">打刻画面</button>
                 <button type="button" id="redirectNomonomo">のものも！</button>
                 <button type="button" id="redirectForm">応募フォーム</button>
+                <button type="button" id="redirectShift">シフト</button>
                 <button type="button" id="redirectAdmin">管理者</button>
             </div>
         </div>

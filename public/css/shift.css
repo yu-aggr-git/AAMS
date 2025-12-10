@@ -1,0 +1,982 @@
+@charset "UTF-8";
+
+
+#main {
+    margin      : 5vmin 0 10vmin 0;
+    overflow-y  : auto;
+}
+
+#main::-webkit-scrollbar,
+html::-webkit-scrollbar,
+dl::-webkit-scrollbar {
+    display: none;
+}
+
+
+#menuBar > #adminLogout {
+    display     : none;
+    font-size   : 1.5vmin;
+    margin-left : auto;
+}
+#menuBar > #displayName {
+    display         : none;
+    background      : #ececec;
+    margin-left     : auto;
+    padding         : 0.3vmin 1vmin;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    font-size       : 1.5vmin;
+    font-weight     : bold;
+    text-align      : center;
+}
+
+button {
+    padding         : 0 1vw;
+    font-size       : 2vmin;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    text-align      : center;
+    cursor          : pointer;
+}
+
+
+/* ───────────────────────────────────────────────────
+   イベント選択
+   ……………………………………………………………………………………………………………………………………… */
+
+    #selectEventArea {
+        display         : none;
+        /* display         : flex; */
+        justify-content : start;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #selectEventArea > div {
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #selectEventArea > div > #selectEvent {
+        background          : #ececec;
+        padding             : 0.5vmin 3vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh 0 0 100vh;
+        font-size           : 2vmin;
+        font-weight         : bold;
+        text-align          : center;
+        text-align-last     : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #selectEventArea > div > #sendSelectEvent {
+        background      : #fff;
+        margin-left     : 1vmin;
+        padding         : 0 1vw;
+        border-radius   : 0 100vh 100vh 0;
+        font-size       : 2vmin;
+        white-space     : nowrap;
+        color           : #000;    
+    }
+
+
+
+/* ───────────────────────────────────────────────────
+   イベント情報
+   ……………………………………………………………………………………………………………………………………… */
+
+   #eventInfoArea {
+        display         : none;
+        margin-top      : 5vmin;
+        /* display         : flex; */
+        justify-content : space-between;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #eventInfoArea > table {
+        width                       : 80%;
+        border-collapse             : separate;
+        border-spacing              : 0;
+        border-radius               : 100vh 0;
+    }
+    #eventInfoArea > table tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #eventInfoArea > table td,
+    #eventInfoArea > table th {
+        margin          : 0;
+        padding         : 1vmin;
+        font-size       : 1.5vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+    }
+    #eventInfoArea > table th {
+        width       : 15%;
+        background  : #ececec;
+        font-weight : normal;
+    }
+    #eventInfoArea > table #eventName {
+        width       : 45%;
+        text-align  : start;
+    }
+    #eventInfoArea > table #firstDay,
+    #eventInfoArea > table #startTime {
+        width       : 15%;
+        border-right: none;
+    }
+    #eventInfoArea > table #separator,
+    #eventInfoArea > table #separator2 {
+        width           : 5%;
+        border-right    : none;
+        border-left     : none;
+    }
+    #eventInfoArea > table #endDay,
+    #eventInfoArea > table #endTime {
+        width       : 15%;
+        border-left : none;
+    }
+
+
+
+/* ───────────────────────────────────────────────────
+   シフトログイン
+   ……………………………………………………………………………………………………………………………………… */
+
+    #shiftLoginArea {
+        display         : none;
+        margin-top      : 5vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #shiftLoginArea > p {
+        margin-bottom  : 3vmin;
+        font-size       : 2vmin;
+        text-align      : center;
+    }
+    #shiftLoginArea > button {
+        background      : #fff;
+        width           : 30vmin;
+        height          : 8vmin;
+        margin          : 1.5vmin 0;
+        padding         : 0;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
+        box-shadow      : 0.3vh 0.3vh 0.5vh rgba(0, 0, 0, 0.6);
+        font-size       : 2vmin;
+        font-weight     : bold;
+        text-align      : center;
+        cursor          : pointer;
+    }
+
+    #modal > #staffLogin {
+        display : none;
+        width   : 80vmin;
+        height  : 70vmin;
+        /* display : flex; */
+    }
+    #modal > #staffLogin > .modalBody {
+        justify-content : space-around;
+    }
+    #modal > #staffLogin > .modalBody > select,
+    #modal > #staffLogin > .modalBody > input {
+        background          : #ececec;
+        margin-bottom       : 2vh;
+        padding             : 0;
+        width               : 80%;
+        height              : 4vh;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        text-align-last     : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #modal > #staffLogin > .modalBody > button {
+        background      : #000;
+        margin-bottom   : 10vmin;
+        padding         : 0 1vw;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
+        font-size       : 2vmin;
+        text-align      : center;
+        color           : #fff;
+        cursor          : pointer;
+    }
+
+    #modal > #adminLogin {
+        display : none;
+        width   : 80vmin;
+        height  : 60vmin;
+        /* display : flex; */
+    }
+    #modal > #adminLogin > .modalBody {
+        justify-content : space-around;
+    }
+    #modal > #adminLogin > .modalBody > input {
+        background          : #ececec;
+        margin-bottom       : 2vh;
+        padding             : 0;
+        width               : 80%;
+        height              : 4vh;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #modal > #adminLogin > .modalBody > button {
+        background      : #000;
+        margin-bottom   : 10vmin;
+        padding         : 0 1vw;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
+        font-size       : 2vmin;
+        text-align      : center;
+        color           : #fff;
+        cursor          : pointer;
+    }
+
+
+
+/* ───────────────────────────────────────────────────
+   項目切換え
+   ……………………………………………………………………………………………………………………………………… */
+
+    #selectItemArea {
+        display         : none;
+        margin-top      : 10vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : center;
+    }
+    #selectItemArea button {
+        background  : #fff;
+        margin      : 0 1vmin;
+    }
+
+
+/* ───────────────────────────────────────────────────
+   応募情報
+   ……………………………………………………………………………………………………………………………………… */
+
+    #formInfoArea {
+        display         : none;
+        margin-top      : 3vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : start; 
+        flex-flow       : column;
+    }
+    #formInfoArea > div {
+        width           : 100%;
+        max-height      : 80vmin;
+        margin-top      : 2vmin;
+        overflow        : auto;
+    }
+    #formInfoArea > div::-webkit-scrollbar {
+        display: none;
+    }
+    #formInfoArea > #formInfoInfoEMenu {
+        /* width           : 40%; */
+        height          : 5vmin;
+        margin-top      : 2vmin;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+    }
+    #formInfoArea > #formInfoInfoEMenu > #formInfoMsg {
+        width           : 70%;
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+    }
+    #formInfoArea > #formInfoInfoEMenu > #formInfoEdit {
+        width           : 30%;
+        display         : flex;
+        justify-content : end;
+        align-items     : center;
+    }
+    #formInfoArea > #formInfoInfoEMenu > #formInfoEdit button {
+        background      : #fff;
+        margin-left     : 1vmin;
+        color           : #000;
+        white-space     : nowrap;
+        border-radius   : 100vh 100vh 100vh 0;
+    }
+    #formInfoArea > #formInfoInfoEMenu > #formInfoEdit #updateFormInfo {
+        background      : #000;
+        color           : #fff;
+    }
+    #formInfoArea > div > table {
+        width           : 100%;
+        border-collapse : separate;
+        border-spacing  : 0;
+        border-radius   : 100vh 0;
+    }
+    #formInfoArea table > tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #formInfoArea td,
+    #formInfoArea th {
+        background      : #fff;
+        width           : 15vmin;
+        margin          : 0;
+        padding         : 0 1.5vmin;
+        font-size       : 2vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+        word-break      : break-all;
+    }
+    #formInfoArea th {
+        background : #ececec;
+    }
+    #formInfoArea .textLeft {
+        text-align: left;
+    }
+    #formInfoArea .rightBorder {
+        border-right: 0.1vmin solid #e1e1e1;
+    }
+    #formInfoArea .leftBorder {
+        border-left: 0.1vmin solid #e1e1e1;
+    }
+    #formInfoArea .sat {
+        background: rgb(240, 240, 255);
+    }
+    #formInfoArea .sun {
+        background: rgb(255, 240, 240);
+    }
+    #formInfoArea #formInfoHeader .sat {
+        color: rgb(0, 0, 120);
+    }
+    #formInfoArea #formInfoHeader .sun {
+        color: rgb(120, 0, 0);
+    }
+    #formInfoArea .completed {
+        background: #ababab;
+    }
+    #formInfoArea .w5 {
+        width: 5vmin;
+    }
+    #formInfoArea .statusP {
+        margin          : 1vmin auto;
+        padding         : 0.5vmin;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
+    }
+    #formInfoArea .statusS {
+        background          : #ececec;
+        width               : 100%;
+        margin              : 1vmin auto;
+        padding             : 0.5vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        text-align-last     : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #formInfoArea .nameB {
+        background      : transparent;
+        width           : 100%;
+        border          : none;
+        border-radius   : 0;
+        text-align      : left;
+    }
+    #formInfoArea .sticky1 {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+        z-index         : 9;
+    }
+    #formInfoArea .sticky2 {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+        z-index         : 7;
+    }
+    #formInfoArea .sticky3 {
+        position        : sticky;
+        top             : 0;
+        z-index         : 8;
+    }
+    #formInfoArea .sticky4 {
+        position        : sticky;
+        top             : 0;
+        left            : 18.2vmin;;
+        z-index         : 7;
+    }
+    #formInfoArea .sticky5 {
+        position        : sticky;
+        top             : 0;
+        left            : 18.2vmin;;
+        z-index         : 9;
+    }
+    
+
+
+
+/* ───────────────────────────────────────────────────
+   応募者詳細
+   ……………………………………………………………………………………………………………………………………… */
+
+    #modal > #formNameInfo {
+        height : 85vmin;
+    }
+    #formNameInfo dl {
+        width           : 70%;
+        height          : 75%;
+        margin          : 3vmin 0;
+        display         : flex;
+        flex-wrap       : wrap;
+        overflow        : auto;
+    }
+    #formNameInfo dl > dt,
+    #formNameInfo dl > dd {
+        margin          : 0;
+        padding         : 1vmin;
+        border          : 0.1vmin solid #666;
+        font-size       : 1.5vmin;
+        overflow-wrap   : anywhere;
+    }
+    #formNameInfo dl > dt {
+        background  : #ececec;
+        width       : 30%;
+        text-align  : center;
+    }
+    #formNameInfo dl > dd {
+        width           : 60%;
+        padding         : 0.5vmin;
+        border-left     : none;
+        display         : flex;
+        justify-content : center;
+        align-items     : center; 
+    }
+
+
+/* ───────────────────────────────────────────────────
+   シフト
+   ……………………………………………………………………………………………………………………………………… */
+
+    #shiftInfoArea {
+        display         : none;
+        margin-top      : 3vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : start; 
+        flex-flow       : column;
+    }
+    #shiftInfoArea > div {
+        width           : 100%;
+        max-height      : 80vmin;
+        margin-top      : 0.5vmin;
+        overflow        : auto;
+    }
+    #shiftInfoArea > div::-webkit-scrollbar {
+        display: none;
+    }
+    #shiftInfoArea > #shiftInfoMenu {
+        height          : 5vmin;
+        margin-top      : 2vmin;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+    }
+    #shiftInfoArea > #shiftInfoMenu > #shiftInfoMsg {
+        width           : 70%;
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+    }
+    #shiftInfoArea > #shiftInfoMenu > #shiftInfoEdit {
+        width           : 30%;
+        display         : flex;
+        justify-content : end;
+        align-items     : center;
+    }
+    #shiftInfoArea > #shiftInfoMenu > #shiftInfoEdit button {
+        background      : #fff;
+        margin-left     : 1vmin;
+        color           : #000;
+        white-space     : nowrap;
+        border-radius   : 100vh 100vh 100vh 0;
+    }
+    #shiftInfoArea > #shiftInfoMenu > #shiftInfoEdit #updateShiftInfo {
+        background      : #000;
+        color           : #fff;
+    }
+    #shiftInfoArea > #shiftUpdatedDt > p {
+        font-size : 2vmin;
+    }
+    #shiftInfoArea > div > table {
+        width           : 100%;
+        border-collapse : separate;
+        border-spacing  : 0;
+        border-radius   : 100vh 0;
+    }
+    #shiftInfoArea table > tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #shiftInfoArea td,
+    #shiftInfoArea th {
+        background      : #fff;
+        width           : 15vmin;
+        margin          : 0;
+        padding         : 0 1.5vmin;
+        font-size       : 2vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+        word-break      : break-all;
+    }
+    #shiftInfoArea th {
+        background : #ececec;
+    }
+    #shiftInfoArea td > input {
+        background          : #ececec;
+        margin              : 1vh 0;
+        padding             : 0;
+        width               : 100%;
+        height              : 3vh;
+        border              : 0.1vmin solid #666;
+        border-radius       : 1.5vmin;
+        font-size           : 2vmin;
+        text-align          : center;
+        text-align-last     : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #shiftInfoArea th > #selectBooth {
+        background          : #fff;
+        width               : 100%;
+        margin              : 1vmin auto;
+        padding             : 0.5vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        text-align-last     : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #shiftInfoArea .nameB,
+    #shiftInfoArea .shiftInfoB {
+        background      : #fff;
+        width           : 100%;
+        padding         : 0;
+        border          : none;
+        border-radius   : 0;
+        text-align      : left;
+    }
+    #shiftInfoArea .shiftInfoB {
+        background      : transparent;
+        text-align      : center;
+        font-weight     : bold;
+    }
+    #shiftInfoArea .textLeft {
+        text-align: left;
+    }
+    #shiftInfoArea .rightBorder {
+        border-right: 0.1vmin solid #e1e1e1;
+    }
+    #shiftInfoArea .leftBorder {
+        border-left: 0.1vmin solid #e1e1e1;
+    }
+    #shiftInfoArea .bottomBorder {
+        border-bottom: 0.1vmin solid #e1e1e1;
+    }
+    #shiftInfoArea .topBorder {
+        border-top: 0.1vmin solid #e1e1e1;
+    }
+    #shiftInfoArea .sat {
+        background: rgb(240, 240, 255);
+    }
+    #shiftInfoArea .sun {
+        background: rgb(255, 240, 240);
+    }
+    #shiftInfoArea #shiftInfoHeader .sat > .shiftInfoB {
+        color: rgb(0, 0, 120);
+    }
+    #shiftInfoArea #shiftInfoHeader .sun > .shiftInfoB {
+        color: rgb(120, 0, 0);
+    }
+    #shiftInfoArea .sticky1 {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+        z-index         : 9;
+    }
+    #shiftInfoArea .sticky2 {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+        z-index         : 7;
+    }
+    #shiftInfoArea .sticky3 {
+        position        : sticky;
+        top             : 0;
+        z-index         : 8;
+    }
+    #shiftInfoArea .sticky4 {
+        position        : sticky;
+        top             : 0;
+        left            : 18.2vmin;
+        z-index         : 7;
+    }
+    #shiftInfoArea .sticky5 {
+        position        : sticky;
+        top             : 0;
+        left            : 18.2vmin;
+        z-index         : 9;
+    }
+    #shiftInfoArea .sticky6 {
+        position        : sticky;
+        top             : 5.4vmin;
+        left            : 0;
+        z-index         : 8;
+    }
+    #shiftInfoArea .sticky7 {
+        position        : sticky;
+        top             : 8.45vmin;
+        left            : 0;
+        z-index         : 8;
+    }
+    #shiftInfoArea .sticky8 {
+        position        : sticky;
+        top             : 11.5vmin;
+        left            : 0;
+        z-index         : 8;
+    }
+    #shiftInfoArea > #addStaff {
+        display         : none;
+        margin-top      : 5vmin;
+        overflow        : visible;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : start;
+        flex-flow       : column;
+        flex-wrap       : wrap;
+    }
+    #shiftInfoArea > #addStaff > #sendAddStaff {
+        background      : #000;
+        margin-left     : 55vmin;
+        color           : #fff;
+    }
+    #shiftInfoArea > #addStaff > p {
+        width           : 100%;
+        font-size       : 2vmin;
+    }
+    #shiftInfoArea dl {
+        width       : 60vmin;
+        margin      : 1.5vmin 0 1.5vmin 3vmin;
+        display     : flex;
+        flex-wrap   : wrap;
+    }
+    #shiftInfoArea dl > dt,
+    #shiftInfoArea dl > dd {
+        margin          : 0;
+        padding         : 1vmin;
+        border          : 0.1vmin solid #666;
+        font-size       : 2vmin;
+        overflow-wrap   : anywhere;
+    }
+    #shiftInfoArea dl > dt {
+        background  : #ececec;
+        width       : 20%;
+        font-weight : bold;
+        text-align  : center;
+    }
+    #shiftInfoArea dl > dd {
+        width           : 70%;
+        padding         : 0.5vmin;
+        border-left     : none;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #shiftInfoArea dl > dd > input {
+        background          : #ececec;
+        margin              : 1vmin 0;
+        padding             : 0;
+        width               : 80%;
+        height              : 4vh;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        text-align-last     : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+
+
+
+/* ───────────────────────────────────────────────────
+   シフト1日詳細
+   ……………………………………………………………………………………………………………………………………… */
+
+    #modal > #shiftDayInfo {
+        height : 85vmin;
+    }
+    #shiftDayInfo > .modalBody > div {
+        width           : 90%;
+        max-height      : 65vmin;
+        margin-top      : 2vmin;
+        overflow        : auto;
+    }
+    #shiftDayInfo > .modalBody > div::-webkit-scrollbar {
+        display: none;
+    }
+    #shiftDayInfo > .modalBody > div > table {
+        width           : 100%;
+        border-collapse : separate;
+        border-spacing  : 0;
+        border-radius   : 100vh 0;
+    }
+    #shiftDayInfo table > tbody {
+        max-width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #shiftDayInfo td,
+    #shiftDayInfo th {
+        background      : #fff;
+        width           : 3vmin;
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+        white-space     : nowrap;
+    }
+    #shiftDayInfo th {
+        background  : #ececec;
+    }
+    #shiftDayInfo .sticky1 {
+        width           : 10vmin;
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+        z-index         : 9;
+    }
+    #shiftDayInfo .sticky2 {
+        position        : sticky;
+        top             : 0;
+        z-index         : 7;
+    }
+    #shiftDayInfo .sticky3 {
+        width           : 10vmin;
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+        z-index         : 8;
+    }
+
+
+
+/* ───────────────────────────────────────────────────
+   シフト変更希望
+   ……………………………………………………………………………………………………………………………………… */
+
+    #shiftChangeInfoArea {
+        display         : none;
+        margin-top      : 3vmin;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : start; 
+        flex-flow       : column;
+    }
+    #shiftChangeInfoArea > div {
+        width           : 100%;
+        max-height      : 80vmin;
+        margin-top      : 2vmin;
+        overflow        : auto;
+    }
+    #shiftChangeInfoArea > div::-webkit-scrollbar {
+        display: none;
+    }
+    #shiftChangeInfoArea > #shiftChangeInfoMenu {
+        /* width           : 40%; */
+        height          : 5vmin;
+        margin-top      : 2vmin;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+    }
+    #shiftChangeInfoArea > #shiftChangeInfoMenu > #shiftChangeInfoMsg {
+        width           : 70%;
+        margin          : 0;
+        padding         : 0;
+        font-size       : 2vmin;
+    }
+    #shiftChangeInfoArea > #shiftChangeInfoMenu > #shiftChangeInfoEdit {
+        width           : 30%;
+        display         : flex;
+        justify-content : end;
+        align-items     : center;
+    }
+    #shiftChangeInfoArea > #shiftChangeInfoMenu > #shiftChangeInfoEdit button {
+        background      : #fff;
+        margin-left     : 1vmin;
+        color           : #000;
+        white-space     : nowrap;
+        border-radius   : 100vh 100vh 100vh 0;
+    }
+    #shiftChangeInfoArea > #shiftChangeInfoMenu > #shiftChangeInfoEdit #updateFormInfo {
+        background      : #000;
+        color           : #fff;
+    }
+    #shiftChangeInfoArea > div > table {
+        width           : 100%;
+        border-collapse : separate;
+        border-spacing  : 0;
+        border-radius   : 100vh 0;
+    }
+    #shiftChangeInfoArea table > tbody {
+        width        : 100%;
+        display      : table;
+        table-layout : fixed;
+    }
+    #shiftChangeInfoArea td,
+    #shiftChangeInfoArea th {
+        background      : #fff;
+        width           : 15vmin;
+        margin          : 0;
+        padding         : 0 1.5vmin;
+        font-size       : 2vmin;
+        text-align      : center;
+        border          : 0.1vmin solid #666;
+        border-collapse : collapse;
+        word-break      : break-all;
+    }
+    #shiftChangeInfoArea th {
+        background : #ececec;
+    }
+    #shiftChangeInfoArea td > button {
+        margin          : 1vmin;
+    }
+    #shiftChangeInfoArea .completed {
+        background: #ababab;
+    }
+    #shiftChangeInfoArea .sticky1 {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+        z-index         : 9;
+    }
+    #shiftChangeInfoArea .sticky2 {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+        z-index         : 7;
+    }
+    #shiftChangeInfoArea .sticky3 {
+        position        : sticky;
+        top             : 0;
+        z-index         : 8;
+    }
+    #shiftChangeInfoArea .sticky4 {
+        position        : sticky;
+        top             : 0;
+        left            : 18.2vmin;;
+        z-index         : 7;
+    }
+    #shiftChangeInfoArea .sticky5 {
+        position        : sticky;
+        top             : 0;
+        left            : 18.2vmin;;
+        z-index         : 9;
+    }
+    #shiftChangeInfoArea > #shiftChangeInfoRequest,
+    #shiftChangeInfoArea > #availableRequest {
+        display         : none;
+        margin-bottom   : 2vmin;
+        overflow        : visible;
+        /* display         : flex; */
+        justify-content : left;
+        align-items     : center;
+        flex-wrap       : wrap;
+    }
+    #shiftChangeInfoArea > #shiftChangeInfoRequest > #sendShiftChangeInfoRequest,
+    #shiftChangeInfoArea > #availableRequest > #sendAvailableRequest {
+        background      : #000;
+        margin-left     : 3vmin;
+        color           : #fff;
+    }
+    #shiftChangeInfoArea > #shiftChangeInfoRequest > p,
+    #shiftChangeInfoArea > #availableRequest > p {
+        width           : 100%;
+        font-size       : 2vmin;
+    }
+    #shiftChangeInfoArea dl {
+        margin  : 1.5vmin 0 1.5vmin 3vmin;
+        display : flex;
+    }
+    #shiftChangeInfoArea dl > dt,
+    #shiftChangeInfoArea dl > dd {
+        margin          : 0;
+        padding         : 1vmin;
+        border          : 0.1vmin solid #666;
+        font-size       : 2vmin;
+        overflow-wrap   : anywhere;
+    }
+    #shiftChangeInfoArea dl > dt {
+        background  : #ececec;
+        width       : 10vmin;
+        font-weight : bold;
+        text-align  : center;
+    }
+    #shiftChangeInfoArea dl > dd {
+        width           : auto;
+        padding         : 0.5vmin;
+        border-left     : none;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #shiftChangeInfoArea dl > dd > select {
+        background          : #fff;
+        width               : 100%;
+        padding             : 0.5vmin;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        text-align-last     : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none; 
+    }
+    #shiftChangeInfoArea dl > dd > #selectShiftDay,
+    #shiftChangeInfoArea dl > dd > #selectAvailableDay {
+        padding             : 0.5vmin 1vmin;
+        text-align          : left;
+        text-align-last     : left; 
+    }

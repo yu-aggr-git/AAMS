@@ -8,6 +8,8 @@
         $dbh->beginTransaction();
 
         switch ($function) {
+
+            // 勤怠情報
             case 'get_work_report' :
                 get_work_report($dbh, $_POST);
                 break;
@@ -21,7 +23,7 @@
                 break;
 
 
-
+            // スタッフリスト
             case 'check_staff_list' :
                 check_staff_list($dbh, $_POST);
                 break;
@@ -29,30 +31,22 @@
             case 'get_staff_list' :
                 get_staff_list($dbh, $_POST);
                 break;
+            
+            case 'get_staff_list_shift' :
+                get_staff_list_shift($dbh, $_POST);
+                break;
                 
             case 'register_staff_list' :
                 register_staff_list($dbh, $_POST);
-                break;   
+                break;
 
-
+            case 'register_staff_list_add' :
+                register_staff_list_add($dbh, $_POST);
+                break;
 
             case 'check_login_event' :
                 check_login_event($dbh, $_POST);
                 break;
-
-            case 'get_event' :
-                get_event($dbh, $_POST);
-                break;
-
-            case 'get_event_list' :
-                get_event_list($dbh);
-                break;
-
-            case 'get_event_list_recruit' :
-                get_event_list_recruit($dbh);
-                break;                
-
-
 
             case 'get_staff_list_event' :
                 get_staff_list_event($dbh, $_POST);
@@ -82,7 +76,24 @@
                 update_staff_list_payslip($dbh, $_POST);
                 break;
 
+            case 'update_staff_list_shift' :
+                update_staff_list_shift($dbh, $_POST);
+                break;
+                
 
+
+            // イベント
+            case 'get_event' :
+                get_event($dbh, $_POST);
+                break;
+
+            case 'get_event_list' :
+                get_event_list($dbh);
+                break;
+
+            case 'get_event_list_recruit' :
+                get_event_list_recruit($dbh);
+                break;
 
             case 'register_event' :
                 register_event($dbh, $_POST);
@@ -97,7 +108,7 @@
                 break;
 
 
-
+            // 勤怠修正情報
             case 'register_work_report_edit' :
                 register_work_report_edit($dbh, $_POST);
                 break;
@@ -111,7 +122,7 @@
                 break;
 
 
-
+            // 
             case 'update_work_report' :
                 update_work_report($dbh, $_POST);
                 break;
@@ -121,7 +132,7 @@
                 break;
 
 
-
+            // お知らせ
             case 'get_news_list' :
                 get_news_list($dbh, $_POST);
                 break;
@@ -135,14 +146,48 @@
                 break;
 
 
-                
+            // 応募リスト
+            case 'get_application_list_all' :
+                get_application_list_all($dbh, $_POST);
+                break;
+
             case 'get_application_list' :
                 get_application_list($dbh, $_POST);
                 break;
 
+            case 'get_application_Info' :
+                get_application_Info($dbh, $_POST);
+                break;
+                
             case 'register_application' :
                 register_application($dbh, $_POST);
                 break;
+
+            case 'update_application_status' :
+                update_application_status($dbh, $_POST);
+                break;
+
+
+            // シフト変更希望
+            case 'get_shift_change_list' :
+                get_shift_change_list($dbh, $_POST);
+                break;
+
+            case 'get_shift_change_list_select' :
+                get_shift_change_list_select($dbh, $_POST);
+                break;
+
+            case 'update_shift_change_list' :
+                update_shift_change_list($dbh, $_POST);
+                break;
+
+            case 'check_shift_change_list' :
+                check_shift_change_list($dbh, $_POST);
+                break;
+            
+            case 'register_shift_change_list' :
+                register_shift_change_list($dbh, $_POST);
+                break;                
         }
 
         $dbh->commit();
@@ -354,6 +399,53 @@
         echo $json;
     }
 
+    // ────スタッフリスト：シフト─────────────────────────────
+    function get_staff_list_shift($dbh, $param) {
+        $query = "
+            SELECT
+                sl.no,
+                sl.name,
+                sl.mail,
+                sl.booth,
+                sl.shift,
+                al.available,
+                e.shift_updated_dt
+            FROM
+                staff_list sl
+            LEFT JOIN
+                application_list al
+                ON  sl.mail = al.mail
+                AND sl.event = al.event
+            LEFT JOIN
+                event e
+                ON sl.event = e.event
+            WHERE
+                    CASE
+                        WHEN 
+                            :booth = 'ALL'
+                        THEN
+                            sl.event = :event
+                        ELSE
+                                sl.event = :event
+                            AND sl.booth = :booth
+                        END
+            ORDER BY sl.no asc
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute([
+            'event' => $param['event'],
+            'booth' => $param['booth']
+        ]);
+
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData[] = $row;
+        }
+
+        $json = json_encode($employeeData);
+        echo $json;
+    }
+
     // ────スタッフリスト：取得（イベント）──────────────────
     function get_staff_list_event($dbh, $param) {
         $query = "
@@ -517,6 +609,41 @@
         $sth2->execute($names);
     }
 
+    // ────スタッフリスト：登録追加─────────────────────────────
+    function register_staff_list_add($dbh, $param) {
+        $query = "
+            INSERT INTO
+                staff_list(event, no, name, mail, birthday)
+            SELECT
+                :event,
+                CASE
+                    WHEN EXISTS (SELECT 1 FROM staff_list sl1 WHERE sl1.event = :event) 
+                    THEN (
+                        SELECT sl2.no 
+                        FROM staff_list sl2 
+                        WHERE sl2.event = :event
+                        ORDER BY sl2.no DESC 
+                        LIMIT 1
+                    ) + 1 
+
+                    ELSE 1
+                END AS newNo,
+                :name,
+                :mail,
+                :birthday
+        ;";
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $count = $sth->execute([
+            'event'         => $param['event'],
+            'name'          => $param['name'],
+            'mail'          => $param['mail'],
+            'birthday'      => $param['birthday'],
+        ]);
+
+        echo $count;
+    }
+
+
     // ────スタッフリスト：更新（給与明細）─────────────────────────────
     function update_staff_list_payslip($dbh, $param) {
 
@@ -543,6 +670,55 @@
                 ]);
             }
         }
+
+        echo $count;
+    }
+
+    // ────スタッフリスト：シフト更新─────────────────────────────
+    function update_staff_list_shift($dbh, $param) {
+
+        // シフトの更新
+        foreach (explode(",", $param['updateList']) as $data) {
+            $dataArray      = explode("|", $data);
+            $name           = $dataArray[0];
+            $booth          = $dataArray[1];
+            $shift          = str_replace("/", ",", $dataArray[2]);
+            
+            if ($data) {
+                $query1 = "
+                    UPDATE
+                        staff_list
+                    SET
+                        shift = :shift,
+                        booth = :booth
+                    WHERE
+                            event   = :event
+                        AND name    = :name
+                ;";
+                $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+                $count = $sth1->execute([
+                    'event' => $param['event'],
+                    'name'  => $name,
+                    'booth'  => $booth,
+                    'shift' => $shift
+                ]);      
+            }
+        }        
+
+        // イベント更新日時の更新
+        $query2 = "
+            UPDATE
+                event
+            SET
+                shift_updated_dt = :shiftUpdatedDt
+            WHERE
+                event = :event
+        ;";
+        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth2->execute([
+            'event'             => $param['event'],
+            'shiftUpdatedDt'    => $param['shiftUpdatedDt']
+        ]);
 
         echo $count;
     }
@@ -1017,6 +1193,33 @@
 
 
 
+    // ────応募リスト：取得─────────────────────────────
+    function get_application_list_all($dbh, $param) {
+        $query = "
+            SELECT *
+            FROM application_list
+            WHERE
+                event = :event
+            ORDER BY 
+                no asc
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute([
+            'event' => $param['event']
+        ]);
+
+        // 結果を配列で取得
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData[] = $row;
+        }
+
+        // PHPの配列をJSON形式のデータに変換
+        $json = json_encode($employeeData);
+
+        echo $json;
+    }
+
     // ────応募リスト：個人取得─────────────────────────────
     function get_application_list($dbh, $param) {
         global $config;
@@ -1045,6 +1248,58 @@
                 'mail'  => $config['photo_form_mail'],
                 'name'  => $config['photo_form_name']
             )
+        );
+
+        $json = json_encode($result);
+        echo $json;
+    }
+
+    // ────応募リスト：個人詳細取得─────────────────────────────
+    function get_application_Info($dbh, $param) {
+        global $config;
+
+        $query = "
+            SELECT 
+                a.*,
+                (
+                    SELECT
+                        GROUP_CONCAT(CONCAT(b.event, ' ： ', b.status))
+                    FROM
+                        application_list b
+                    WHERE
+                        b.mail = :mail
+                    GROUP BY
+                        b.mail
+                ) AS log
+            FROM application_list a
+            WHERE
+                    a.event = :event
+                AND a.mail = :mail
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute([
+            'event' => $param['event'],
+            'mail' => $param['mail']
+        ]);
+
+        // 結果を返却
+        $result = $sth->fetch(PDO::FETCH_ASSOC);
+
+        $platformUrl = "";
+        switch ($result['platform']) {
+            case 'Indeed':
+                $platformUrl = str_replace('replaceWord', mb_substr($result['name'], 0 ,1), $config['indeed_url']);
+                break;
+
+            case 'Airワーク':
+                $platformUrl = str_replace('replaceWord', mb_substr($result['name'], 0 ,1), $config['airwork_url']);
+                break;
+        }
+
+        $result = array(
+            'application'   => $result,
+            'platform_url'  => $platformUrl
         );
 
         $json = json_encode($result);
@@ -1129,6 +1384,378 @@
             'platform'          => $param['platform'],
             'applicationDt'     => $param['applicationDt']
         ]);
+
+        echo $count;
+    }
+
+    // ────応募リスト：ステータス更新─────────────────────────────
+    function update_application_status($dbh, $param) {
+
+        // 応募ステータスの変更
+        $register = [];
+        $delete = []; 
+        foreach (explode(",", $param['updateList']) as $data) {
+            if ($data) {
+                $dataArray      = explode("|", $data);
+                $mail           = $dataArray[0];
+                $statusAfter    = $dataArray[1];
+
+                $query1 = "
+                    UPDATE
+                        application_list
+                    SET
+                        status = :statusAfter
+                    WHERE
+                            event   = :event
+                        AND mail    = :mail
+                ;";
+                $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+                $count = $sth1->execute([
+                    'event'         => $param['event'],
+                    'mail'          => $mail,
+                    'statusAfter'   => $statusAfter
+                ]);
+
+                if ($statusAfter == "追加済み") {
+                    $register[] = $mail;
+                }
+
+                if (in_array($statusAfter, ['不採用', '辞退', '不通', '無断蒸発'], true)) {
+                    $delete[] = $mail;
+                }
+            }
+        }
+
+        // スタッフリストに登録
+        foreach ($register as $mail) {
+            if ($mail) {
+                $query2 = "
+                    INSERT IGNORE INTO
+                        staff_list(event, no, name, mail, birthday, shift)
+                    SELECT
+                        event,
+                        (
+                            SELECT
+                                CASE
+                                    WHEN EXISTS (SELECT 1 FROM staff_list sl1 WHERE sl1.event = :event) 
+                                    THEN (
+                                        SELECT sl2.no 
+                                        FROM staff_list sl2 
+                                        WHERE sl2.event = :event
+                                        ORDER BY sl2.no DESC 
+                                        LIMIT 1
+                                    ) + 1 
+
+                                    ELSE 1
+                                END AS newNo
+                        ),
+                        name,
+                        mail,
+                        birthday,
+                        available
+                    FROM
+                        application_list al
+                    WHERE
+                            al.event   = :event
+                        AND al.mail    = :mail
+                ;";
+                $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+                $sth2->execute([
+                    'event'         => $param['event'],
+                    'mail'          => $mail
+                ]);         
+            }
+        }
+
+
+        // スタッフリストから削除
+        foreach ($delete as $mail) {
+            if ($mail) {
+                $query3 = "
+                    DELETE FROM
+                        staff_list
+                    WHERE
+                            event   = :event
+                        AND mail    = :mail
+                ;";
+                $sth3 = $dbh->prepare($query3, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+                $sth3->execute([
+                    'event'         => $param['event'],
+                    'mail'          => $mail
+                ]);         
+            }
+        }
+
+        echo $count;
+    }
+    
+
+    
+    // ────シフト変更希望：取得─────────────────────────────
+    function get_shift_change_list($dbh, $param) {
+        $query = "
+            SELECT *
+            FROM shift_change_list
+            WHERE
+                CASE
+                    WHEN 
+                        :name = 'ALL'
+                    THEN
+                        event = :event
+                    ELSE
+                            event = :event
+                        AND name = :name
+                    END
+            ORDER BY 
+                request_dt desc
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute([
+            'event' => $param['event'],
+            'name' => $param['name']
+        ]);
+
+        // 結果を配列で取得
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData[] = $row;
+        }
+
+        // PHPの配列をJSON形式のデータに変換
+        $json = json_encode($employeeData);
+
+        echo $json;
+    }
+
+    // ────シフト変更希望：選択肢の取得─────────────────────────────
+    function get_shift_change_list_select($dbh, $param) {
+        $query = "
+            SELECT
+                sl.shift,
+                al.available
+            FROM
+                staff_list sl
+            LEFT JOIN
+                application_list al
+                ON 
+                    sl.mail = al.mail
+                AND
+                    sl.event = al.event
+            WHERE
+                    sl.event = :event
+                AND sl.name = :name
+        ;";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute([
+            'event' => $param['event'],
+            'name' => $param['name']
+        ]);
+
+        // 結果を取得
+        $result = $sth->fetch(PDO::FETCH_ASSOC);
+        $json = json_encode($result);
+        echo $json;
+    }
+
+    // ────シフト変更希望：更新─────────────────────────────
+    function update_shift_change_list($dbh, $param) {
+
+        $query1 = "
+            SELECT
+                sl.shift,
+                al.available,
+                al.mail,
+                e.first_day,
+                e.end_day
+            FROM
+                staff_list sl
+            LEFT JOIN
+                application_list al
+                ON 
+                    sl.mail = al.mail
+                AND
+                    sl.event = al.event
+            LEFT JOIN
+                event e
+                ON 
+                    sl.event = e.event
+            WHERE
+                    sl.event = :event
+                AND sl.name = :name
+        ;";
+        $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth1->execute([
+            'event'         => $param['event'],
+            'name'          => $param['name']
+        ]);
+        $result1 = $sth1->fetch(PDO::FETCH_ASSOC);
+
+
+        // シフト更新値
+        $updateShift = '';
+        if ($result1['shift']) {
+            foreach (explode(",", $result1['shift']) as $shift) {
+
+                if (mb_substr($shift, 0 ,10) == $param['day']) {
+                    $updateShift = $updateShift ? $updateShift . ',' . $param['after'] : $param['after'];
+                } else {
+                    $updateShift = $updateShift ? $updateShift . ',' . $shift : $shift;
+                }
+            }
+        } else {
+            for ($day = $result1['first_day']; $day <= $result1['end_day']; $day = date('Y-m-d', strtotime($day . '+1 day'))) {
+
+                if ($day == $param['day']) {
+                    $updateShift = $updateShift ? $updateShift . ',' . $param['after'] : $param['after'];
+                } else {
+                    $updateShift = $updateShift ? $updateShift . ',' . $day . '_×_×' : $day . '_×_×';                    
+                }
+            }
+        }
+
+
+        // シフト希望更新値
+        $updateAvailable = '';
+        foreach (explode(",", $result1['available']) as $available) {
+            if (mb_substr($available, 0 ,10) == $param['day']) {
+                $updateAvailable = $updateAvailable ? $updateAvailable . ',' . $param['after'] : $param['after'];
+            } else {
+                $updateAvailable = $updateAvailable ? $updateAvailable . ',' . $available : $available;
+            }
+        }
+
+
+        // シフト更新
+        $query2 = "
+            UPDATE
+                staff_list
+            SET
+                shift = :shiftAfter
+            WHERE
+                    event       = :event
+                AND name        = :name
+        ;";
+        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth2->execute([
+            'event'         => $param['event'],
+            'name'          => $param['name'],
+            'shiftAfter'    => $param['statusAfter'] == '承認済' ? $updateShift : $result1['shift']
+        ]);
+
+
+        // 応募情報更新
+        if ($updateAvailable) {
+            $query3 = "
+                UPDATE
+                    application_list
+                SET
+                    available = :availableAfter,
+                    updated_dt = :approvalD
+                WHERE
+                        event       = :event
+                    AND mail        = :mail
+            ;";
+            $sth3 = $dbh->prepare($query3, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+            $sth3->execute([
+                'event'             => $param['event'],
+                'mail'              => $result1['mail'],
+                'availableAfter'    => $param['statusAfter'] == '承認済' ? $updateAvailable : $result1['available'],
+                'approvalD'         => $param['approvalD']
+            ]);
+        }
+
+    
+        // シフト変更希望更新
+        $query4 = "
+            UPDATE
+                shift_change_list
+            SET
+                status      = :statusAfter,
+                approval_d  = :approvalD
+            WHERE
+                    request_dt  = :requestDt
+                AND event       = :event
+                AND name        = :name
+        ;";
+        $sth4 = $dbh->prepare($query4, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $count = $sth4->execute([
+            'requestDt'     => $param['requestDt'],
+            'event'         => $param['event'],
+            'name'          => $param['name'],
+            'statusAfter'   => $param['statusAfter'],
+            'approvalD'     => $param['approvalD'],
+        ]);
+
+        echo $count;
+    }
+
+    // ────シフト変更希望：未承認の取得─────────────────────────────
+    function check_shift_change_list($dbh, $param) {
+        $query = "
+            SELECT count(status) as count
+            FROM shift_change_list
+            WHERE
+                    event = :event
+                AND status = '申請中'
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute([
+            'event' => $param['event']
+        ]);
+        $result = $sth->fetch(PDO::FETCH_ASSOC);
+
+        echo $result['count'];
+    }
+
+        // ────シフト変更希望：登録─────────────────────────────
+    function register_shift_change_list($dbh, $param) {
+
+        $query1 = "
+            INSERT INTO
+                shift_change_list(request_dt, event, name, shift_before, shift_after, status)
+            VALUES
+                (:requestDt, :event, :name, :before, :after, :status)
+        ;";
+        $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $count = $sth1->execute([
+            'requestDt'     => $param['requestDt'],
+            'event'         => $param['event'],
+            'name'          => $param['name'],
+            'before'        => $param['before'],
+            'after'         => $param['after'],
+            'status'        => $param['status'],
+        ]);
+
+
+        if ($param['available']) {
+            $query2 = "
+                UPDATE
+                    application_list al
+                SET
+                    al.available = :availableAfter,
+                    al.updated_dt = :approvalD
+                WHERE
+                        al.event       = :event
+                    AND al.mail        = (
+                        SELECT
+                            sl.mail
+                        FROM
+                            staff_list sl
+                        WHERE
+                                sl.event   = :event
+                            AND sl.name    = :name
+                    )
+            ;";
+            $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+            $sth2->execute([
+                'event'             => $param['event'],
+                'name'              => $param['name'],
+                'availableAfter'    => $param['available'],
+                'approvalD'         => $param['requestDt']
+            ]);
+        }
 
         echo $count;
     }
