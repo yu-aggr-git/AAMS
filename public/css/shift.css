@@ -662,21 +662,21 @@ button {
     #shiftInfoArea .sticky6 {
         position        : sticky;
         height          : 6vmin;
-        top             : 6.3vmin;
+        top             : 6.25vmin;
         left            : 0;
         z-index         : 8;
     }
     #shiftInfoArea .sticky7 {
         position        : sticky;
         height          : 3vmin;
-        top             : 12.5vmin;
+        top             : 12.38vmin;
         left            : 0;
         z-index         : 8;
     }
     #shiftInfoArea .sticky8 {
         position        : sticky;
         height          : 3vmin;
-        top             : 15.8vmin;
+        top             : 15.54vmin;
         left            : 0;
         z-index         : 8;
     }

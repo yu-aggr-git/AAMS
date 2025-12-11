@@ -2024,6 +2024,9 @@ function opDB(op, paramDB) {
                         // console.log(this.response, '登録');
 
                         document.getElementById("addStaffMsg").innerText = '';
+                        document.getElementById("addStaffName").value = '';
+                        document.getElementById("addStaffMail").value = '';
+                        document.getElementById("addStaffBirthday").value = 'yyyymmdd';
 
                         var event = document.getElementById("eventName").innerText;
                         getItem("shiftInfoOpen", event);
