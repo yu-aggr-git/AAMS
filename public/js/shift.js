@@ -1074,10 +1074,8 @@ function opDB(op, paramDB) {
 
                     // シフト
                     const shiftInfoTr = document.getElementById("shiftInfoHeader");
-                    Array.from(shiftInfoTr.querySelectorAll("th")).forEach(function(e) {
-                        if (!e.id) {
-                            e.remove();
-                        }
+                    Array.from(shiftInfoTr.getElementsByClassName("sticky3")).forEach(function(e) {
+                        e.remove();
                     });
 
                 if (this.readyState == 4 && this.status == 200) {
@@ -1111,10 +1109,11 @@ function opDB(op, paramDB) {
                             var shiftInfoTh          = document.createElement("th");
                             shiftInfoTh.colSpan      = "2";
                             shiftInfoTh.className    = "sticky3 " + getDOW(day).dowClass;
+                            shiftInfoTh.id           = day + '_th';
                             var shiftInfoB           = document.createElement("button");
                             shiftInfoB.innerHTML     = day + '<br>' + getDOW(day).dow;
                             shiftInfoB.value         = day;
-                            shiftInfoB.className    = "shiftInfoB";
+                            shiftInfoB.className     = "shiftInfoB";
                             shiftInfoTh.appendChild(shiftInfoB);
                             shiftInfoTr.appendChild(shiftInfoTh);
                         }
@@ -1342,27 +1341,24 @@ function opDB(op, paramDB) {
                     }
                 });
 
-                const totalNum = document.getElementById("totalNum");
-                Array.from(totalNum.querySelectorAll("th")).forEach(function(e) {
-                    e.remove();
-                });
-
-                const explanation1 = document.getElementById("explanation1");
-                Array.from(explanation1.querySelectorAll("th")).forEach(function(e) {
-                    e.remove();
-                });
-                
-                const explanation2 = document.getElementById("explanation2");
-                Array.from(explanation2.querySelectorAll("th")).forEach(function(e) {
-                    e.remove();
-                });
-
                 const selectBooth = document.getElementById("selectBooth");
                 Array.from(selectBooth.querySelectorAll("option")).forEach(function(e) {
                     if (!e.id) {
                         e.remove();
                     }
-                });            
+                });
+
+                const shiftInfoTr = document.getElementById("shiftInfoHeader");
+                Array.from(shiftInfoTr.getElementsByClassName("numP")).forEach(function(e) {
+                    e.remove();
+                });
+                Array.from(shiftInfoTr.getElementsByClassName("numEdit")).forEach(function(e) {
+                    e.remove();
+                });
+                Array.from(shiftInfoTr.getElementsByClassName("textDiv")).forEach(function(e) {
+                    e.remove();
+                });
+
 
                 document.getElementById("shiftInfoMsg").innerText = '';
                 document.getElementById("editShiftInfo").style.display = "block";
@@ -1481,14 +1477,12 @@ function opDB(op, paramDB) {
                                         requiredNumÅ[day] = 0;
                                     }
 
+                                    var dayth = document.getElementById(day + '_th');
+
                                     // 合計人数
-                                    var num         = document.createElement("th");
-                                    num.colSpan     = "2";
-                                    num.className   = "sticky6 " + dowClass;
                                     var numP        = document.createElement("p");
-                                    numP.className  = "shiftDisplay";
+                                    numP.className  = "numP shiftDisplay";
                                     numP.id         = "totalNum_" + day;
-                                    num.appendChild(numP);
 
                                     // 必要人数：編集
                                     var numB              = document.createElement("input");
@@ -1497,26 +1491,30 @@ function opDB(op, paramDB) {
                                     numB.id               = day + '_inputNum';
                                     numB.className        = 'numEdit shiftEdit';
                                     numB.maxLength        = 5;
-                                    num.appendChild(numB);
-                                    totalNum.appendChild(num);
 
                                     // 説明
-                                    var text1 = document.createElement("th");
-                                    var text2 = document.createElement("th");
-                                    var text3 = document.createElement("th");
-                                    var text4 = document.createElement("th");
+                                    var textD       = document.createElement("div");
+                                    textD.className = 'textDiv';
+                                    var text1 = document.createElement("p");
+                                    var text2 = document.createElement("p");
+                                    var text3 = document.createElement("p");
+                                    var text4 = document.createElement("p");
                                     text1.innerText   = '出勤';
                                     text2.innerText   = '退勤';
                                     text3.innerText   = '休憩';
                                     text4.innerText   = '実働';
-                                    text1.className   = "rightBorder bottomBorder sticky7 " + dowClass;
-                                    text2.className   = "leftBorder bottomBorder sticky7 " + dowClass;
-                                    text3.className   = "rightBorder topBorder sticky8 " + dowClass;
-                                    text4.className   = "leftBorder topBorder sticky8 " + dowClass;
-                                    explanation1.appendChild(text1);
-                                    explanation1.appendChild(text2);
-                                    explanation2.appendChild(text3);
-                                    explanation2.appendChild(text4);
+                                    text1.className   = "shiftDisplay rightBorder bottomBorder " + dowClass;
+                                    text2.className   = "shiftDisplay leftBorder bottomBorder " + dowClass;
+                                    text3.className   = "shiftDisplay rightBorder topBorder " + dowClass;
+                                    text4.className   = "shiftDisplay leftBorder topBorder " + dowClass;
+                                    textD.appendChild(text1);
+                                    textD.appendChild(text2);
+                                    textD.appendChild(text3);
+                                    textD.appendChild(text4);
+
+                                    dayth.appendChild(numP);
+                                    dayth.appendChild(numB);
+                                    dayth.appendChild(textD);
                                 }
 
                                 // シフト：開始

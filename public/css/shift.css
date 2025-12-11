@@ -550,7 +550,6 @@ button {
     }
     #shiftInfoArea th {
         background : #ececec;
-    
     }
     #shiftInfoArea th > input,
     #shiftInfoArea td > input {
@@ -583,6 +582,23 @@ button {
         outline             : none;
         -webkit-appearance  : none;
         appearance          : none;
+    }
+    #shiftInfoArea th > div {
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+        flex-wrap       : wrap;
+    }
+    #shiftInfoArea th > div > p {
+        width: 45%;
+    }
+    #shiftInfoArea th > .numP {
+        border-top      : 0.1vmin solid #666;
+        border-bottom   : 0.1vmin solid #666;
+    }
+    #shiftInfoArea th > .numEdit {
+        width   : 50%;
+        margin  : 1vh auto;
     }
     #shiftInfoArea .nameB,
     #shiftInfoArea .shiftInfoB {
@@ -641,7 +657,8 @@ button {
     }
     #shiftInfoArea .sticky3 {
         position        : sticky;
-        height          : 6vmin;
+        /* height          : 6vmin; */
+        padding         : 0;
         top             : 0;
         z-index         : 8;
     }
@@ -658,27 +675,6 @@ button {
         top             : 0;
         left            : 18.15vmin;
         z-index         : 9;
-    }
-    #shiftInfoArea .sticky6 {
-        position        : sticky;
-        height          : 6vmin;
-        top             : 6.25vmin;
-        left            : 0;
-        z-index         : 8;
-    }
-    #shiftInfoArea .sticky7 {
-        position        : sticky;
-        height          : 3vmin;
-        top             : 12.38vmin;
-        left            : 0;
-        z-index         : 8;
-    }
-    #shiftInfoArea .sticky8 {
-        position        : sticky;
-        height          : 3vmin;
-        top             : 15.54vmin;
-        left            : 0;
-        z-index         : 8;
     }
     #shiftInfoArea > #addStaff {
         display         : none;

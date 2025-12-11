@@ -225,17 +225,14 @@
                     <table id="shiftInfoTable">
                         <tbody>
                             <tr id="shiftInfoHeader">
-                                <th rowspan="4" id="shiftInfoHeader1" class="sticky1">氏名</th>
-                                <th rowspan="4" id="shiftInfoHeader2" class="sticky5">
+                                <th id="shiftInfoHeader1" class="sticky1">氏名</th>
+                                <th id="shiftInfoHeader2" class="sticky5">
                                     <p>ブース</p>
                                     <select id="selectBooth">
                                         <option id="allBooth" value="ALL">ALL</option>
                                     </select>
                                 </th>
                             </tr>
-                            <tr id="totalNum"></tr>
-                            <tr id="explanation1"></tr>
-                            <tr id="explanation2"></tr>
                         </tbody>
                     </table>
                 </div>
