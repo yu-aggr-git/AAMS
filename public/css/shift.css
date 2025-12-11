@@ -420,13 +420,13 @@ button {
     #formInfoArea .sticky4 {
         position        : sticky;
         top             : 0;
-        left            : 18.2vmin;;
+        left            : 18.15vmin;
         z-index         : 7;
     }
     #formInfoArea .sticky5 {
         position        : sticky;
         top             : 0;
-        left            : 18.2vmin;;
+        left            : 18.15vmin;
         z-index         : 9;
     }
     
@@ -438,7 +438,7 @@ button {
    ……………………………………………………………………………………………………………………………………… */
 
     #modal > #formNameInfo {
-        height : 85vmin;
+        height : 85vh;
     }
     #formNameInfo dl {
         width           : 70%;
@@ -550,7 +550,9 @@ button {
     }
     #shiftInfoArea th {
         background : #ececec;
+    
     }
+    #shiftInfoArea th > input,
     #shiftInfoArea td > input {
         background          : #ececec;
         margin              : 1vh 0;
@@ -625,54 +627,62 @@ button {
     }
     #shiftInfoArea .sticky1 {
         position        : sticky;
+        width           : 15vmin;
         top             : 0;
         left            : 0;
         z-index         : 9;
     }
     #shiftInfoArea .sticky2 {
         position        : sticky;
+        width           : 15vmin;
         top             : 0;
         left            : 0;
         z-index         : 7;
     }
     #shiftInfoArea .sticky3 {
         position        : sticky;
+        height          : 6vmin;
         top             : 0;
         z-index         : 8;
     }
     #shiftInfoArea .sticky4 {
         position        : sticky;
+        width           : 10vmin;
         top             : 0;
-        left            : 18.2vmin;
+        left            : 18.15vmin;
         z-index         : 7;
     }
     #shiftInfoArea .sticky5 {
         position        : sticky;
+        width           : 10vmin;
         top             : 0;
-        left            : 18.2vmin;
+        left            : 18.15vmin;
         z-index         : 9;
     }
     #shiftInfoArea .sticky6 {
         position        : sticky;
-        top             : 5.4vmin;
+        height          : 6vmin;
+        top             : 6.3vmin;
         left            : 0;
         z-index         : 8;
     }
     #shiftInfoArea .sticky7 {
         position        : sticky;
-        top             : 8.45vmin;
+        height          : 3vmin;
+        top             : 12.5vmin;
         left            : 0;
         z-index         : 8;
     }
     #shiftInfoArea .sticky8 {
         position        : sticky;
-        top             : 11.5vmin;
+        height          : 3vmin;
+        top             : 15.8vmin;
         left            : 0;
         z-index         : 8;
     }
     #shiftInfoArea > #addStaff {
         display         : none;
-        margin-top      : 5vmin;
+        margin-top      : 15vmin;
         overflow        : visible;
         /* display         : flex; */
         justify-content : center;
@@ -682,7 +692,7 @@ button {
     }
     #shiftInfoArea > #addStaff > #sendAddStaff {
         background      : #000;
-        margin-left     : 55vmin;
+        margin-left     : 50vmin;
         color           : #fff;
     }
     #shiftInfoArea > #addStaff > p {
@@ -741,7 +751,7 @@ button {
    ……………………………………………………………………………………………………………………………………… */
 
     #modal > #shiftDayInfo {
-        height : 85vmin;
+        height : 85vh;
     }
     #shiftDayInfo > .modalBody > div {
         width           : 90%;
@@ -904,13 +914,13 @@ button {
     #shiftChangeInfoArea .sticky4 {
         position        : sticky;
         top             : 0;
-        left            : 18.2vmin;;
+        left            : 18.15vmin;
         z-index         : 7;
     }
     #shiftChangeInfoArea .sticky5 {
         position        : sticky;
         top             : 0;
-        left            : 18.2vmin;;
+        left            : 18.15vmin;
         z-index         : 9;
     }
     #shiftChangeInfoArea > #shiftChangeInfoRequest,

@@ -496,6 +496,7 @@ function editShift() {
     if (adminUser) {
         const event = document.getElementById("eventName").innerText;
         let updateShift = [];
+        let updateNum = '';
         document.getElementById("updateShiftInfo").onclick = function() {
 
             // 名前リスト
@@ -510,14 +511,22 @@ function editShift() {
             let emsg = '';
             Array.from(shiftInfoTable.querySelectorAll("input")).forEach(function(e) {
                 var idA = e.id.split(/_/);
-                var no  = idA[0];
+                
+                if (e.className.includes('numEdit')) {
+                    // 人数
+                    var day  = idA[0];
 
-                if (e.className.includes('boothEdit')) {
+                    var num = day + '_' + e.value;
+                    updateNum = updateNum ? updateNum + ',' + num : num;  
+                } else if (e.className.includes('boothEdit')) {
                     // ブース
+                    var no  = idA[0];
+
                     var booth = e.value;
                     updateShift[no] = updateShift[no] + '|' + booth;
                 } else {      
-                    // シフト     
+                    // シフト
+                    var no  = idA[0];
                     var day = idA[1];
                     var time = e.value == '' ? '×' : replaceStr(e.value);
 
@@ -556,6 +565,7 @@ function editShift() {
                     var paramDB = {
                         'event'             : event,
                         'updateList'        : updateShift,
+                        'updateNum'         : updateNum,
                         'shiftUpdatedDt'    : date().yyyymmddhhmmss
                     };
                     opDB('updateStaffListShift', paramDB);
@@ -1367,7 +1377,17 @@ function opDB(op, paramDB) {
                         const firstDay  = document.getElementById("firstDay").innerText.split(/-/);
                         const endDay    = document.getElementById("endDay").innerText.split(/-/);
 
+                        // 更新日時
                         document.getElementById("shiftUpdatedDt").querySelector('span').innerText = data[0].shift_updated_dt;
+
+                        // 必要人数
+                        var requiredNumÅ = [];
+                        if (data[0].required_num) {
+                            (data[0].required_num.split(/,/)).forEach(function(day) {
+                                var dayA = day.split(/_/);
+                                requiredNumÅ[dayA[0]] = dayA[1];
+                            });
+                        }
 
                         let i = 0;
                         let sum = [];
@@ -1403,7 +1423,7 @@ function opDB(op, paramDB) {
                                 boothA.push(staff.booth);
                             }
 
-                            // ブース編集：開始
+                            // ブース：編集
                             var boothS              = document.createElement("input");
                             boothS.value            = staff.booth;
                             boothS.style.display    = 'none';
@@ -1456,13 +1476,28 @@ function opDB(op, paramDB) {
 
                                 if (i == 0) {
                                     sum[day] = 0;
+                                    
+                                    if (!(day in requiredNumÅ)) {
+                                        requiredNumÅ[day] = 0;
+                                    }
 
                                     // 合計人数
                                     var num         = document.createElement("th");
-                                    num.innerText   = 0;
                                     num.colSpan     = "2";
-                                    num.id          = "totalNum_" + day;
                                     num.className   = "sticky6 " + dowClass;
+                                    var numP        = document.createElement("p");
+                                    numP.className  = "shiftDisplay";
+                                    numP.id         = "totalNum_" + day;
+                                    num.appendChild(numP);
+
+                                    // 必要人数：編集
+                                    var numB              = document.createElement("input");
+                                    numB.value            = requiredNumÅ[day];
+                                    numB.style.display    = 'none';
+                                    numB.id               = day + '_inputNum';
+                                    numB.className        = 'numEdit shiftEdit';
+                                    numB.maxLength        = 5;
+                                    num.appendChild(numB);
                                     totalNum.appendChild(num);
 
                                     // 説明
@@ -1599,7 +1634,13 @@ function opDB(op, paramDB) {
 
                         // 合計人数
                         for (let key in sum) {
-                            document.getElementById("totalNum_" + key).innerText = sum[key] + '人';
+                            var clacNum = Number(sum[key]) - Number(requiredNumÅ[key]);
+
+                            document.getElementById("totalNum_" + key).innerHTML = 
+                                '必要:' + requiredNumÅ[key] + '<br>'
+                                + '出:' + sum[key]
+                                + ' 差:' + clacNum
+                            ;
                         }
                     }
                 }
@@ -1610,6 +1651,7 @@ function opDB(op, paramDB) {
             var param   = "function=" + "update_staff_list_shift"
                 + "&event=" + encodeURIComponent(paramDB['event']) 
                 + "&updateList=" + encodeURIComponent(paramDB['updateList'])
+                + "&updateNum="  + encodeURIComponent(paramDB['updateNum'])
                 + "&shiftUpdatedDt=" + encodeURIComponent(paramDB['shiftUpdatedDt'])
             ;
 

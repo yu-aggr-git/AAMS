@@ -413,6 +413,7 @@
                 sl.booth,
                 sl.shift,
                 al.available,
+                e.required_num,
                 e.shift_updated_dt
             FROM
                 staff_list sl
@@ -714,13 +715,15 @@
             UPDATE
                 event
             SET
-                shift_updated_dt = :shiftUpdatedDt
+                shift_updated_dt = :shiftUpdatedDt,
+                required_num = :updateNum
             WHERE
                 event = :event
         ;";
         $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $sth2->execute([
             'event'             => $param['event'],
+            'updateNum'         => $param['updateNum'],
             'shiftUpdatedDt'    => $param['shiftUpdatedDt']
         ]);
 
