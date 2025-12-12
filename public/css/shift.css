@@ -438,7 +438,7 @@ button {
    ……………………………………………………………………………………………………………………………………… */
 
     #modal > #formNameInfo {
-        height : 85vh;
+        height : 70vh;
     }
     #formNameInfo dl {
         width           : 70%;
@@ -541,7 +541,7 @@ button {
         background      : #fff;
         width           : 15vmin;
         margin          : 0;
-        padding         : 0 1.5vmin;
+        padding         : 0 0.5vmin;
         font-size       : 2vmin;
         text-align      : center;
         border          : 0.1vmin solid #666;
@@ -666,14 +666,14 @@ button {
         position        : sticky;
         width           : 10vmin;
         top             : 0;
-        left            : 18.15vmin;
+        left            : 16.15vmin;
         z-index         : 7;
     }
     #shiftInfoArea .sticky5 {
         position        : sticky;
         width           : 10vmin;
         top             : 0;
-        left            : 18.15vmin;
+        left            : 16.15vmin;
         z-index         : 9;
     }
     #shiftInfoArea > #addStaff {
@@ -747,11 +747,11 @@ button {
    ……………………………………………………………………………………………………………………………………… */
 
     #modal > #shiftDayInfo {
-        height : 85vh;
+        height : 70vh;
     }
     #shiftDayInfo > .modalBody > div {
         width           : 90%;
-        max-height      : 65vmin;
+        max-height      : 80%;
         margin-top      : 2vmin;
         overflow        : auto;
     }

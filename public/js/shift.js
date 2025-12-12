@@ -658,7 +658,7 @@ function shiftChangeInfoEdit(id) {
                             'day'           : valArray[3],
                             'dataAfter'     : valArray[4],
                         };
-                        // opDB('updateShiftChangeInfo', paramDB);
+                        opDB('updateShiftChangeInfo', paramDB);
                     }
                 }
             }
@@ -1727,7 +1727,7 @@ function opDB(op, paramDB) {
                                         statusB.style.background   = "#87bd9eff";
                                     break;
 
-                                case '却下':
+                                case '却下済':
                                 case '承認済':
                                 case '可能日変更':
                                         statusB.style.background   = "#a5a5a5ff";
