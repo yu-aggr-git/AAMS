@@ -593,7 +593,6 @@ button {
         width: 45%;
     }
     #shiftInfoArea th > .numP {
-        border-top      : 0.1vmin solid #666;
         border-bottom   : 0.1vmin solid #666;
     }
     #shiftInfoArea th > .numEdit {
@@ -611,6 +610,7 @@ button {
     }
     #shiftInfoArea .shiftInfoB {
         background      : transparent;
+        border-bottom   : 0.1vmin solid #666;
         text-align      : center;
         font-weight     : bold;
     }
@@ -657,7 +657,6 @@ button {
     }
     #shiftInfoArea .sticky3 {
         position        : sticky;
-        /* height          : 6vmin; */
         padding         : 0;
         top             : 0;
         z-index         : 8;
@@ -710,10 +709,13 @@ button {
         overflow-wrap   : anywhere;
     }
     #shiftInfoArea dl > dt {
-        background  : #ececec;
-        width       : 20%;
-        font-weight : bold;
-        text-align  : center;
+        background      : #ececec;
+        width           : 20%;
+        font-weight     : bold;
+        text-align      : center;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
     }
     #shiftInfoArea dl > dd {
         width           : 70%;

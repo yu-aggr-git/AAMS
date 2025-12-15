@@ -16,30 +16,42 @@ create table aams.work_report(
 
 drop table aams.event;
 create table aams.event(
-    event               VARCHAR(100) NOT NULL                            COMMENT 'イベント名',
-    pass                VARCHAR(255) NOT NULL                            COMMENT 'パスワード',
-    first_day           VARCHAR(10)  NOT NULL                            COMMENT '開催初日(yyyy-mm-dd)',
-    end_day             VARCHAR(10)  NOT NULL                            COMMENT '開催最終日(yyyy-mm-dd)',
-    start_time          VARCHAR(5)  NOT NULL                             COMMENT '開始時間',
-    end_time            VARCHAR(5)  NOT NULL                             COMMENT '終了時間',
-    shift_url           VARCHAR(255)                                     COMMENT 'シフトURL',
-    shift_updated_dt    VARCHAR(19)                                      COMMENT 'シフト更新日時',
-    recruit             VARCHAR(5)  NOT NULL                             COMMENT '募集状況',
+    event                   VARCHAR(100) NOT NULL                            COMMENT 'イベント名',
+    pass                    VARCHAR(255) NOT NULL                            COMMENT 'パスワード',
+    first_day               VARCHAR(10)  NOT NULL                            COMMENT '開催初日(yyyy-mm-dd)',
+    end_day                 VARCHAR(10)  NOT NULL                            COMMENT '開催最終日(yyyy-mm-dd)',
+    start_time              VARCHAR(5)  NOT NULL                             COMMENT '開始時間',
+    end_time                VARCHAR(5)  NOT NULL                             COMMENT '終了時間',
+    hourly_wage             INTEGER                                          COMMENT '時給',
+    transportation_limit    INTEGER                                          COMMENT '交通費上限',
+    meal_allowance          INTEGER                                          COMMENT '食事手当',
+    pay_day                 VARCHAR(32)                                      COMMENT '支払日',
+    manager                 VARCHAR(30)                                      COMMENT '現場責任者',
+    shift_url               VARCHAR(255)                                     COMMENT 'シフトURL',
+    required_num            VARCHAR(2000)                                    COMMENT '必要人数',
+    shift_updated_dt        VARCHAR(19)                                      COMMENT 'シフト更新日時',
+    recruit                 VARCHAR(5)  NOT NULL                             COMMENT '募集状況',
     PRIMARY KEY (event)
 );
 
 drop table aams.staff_list;
 create table aams.staff_list(
-    event       VARCHAR(100) NOT NULL                            COMMENT 'イベント名',
-    no          INTEGER      NOT NULL                            COMMENT 'No.',
-    name        VARCHAR(30)  NOT NULL                            COMMENT '氏名',
-    mail        VARCHAR(255)                                     COMMENT 'メールアドレス',
-    birthday    VARCHAR(8)                                       COMMENT '生年月日',
-    payslip     VARCHAR(255)                                     COMMENT '給与明細',
-    pass        VARCHAR(255)                                     COMMENT 'パスワード',
-    booth       VARCHAR(20)                                      COMMENT 'ブース',
-    shift       VARCHAR(2000)                                    COMMENT 'シフト',
-    login_dt    VARCHAR(19)                                      COMMENT 'ログイン日時',
+    event           VARCHAR(100) NOT NULL                            COMMENT 'イベント名',
+    no              INTEGER      NOT NULL                            COMMENT 'No.',
+    name            VARCHAR(30)  NOT NULL                            COMMENT '氏名',
+    mail            VARCHAR(255)                                     COMMENT 'メールアドレス',
+    birthday        VARCHAR(8)                                       COMMENT '生年月日',
+    station         VARCHAR(255)                                     COMMENT '利用駅',
+    transportation  INTEGER                                          COMMENT '交通費',
+    bank            VARCHAR(255)                                     COMMENT '銀行口座',
+    payslip         VARCHAR(255)                                     COMMENT '給与明細',
+    pass            VARCHAR(255)                                     COMMENT 'パスワード',
+    booth           VARCHAR(20)                                      COMMENT 'ブース',
+    shift           VARCHAR(2000)                                    COMMENT 'シフト',
+    work_rules      VARCHAR(4)                                       COMMENT '就業規則',
+    experience      INTEGER                                          COMMENT '経験者手当',
+    t_shirt         VARCHAR(4)                                       COMMENT 'Tシャツ',    
+    login_dt        VARCHAR(19)                                      COMMENT 'ログイン日時',
     PRIMARY KEY (event, name)
 );
 ALTER TABLE aams.staff_list ADD INDEX index_staff_list_no(event, no);

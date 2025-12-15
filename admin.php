@@ -53,11 +53,18 @@
                 </div>
             </div>
 
+            <!-- イベント通知 -->
+            <div id="eventInfoNoticeArea">
+                <dl>
+                    <dt>イベント名</dt>
+                    <dd>通知内容</dd>
+                </dl>
+            </div>
 
             <!-- イベント情報 -->
             <div class="itemName" id="eventInfoAreaOpen">
                 <p>イベント情報</p>
-                <p><span class="colorOrange">▼</span></p>
+                <p><span class="colorOrange">▲</span></p>
             </div>
             <div id="eventInfoArea">
                 <div id="eventEditMenu">
@@ -185,19 +192,72 @@
                         </div>
                     </dd>
 
+                    <dt>時給</dt>
+                    <dd>
+                        <p hidden id="hourlyWage"></p>
+                        <input type="text" id="inputHourlyWage">
+                    </dd>
+
+                    <dt>交通費上限</dt>
+                    <dd>
+                        <p hidden id="transportationLimit"></p>
+                        <input type="text" id="inputTransportationLimit">
+                    </dd>
+
+                    <dt>食事手当</dt>
+                    <dd>
+                        <p hidden id="mealAllowance"></p>
+                        <input type="text" id="inputMealAllowance">
+                    </dd>
+
+                    <dt>現場責任者</dt>
+                    <dd>
+                        <p hidden id="manager"></p>
+                        <input type="text" id="inputMealManager">
+                    </dd>
+
                     <dt>シフトURL</dt>
                     <dd>
                         <p hidden id="shiftUrl"><a href="" target="_blank"></a></p>
-                        <input type="text" id="inputShiftUrl">
+                        <input type="text" id="inputShiftUrl" placeholder="*外部参照の場合は入力">
                     </dd>
 
-                    <dt>スタッフ</dt>
+                    <dt>支払日</dt>
                     <dd>
-                        <div hidden id="staff"></div>
-                        <!-- <p hidden id="staff"></p> -->
-                        <textarea
-                            id="inputStaff"
-                            placeholder="1:山田太郎:yamada@test.com:20000401&#13;&#10;2:佐藤花子:satou@test.com:20001231&#13;&#10;…&#13;&#10;上記のように1行に1名分の、&#13;&#10;No:名前:メールアドレス:生年月日(YYYMMDD)&#13;&#10;を入力してください"></textarea>
+                        <p hidden id="payDay"></p>
+
+                        <div id="inputPayDayArea">
+                            <?php for ($num =  1; $num < 3 + 1; $num++) : ?>
+                                <div>
+                                    <select id="inputPayDay<?php echo $num ?>Year">
+                                        <option value=""></option>
+                                        <?php for ($i =  date("Y"); $i <= date("Y") + 1; $i++) : ?>
+                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+
+                                    <p class="separator">-</p>
+
+                                    <select id="inputPayDay<?php echo $num ?>Month">
+                                        <option value=""></option>
+                                        <?php for ($i = 1; $i <= 12; $i ++) : ?>
+                                            <?php $i = sprintf('%02d', $i) ?>
+                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+
+                                    <p class="separator">-</p>
+
+                                    <select id="inputPayDay<?php echo $num ?>Day">
+                                        <option value=""></option>
+                                        <?php for ($i = 1; $i <= 31; $i++) : ?>
+                                            <?php $i = sprintf('%02d', $i) ?>
+                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                            <?php endfor; ?>
+                        </div>
                     </dd>
                 </dl>
             </div>
@@ -505,9 +565,9 @@
             </div>
 
 
-            <!-- 給与明細 -->
+            <!-- スタッフリスト -->
             <div class="itemName" id="payslipAreaOpen">
-                <p>給与明細</p>
+                <p>スタッフリスト</p>
                 <p><span>▲</span></p>
             </div>
             <div id="payslipArea">
@@ -524,11 +584,59 @@
                     <table id="payslipTable">
                         <tbody>
                             <tr id="payslipTableHeader">
-                                <th class="w15">スタッフ名</th>
-                                <th class="w70">URL</th>
+                                <th class="w15 sticky1">スタッフ名</th>
+                                <th class="w10 sticky2">就業規則</th>
+                                <th class="w10 sticky2">経験者手当</th>
+                                <th class="w15 sticky2">利用駅</th>
+                                <th class="w10 sticky2">往復交通費</th>
+                                <th class="w30 sticky2">銀行口座</th>
+                                <th class="w30 sticky2">給与明細URL</th>
+                                <th class="w10 sticky2">Tシャツ</th>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                
+                <div id="deleteStaff">
+                    <p>
+                        ・スタッフの削除：
+                        <span id="deleteStaffMsg" class="errorMsg"></span>
+                    </p>
+
+                    <dl>
+                        <dt>氏名</dt>
+                        <dd>
+                            <select id="deleteStaffName"></select>
+                        </dd>
+                    </dl>
+
+                    <button type="button" id="sendDeleteStaff" value="false">削除</button>
+                </div>
+
+                <div id="addStaff">
+                    <p>
+                        ・応募以外のスタッフ追加：
+                        <span id="addStaffMsg" class="errorMsg"></span>
+                    </p>
+
+                    <dl>
+                        <dt>氏名</dt>
+                        <dd>
+                            <input type="text" id="addStaffName">
+                        </dd>
+
+                        <dt>メール</dt>
+                        <dd>
+                            <input type="text" id="addStaffMail">
+                        </dd>
+
+                        <dt>生年月日<br>*初期PASS</dt>
+                        <dd>
+                            <input type="text" id="addStaffBirthday" value="yyyymmdd">
+                        </dd>
+                    </dl>
+
+                    <button type="button" id="sendAddStaff" value="false">登録</button>
                 </div>
             </div>
 
@@ -536,7 +644,7 @@
             <!-- お知らせ -->
             <div class="itemName" id="newsAreaOpen">
                 <p>お知らせ</p>
-                <p><span>▼</span></p>
+                <p><span>▲</span></p>
             </div>
             <div id="newsArea">
                 <div id="newsMenu">

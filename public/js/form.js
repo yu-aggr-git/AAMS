@@ -350,7 +350,6 @@ function opDB(op, paramDB) {
                         const url = new URL(window.location.href);
                         const params = url.searchParams;
                         if (params.get('platform')) {
-                            console.log(0);
                             document.getElementById("platform").innerText       = params.get('platform');                            
                             document.getElementById("platform").style.display   = 'block';
 

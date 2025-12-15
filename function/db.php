@@ -35,10 +35,6 @@
             case 'get_staff_list_shift' :
                 get_staff_list_shift($dbh, $_POST);
                 break;
-                
-            case 'register_staff_list' :
-                register_staff_list($dbh, $_POST);
-                break;
 
             case 'register_staff_list_add' :
                 register_staff_list_add($dbh, $_POST);
@@ -79,6 +75,10 @@
             case 'update_staff_list_shift' :
                 update_staff_list_shift($dbh, $_POST);
                 break;
+
+            case 'delete_staff_list' :
+                delete_staff_list($dbh, $_POST);
+                break;
                 
 
 
@@ -98,6 +98,10 @@
             case 'get_event_list_shift' :
                 get_event_list_shift($dbh);
                 break;                
+
+            case 'get_event_notice' :
+                get_event_notice($dbh);
+                break;
 
             case 'register_event' :
                 register_event($dbh, $_POST);
@@ -383,7 +387,7 @@
     // ────スタッフリスト：取得─────────────────────────────
     function get_staff_list($dbh, $param) {
         $query = "
-            SELECT no, name, mail, birthday, payslip
+            SELECT *
             FROM staff_list
             WHERE
                     event = :event
@@ -564,56 +568,6 @@
         echo $count;
     }
 
-    // ────スタッフリスト：登録─────────────────────────────
-    function register_staff_list($dbh, $param) {
-
-        $names = [];
-        foreach (explode(",", $param['staffList']) as $staff) {
-            if ($staff) {
-                $staffArray = explode(":", $staff);
-                $no   = $staffArray[0];
-                $name = $staffArray[1];
-                $mail = $staffArray[2] ? $staffArray[2] : '';
-                $birthday = $staffArray[3] ? $staffArray[3] : '';
-
-                $query1 = "
-                    INSERT INTO
-                        staff_list(event, no, name, mail, birthday)
-                    VALUES
-                        (:event, :no, :name, :mail, :birthday)
-                    ON DUPLICATE KEY UPDATE
-                        no          = VALUES(no),
-                        mail        = VALUES(mail),
-                        birthday    = VALUES(birthday)
-                ";
-                $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-                $sth1->execute([
-                    'event'     => $param['event'],
-                    'no'        => $no,
-                    'name'      => $name,
-                    'mail'      => $mail,
-                    'birthday'  => $birthday
-                ]);
-
-                $names[] = $name;
-            }
-        }
-
-        $namesNum = count($names);
-        array_unshift($names, $param['event']);
-        $query2 = "
-            DELETE FROM
-                staff_list
-            WHERE
-                event = ?
-        ";
-        if ($namesNum >= 1) {
-            $query2 .= " AND name NOT IN (" . substr(str_repeat(',?', $namesNum), 1) . ")";
-        }
-        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $sth2->execute($names);
-    }
-
     // ────スタッフリスト：登録追加─────────────────────────────
     function register_staff_list_add($dbh, $param) {
         $query = "
@@ -655,23 +609,32 @@
         foreach (explode(",", $param['payslipList']) as $staff) {
             if ($staff) {
                 $staffArray = explode("|", $staff);
-                $name    = $staffArray[0];
-                $payslip = $staffArray[1];
-                
+                $name       = $staffArray[0];
+                $workRules  = $staffArray[1];
+                $experience = $staffArray[2] ? $staffArray[2] : NULL;
+                $payslipUrl = $staffArray[3];
+                $tShirt     = $staffArray[4];
+
                 $query = "
                     UPDATE
                         staff_list
                     SET
-                        payslip = :payslip
+                        payslip     = :payslipUrl,
+                        work_Rules  = :workRules,
+                        experience  = :experience,
+                        t_shirt     = :tShirt
                     WHERE
                             event = :event
                         AND name = :name
                 ";
                 $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
                 $count = $sth->execute([
-                    'event'     => $param['event'],
-                    'name'      => $name,
-                    'payslip'   => $payslip
+                    'event'         => $param['event'],
+                    'name'          => $name,
+                    'payslipUrl'    => $payslipUrl,
+                    'workRules'     => $workRules,
+                    'experience'    => $experience,
+                    'tShirt'        => $tShirt
                 ]);
             }
         }
@@ -730,6 +693,23 @@
         echo $count;
     }
 
+    // ────スタッフリスト：削除─────────────────────────────
+    function delete_staff_list($dbh, $param) {
+        $query = "
+            DELETE FROM
+                staff_list
+            WHERE
+                    event = :event
+                AND name = :name
+        ";
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $count = $sth->execute([
+            'event' => $param['event'],
+            'name'  => $param['name'],
+        ]);
+
+        echo $count;
+    }
 
 
     // ────イベント：ログイン───────────────────────────────
@@ -830,6 +810,96 @@
         echo $json;
     }
 
+    // ────イベント：お知らせ取得─────────────────────────────
+    function get_event_notice($dbh) {
+
+        $employeeData = [];
+
+        // 応募リストの取得
+        $query1 = "
+            SELECT
+                e.event,
+                CONCAT(al.no, '.', al.name) as name,
+                al.status
+            FROM
+                event e
+            LEFT JOIN
+                application_list al
+                ON  al.event = e.event
+                AND al.status IN ('採用', '採用通知済み')
+            WHERE
+                e.end_day >= CURRENT_DATE
+            ORDER BY
+                al.no asc
+            ;
+        ";
+        $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth1->execute();
+        while ($row = $sth1->fetch(PDO::FETCH_ASSOC)) {
+            $event = $row['event'];
+            $name = $row['name'];
+
+            if ($name) {
+                $employeeData[$event]['al_status'][$name] = $row['status'];
+            }
+        }
+
+        // シフト変更希望リストの取得
+        $query2 = "
+            SELECT
+                e.event,
+                count(sl.request_dt) AS count
+            FROM
+                event e
+            LEFT JOIN
+                shift_change_list sl
+                ON  sl.event = e.event
+                AND sl.status = '申請中'
+            WHERE
+                e.end_day >= CURRENT_DATE
+            GROUP BY
+                e.event
+            ;
+        ";
+        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth2->execute();
+        while ($row = $sth2->fetch(PDO::FETCH_ASSOC)) {
+            $event = $row['event'];
+
+            if ($event && $row['count'] >= 1) {
+                $employeeData[$event]['sl_change'] = $row['count'];
+            }
+        }
+
+        // イベント支払日の取得
+        $query3 = "
+            SELECT
+                event,
+                pay_day
+            FROM
+                event
+            ;
+        ";
+        $sth3 = $dbh->prepare($query3, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth3->execute();
+        while ($row = $sth3->fetch(PDO::FETCH_ASSOC)) {
+            $event = $row['event'];
+
+            foreach (explode(",", $row['pay_day']) as $data) {
+                if ($data) {
+                    $today = date("Y-m-d");
+
+                    if(strtotime($today) <= strtotime($data)){
+                       $employeeData[$event]['pay_day'][] = $data;
+                    }                    
+                }
+            }
+        }
+
+        $json = json_encode($employeeData);
+        echo $json;
+    }
+
     // ────イベント：URL取得─────────────────────────────
     function get_shift_url($dbh, $param) {
         $query = "
@@ -850,30 +920,31 @@
     
     // ────イベント：登録─────────────────────────────
     function register_event($dbh, $param) {
+        global $config;
+
         $query = "
             INSERT INTO
-                event(event, pass, first_day, end_day, start_time, end_time, shift_url, recruit)
+                event(event, pass, first_day, end_day, start_time, end_time, hourly_wage, transportation_limit, meal_allowance, pay_day, manager, shift_url, recruit)
             VALUES
-                (:event, :pass, :firstDay, :endDay, :start_time, :end_time, :shiftUrl, :recruit)
+                (:event, :pass, :firstDay, :endDay, :startTime, :endTime, :hourlyWage, :transportationLimit, :mealAllowance, :payDay, :manager, :shiftUrl, :recruit)
         ";
 
         $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $count = $sth->execute([
-            'recruit'       => $param['recruit'],
-            'event'         => $param['event'],
-            'pass'          => password_hash($param['pass'], PASSWORD_DEFAULT),
-            'firstDay'      => $param['firstDay'],
-            'endDay'        => $param['endDay'],
-            'start_time'    => $param['start_time'],
-            'end_time'      => $param['end_time'],
-            'shiftUrl'      => $param['shiftUrl']
+            'recruit'               => $param['recruit'],
+            'event'                 => $param['event'],
+            'pass'                  => password_hash($param['pass'], PASSWORD_DEFAULT),
+            'firstDay'              => $param['firstDay'],
+            'endDay'                => $param['endDay'],
+            'startTime'             => $param['startTime'],
+            'endTime'               => $param['endTime'],
+            'hourlyWage'            => $param['hourlyWage'] ? $param['hourlyWage'] : NULL,
+            'transportationLimit'   => $param['transportationLimit'] ? $param['transportationLimit'] : NULL,
+            'mealAllowance'         => $param['mealAllowance'] ? $param['mealAllowance'] : NULL,
+            'manager'               => $param['manager'],
+            'shiftUrl'              => $param['shiftUrl'] ? $param['shiftUrl'] : $config['shift_url'] . '?event=' . urlencode($param['event']),
+            'payDay'                => $param['payDay']
         ]);
-
-        $nextParam = [
-            'event'     => $param['event'],
-            'staffList' => $param['staffList']
-        ];
-        register_staff_list($dbh, $nextParam);
 
         echo $count;
     }
@@ -884,34 +955,38 @@
             UPDATE
                 event
             SET
-                pass        = IF(:pass IS NULL, pass, :pass),
-                first_day   = :firstDay,
-                end_day     = :endDay,
-                start_time  = :start_time,
-                end_time    = :end_time,
-                shift_url   = :shiftUrl,
-                recruit     = :recruit
+                pass                    = IF(:pass IS NULL, pass, :pass),
+                first_day               = :firstDay,
+                end_day                 = :endDay,
+                start_time              = :startTime,
+                end_time                = :endTime,
+                hourly_wage             = :hourlyWage,
+                transportation_limit    = :transportationLimit,
+                meal_allowance          = :mealAllowance,
+                pay_day                 = :payDay,
+                manager                 = :manager,
+                shift_url               = :shiftUrl,
+                recruit                 = :recruit
             WHERE
                 event = :event
         ";
 
         $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $count = $sth->execute([
-            'recruit'       => $param['recruit'],
-            'event'         => $param['event'],
-            'pass'          => $param['pass'] ? password_hash($param['pass'], PASSWORD_DEFAULT) : null,
-            'firstDay'      => $param['firstDay'],
-            'endDay'        => $param['endDay'],
-            'start_time'    => $param['start_time'],
-            'end_time'      => $param['end_time'],
-            'shiftUrl'      => $param['shiftUrl']
+            'recruit'               => $param['recruit'],
+            'event'                 => $param['event'],
+            'pass'                  => $param['pass'] ? password_hash($param['pass'], PASSWORD_DEFAULT) : null,
+            'firstDay'              => $param['firstDay'],
+            'endDay'                => $param['endDay'],
+            'startTime'             => $param['startTime'],
+            'endTime'               => $param['endTime'],
+            'hourlyWage'            => $param['hourlyWage'] ? $param['hourlyWage'] : NULL,
+            'transportationLimit'   => $param['transportationLimit'] ? $param['transportationLimit'] : NULL,
+            'mealAllowance'         => $param['mealAllowance'] ? $param['mealAllowance'] : NULL,
+            'manager'               => $param['manager'],
+            'shiftUrl'              => $param['shiftUrl'],
+            'payDay'                => $param['payDay']
         ]);
-
-        $nextParam = [
-            'event'     => $param['event'],
-            'staffList' => $param['staffList']
-        ];
-        register_staff_list($dbh, $nextParam);
 
         echo $count;
     }
@@ -963,6 +1038,30 @@
         ";
         $sth4 = $dbh->prepare($query4, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $sth4->execute([
+            'event'     => $param['event'],
+        ]);
+
+        // 応募リスト
+        $query5 = "
+            DELETE FROM
+                application_list
+            WHERE
+                event = :event
+        ";
+        $sth5 = $dbh->prepare($query5, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth5->execute([
+            'event'     => $param['event'],
+        ]);
+
+        // シフト変更希望
+        $query6 = "
+            DELETE FROM
+                shift_change_list
+            WHERE
+                event = :event
+        ";
+        $sth6 = $dbh->prepare($query6, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth6->execute([
             'event'     => $param['event'],
         ]);
 

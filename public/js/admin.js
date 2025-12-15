@@ -37,6 +37,7 @@ window.onload = () => {
 
     // ───イベントの取得──────────────────────────────────────────────────────────────    
     opDB('getEventList', null);
+    opDB('getEventNotice', null);
 
 
     // ───イベントの選択──────────────────────────────────────────────────────────────
@@ -102,7 +103,7 @@ window.onload = () => {
     }
 
 
-    // ───給与明細の操作──────────────────────────────────────────────────────────────
+    // ───スタッフリストの操作──────────────────────────────────────────────────────────────
     document.getElementById("editPayslip").onclick = function() {
         payslipEdit(this.id);
     }
@@ -134,6 +135,17 @@ window.onload = () => {
         }
     })
 
+
+    // ───スタッフ削除──────────────────────────────────────────────────────────────
+    document.getElementById("sendDeleteStaff").onclick = function() {
+        sendDeleteStaff();
+    }
+
+
+    // ───スタッフ追加──────────────────────────────────────────────────────────────
+    document.getElementById("sendAddStaff").onclick = function() {
+        sendAddStaff();
+    }
 }
 
 
@@ -155,7 +167,7 @@ function adminLogin() {
             };
             opDB('adminLogin', paramDB);
         }
-    }    
+    }
 }
 
 
@@ -217,21 +229,30 @@ function getSelectEvent(selectEvent) {
                 'firstDay',
                 'endDay',
                 'time',
+                'hourlyWage',
+                'transportationLimit',
+                'mealAllowance',
+                'manager',
                 'shiftUrl',
-                'staff',
+                'payDay',
                 'deleteEvent',
                 'editEventEdit',
                 'editPayslip'
             ],
             'none'  : [
+                'eventInfoNoticeArea',
                 'inputRecruit',
                 'inputEventName',
                 'inputPass',
                 'inputFirstDayArea',
                 'inputEndDayArea',
                 'inputTimeArea',
+                'inputHourlyWage',
+                'inputTransportationLimit',
+                'inputMealAllowance',
+                'inputMealManager',
                 'inputShiftUrl',
-                'inputStaff',
+                'inputPayDayArea',
                 'registerEvent',
                 'cancelEventEdit',
                 'sendEventEdit',
@@ -263,27 +284,69 @@ function getSelectEvent(selectEvent) {
 function eventEdit(id) {
     document.getElementById("eventEditMsg").innerText = '';
 
-    const inputEvent        = document.getElementById("eventName").textContent;
-    const inputStaff        = document.getElementById("inputStaff").value.replace(/(\t| +|　+)/g, "");
-    const inputStaffList    = inputStaff.split(/\n/);
-
+    const inputEvent = document.getElementById("eventName").textContent;
     var paramDB = {
-        'recruit'       : document.getElementById("inputRecruit").value,
-        'eventName'     : inputEvent,
-        'pass'          : document.getElementById("inputPass").value,
-        'firstDay'      :
+        'recruit'   : document.getElementById("inputRecruit").value,
+        'eventName' : inputEvent,
+        'pass'      : document.getElementById("inputPass").value,
+        'firstDay'  :
               document.getElementById("inputFirstYear").value + '-'
             + document.getElementById("inputFirstMonth").value + '-'
             + document.getElementById("inputFirstDay").value,
-        'endDay'        :
+        'endDay' :
               document.getElementById("inputEndYear").value + '-'
             + document.getElementById("inputEndMonth").value + '-'
             + document.getElementById("inputEndDay").value,
-        'start_time'    : document.getElementById("inputTimeS").value,
-        'end_time'      : document.getElementById("inputTimeE").value,
-        'shiftUrl'      : document.getElementById("inputShiftUrl").value,
-        'staffList'     : inputStaffList,
+        'startTime'             : document.getElementById("inputTimeS").value,
+        'endTime'               : document.getElementById("inputTimeE").value,
+        'hourlyWage'            : document.getElementById("inputHourlyWage").value,
+        'transportationLimit'   : document.getElementById("inputTransportationLimit").value,
+        'mealAllowance'         : document.getElementById("inputMealAllowance").value,
+        'manager'               : document.getElementById("inputMealManager").value,
+        'shiftUrl'              : document.getElementById("inputShiftUrl").value,
+        'payDay'                : ''
     };
+
+   let payDayA = [];
+   let iPayDayArea = 0;
+    Array.from(document.getElementById("inputPayDayArea").querySelectorAll("select")).forEach(function(e) {
+        switch (iPayDayArea) {
+            case 0:
+            case 1:
+                payDayA[0] = 0 in payDayA ? payDayA[0] + e.value + '-' : e.value + '-';
+                break;
+            case 2:
+                payDayA[0] = 0 in payDayA ? payDayA[0] + e.value : e.value;
+                ; 
+                break;
+            
+            case 3:
+            case 4:
+                payDayA[1] = 1 in payDayA ? payDayA[1] + e.value + '-' : e.value + '-';
+                break;
+            case 5:
+                payDayA[1] = 1 in payDayA ? payDayA[1] + e.value : e.value;
+                break;
+
+            case 6:
+            case 7:
+                payDayA[2] = 2 in payDayA ? payDayA[2] + e.value + '-' : e.value + '-';
+                break;
+            case 8:
+                payDayA[2] = 2 in payDayA ? payDayA[2] + e.value : e.value;
+                break;
+        }
+        iPayDayArea++;
+    });
+    Array.from(payDayA).forEach(function(e) {
+        paramDB['payDay'] = e.length != 10
+            ? paramDB['payDay']
+            : !paramDB['payDay']
+                ? e
+                : paramDB['payDay'] + ',' + e
+        ;
+    }); 
+
 
     switch (id) {
         case 'registerEvent':
@@ -291,6 +354,12 @@ function eventEdit(id) {
 
             if (!paramDB['eventName'] || !paramDB['pass']) {
                 document.getElementById("eventEditMsg").innerText = '*イベント名とパスワードの入力は必須です。';
+            } else if (
+                (payDayA[0].length != 2 && payDayA[0].length != 10) ||
+                (payDayA[1].length != 2 && payDayA[1].length != 10) ||
+                (payDayA[2].length != 2 && payDayA[2].length != 10)
+            ) {
+                document.getElementById("eventEditMsg").innerText = '*支払い日を正しい日付で入力ミスしてください。';
             } else {
                 var result = window.confirm('イベントを登録してよろしいですか？');
 
@@ -310,57 +379,96 @@ function eventEdit(id) {
                     opDB('deleteEvent', paramDB);
                 }
             }
-            break;
-
+            break;           
+            
         case 'editEventEdit':
             var itemList = {
-                'block' : ['inputRecruit', 'eventName', 'inputPass', 'inputShiftUrl', 'inputStaff', 'cancelEventEdit' ,'sendEventEdit'],
-                'none'  : ['recruit','pass', 'firstDay', 'endDay', 'time', 'shiftUrl', 'staff', 'inputEventName', 'deleteEvent', 'editEventEdit'],
+                'block' : ['inputRecruit', 'eventName', 'inputPass',  'inputHourlyWage', 'inputTransportationLimit', 'inputMealAllowance', 'inputMealManager', 'inputShiftUrl', 'inputPayDayArea', 'cancelEventEdit' ,'sendEventEdit'],
+                'none'  : ['recruit','pass', 'firstDay', 'endDay', 'time', 'hourlyWage', 'transportationLimit', 'mealAllowance', 'manager', 'shiftUrl', 'payDay', 'inputEventName', 'deleteEvent', 'editEventEdit'],
                 'flex'  : ['inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea']
             }
             opView(itemList);
 
-            document.getElementById("inputPass").placeholder = '変更しない場合は入力しないこと';
+            document.getElementById("inputPass").value                  = '';
+            document.getElementById("inputRecruit").value               = '';
+            document.getElementById("inputFirstYear").value             = '';
+            document.getElementById("inputFirstMonth").value            = '';
+            document.getElementById("inputFirstDay").value              = '';
+            document.getElementById("inputEndYear").value               = '';
+            document.getElementById("inputEndMonth").value              = '';
+            document.getElementById("inputEndDay").value                = '';
+            document.getElementById("inputTimeS").value                 = '';
+            document.getElementById("inputTimeE").value                 = '';
+            document.getElementById("inputHourlyWage").value            = '';
+            document.getElementById("inputTransportationLimit").value   = '';
+            document.getElementById("inputMealAllowance").value         = '';
+            document.getElementById("inputMealManager").value           = '';
+            document.getElementById("inputShiftUrl").value              = '';
+            document.getElementById("inputPayDay1Year").value           = '';
+            document.getElementById("inputPayDay1Month").value          = '';
+            document.getElementById("inputPayDay1Day").value            = '';
+            document.getElementById("inputPayDay2Year").value           = '';
+            document.getElementById("inputPayDay2Month").value          = '';
+            document.getElementById("inputPayDay2Day").value            = '';
+            document.getElementById("inputPayDay3Year").value           = '';
+            document.getElementById("inputPayDay3Month").value          = '';
+            document.getElementById("inputPayDay3Day").value            = '';
 
-            const selectFirstYear = document.getElementById("inputFirstYear");
-            const firstDay = document.getElementById("firstDay").textContent;
-            const firstDayA = firstDay.split(/-/);
-            Array.from(selectFirstYear.querySelectorAll("option")).forEach(function(e) {
-                e.remove();
-            });
-            for (let i = 0; i <= 1; i++) {
-                var option = document.createElement("option"); 
-                option.text = Number(firstDayA[0]) + i;
-                option.value = Number(firstDayA[0]) + i;
-                selectFirstYear.appendChild(option);
-            }
 
-            const selectEndYear = document.getElementById("inputEndYear");
-            const endDay = document.getElementById("endDay").textContent;
-            const endDayA = endDay.split(/-/);
-            Array.from(selectEndYear.querySelectorAll("option")).forEach(function(e) {
-                e.remove();
-            });
-            for (let i = 0; i <= 1; i++) {
-                var option = document.createElement("option"); 
-                option.text = Number(endDayA[0]) + i;
-                option.value = Number(endDayA[0]) + i;
-                selectEndYear.appendChild(option);
-            }
+            // 値取得
+            const firstDayText  = document.getElementById("firstDay").textContent.split(/-/);
+            const endDayText    = document.getElementById("endDay").textContent.split(/-/);
+            const timeText      = document.getElementById("time").textContent.split(/ /);
+            const payDayText    = document.getElementById("payDay").innerHTML.split('<br>');
+
+            document.getElementById("inputPass").placeholder            = '変更しない場合は入力しないこと';
+            document.getElementById("inputRecruit").value               = document.getElementById("recruit").textContent;
+            document.getElementById("inputFirstYear").value             = firstDayText[0];
+            document.getElementById("inputFirstMonth").value            = firstDayText[1];
+            document.getElementById("inputFirstDay").value              = firstDayText[2];
+            document.getElementById("inputEndYear").value               = endDayText[0];
+            document.getElementById("inputEndMonth").value              = endDayText[1];
+            document.getElementById("inputEndDay").value                = endDayText[2];
+            document.getElementById("inputTimeS").value                 = timeText[0];
+            document.getElementById("inputTimeE").value                 = timeText[2];
+            document.getElementById("inputHourlyWage").value            = document.getElementById("hourlyWage").textContent;
+            document.getElementById("inputTransportationLimit").value   = document.getElementById("transportationLimit").textContent;
+            document.getElementById("inputMealAllowance").value         = document.getElementById("mealAllowance").textContent;
+            document.getElementById("inputMealManager").value           = document.getElementById("manager").textContent;
+            document.getElementById("inputShiftUrl").value              = document.getElementById("shiftUrl").querySelector('a').textContent;
+            let iPayDayText = 1;
+            Array.from(payDayText).forEach(function(e) {
+                var payDayTextA = e.split(/-/);
+
+                document.getElementById("inputPayDay" + iPayDayText + "Year").value = payDayTextA[0];
+                document.getElementById("inputPayDay" + iPayDayText + "Month").value = payDayTextA[1];
+                document.getElementById("inputPayDay" + iPayDayText + "Day").value = payDayTextA[2];
+
+                iPayDayText++;
+            }); 
+
             break;
 
         case 'cancelEventEdit':
             var itemList = {
-                'block' : ['recruit', 'pass', 'firstDay', 'endDay', 'time', 'shiftUrl', 'staff', 'deleteEvent', 'editEventEdit'],
-                'none'  : ['inputRecruit', 'inputPass', 'inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea', 'inputShiftUrl', 'inputStaff', 'cancelEventEdit' ,'sendEventEdit']
+                'block' : ['recruit', 'pass', 'firstDay', 'endDay', 'time', 'hourlyWage', 'transportationLimit', 'mealAllowance', 'manager', 'shiftUrl', 'payDay', 'deleteEvent', 'editEventEdit'],
+                'none'  : ['inputRecruit', 'inputPass', 'inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea',  'inputHourlyWage', 'inputTransportationLimit', 'inputMealAllowance', 'inputMealManager', 'inputShiftUrl', 'inputPayDayArea', 'cancelEventEdit' ,'sendEventEdit']
             }
             opView(itemList);
             break;
 
         case 'sendEventEdit':
-            var result = window.confirm('イベントを更新してよろしいですか？');
-            if (result) {
-                opDB('updateEvent', paramDB);
+            if (
+                (payDayA[0].length != 2 && payDayA[0].length != 10) ||
+                (payDayA[1].length != 2 && payDayA[1].length != 10) ||
+                (payDayA[2].length != 2 && payDayA[2].length != 10)
+            ) {
+                document.getElementById("eventEditMsg").innerText = '*支払い日を正しい日付で入力ミスしてください。';
+            } else {
+                var result = window.confirm('イベントを更新してよろしいですか？');
+                if (result) {
+                    opDB('updateEvent', paramDB);
+                }
             }
             break;
     }
@@ -636,7 +744,7 @@ function workReportInfoEdit(id) {
 }
 
 
-// 給与明細の修正
+// スタッフリストの修正
 function payslipEdit(id) {
     const selectEvent = document.getElementById("eventName").textContent;
 
@@ -648,8 +756,14 @@ function payslipEdit(id) {
             }
             opView(itemList);
 
+            Array.from(document.getElementById("payslipTable").querySelectorAll("p")).forEach(function(e) {
+                e.style.display = 'none';
+            });
             Array.from(document.getElementById("payslipTable").querySelectorAll("a")).forEach(function(e) {
                 e.style.display = 'none';
+            });
+            Array.from(document.getElementById("payslipTable").querySelectorAll("input")).forEach(function(e) {
+                e.style.display = 'block';
             });
             Array.from(document.getElementById("payslipTable").querySelectorAll("textarea")).forEach(function(e) {
                 e.style.display = 'block';
@@ -664,14 +778,23 @@ function payslipEdit(id) {
             let payslipList = [];
             Array.from(document.getElementById("payslipTable").querySelectorAll("tr")).forEach(function(e) {
                 if (!e.id) {
+                    var name        = e.querySelectorAll("td")[0].textContent.split(/\./)[1];
+                    var workRules   = e.querySelectorAll("td")[1].querySelector("input").checked ? 'レ' : '';
+                    var experience  = e.querySelectorAll("td")[2].querySelector("input").value;
+                    var payslipUrl  = e.querySelectorAll("td")[6].querySelector("textarea").value;
+                    var tShirt      = e.querySelectorAll("td")[7].querySelector("input").checked ? 'レ' : '';
+
                     payslipList.push(
-                        e.querySelectorAll("td")[0].textContent + '|'
-                        + e.querySelectorAll("td")[1].querySelector("textarea").value,
+                        name
+                        + '|' + workRules
+                        + '|' + experience
+                        + '|' + payslipUrl
+                        + '|' + tShirt
                     );
                 }
             });
 
-            const result = window.confirm('URLが入っているスタッフに給与明細を公開してよろしいですか？');
+            const result = window.confirm('スタッフリストを更新してよろしいですか？\n*URLが入っているスタッフには給与明細を公開されます。');
             if (result) {
                 var paramDB = {
                     'event'         : selectEvent,
@@ -818,6 +941,51 @@ function news(id) {
 }
 
 
+// スタッフ削除
+function sendDeleteStaff() {
+    document.getElementById("deleteStaffMsg").innerText = '';
+
+    const name = document.getElementById("deleteStaffName").value;
+
+    if (name) {
+        const result = window.confirm('スタッフの削除をしてよろしいですか？');
+        if (result) {
+            var paramDB = {
+                'event'         : document.getElementById("eventName").textContent,
+                'name'          : name
+            };
+            opDB('deleteStaffList', paramDB);
+        }
+    }
+};
+
+
+// スタッフ追加
+function sendAddStaff() {
+    document.getElementById("addStaffMsg").innerText = '';
+
+    const name = document.getElementById("addStaffName").value;
+    const mail = document.getElementById("addStaffMail").value;
+    const birthday = document.getElementById("addStaffBirthday").value;
+
+    if (!name || !mail || !birthday) {
+        document.getElementById("addStaffMsg").innerText = 'すべての項目に入力が必要です。';   
+    } else {
+        const result = window.confirm('スタッフの追加をしてよろしいですか？');
+        if (result) {
+            var paramDB = {
+                'event'         : document.getElementById("eventName").textContent,
+                'name'          : name,
+                'mail'          : mail.trim(),
+                'birthday'      : birthday
+            };
+            opDB('registerStaffListAdd', paramDB);
+        }
+    }
+};
+
+
+
 // ──────────────────────────────────────────────────────
 //  DBの操作
 // ………………………………………………………………………………………………………………………………………………
@@ -861,37 +1029,34 @@ function opDB(op, paramDB) {
                 document.getElementById("firstDay").innerText  = '';
                 document.getElementById("endDay").innerText  = '';
                 document.getElementById("time").innerText  = '';
+                document.getElementById("hourlyWage").innerText  = '';
+                document.getElementById("transportationLimit").innerText  = '';
+                document.getElementById("mealAllowance").innerText  = '';
+                document.getElementById("manager").innerText  = '';
                 document.getElementById("shiftUrl").querySelector("a").href = '';
                 document.getElementById("shiftUrl").querySelector("a").innerText = '';
+                document.getElementById("payDay").innerText  = '';
 
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
 
                     // イベント情報
-                    document.getElementById("recruit").innerText    = data.recruit;
-                    document.getElementById("eventName").innerText  = data.event;
-                    document.getElementById("firstDay").innerText   = data.first_day;
-                    document.getElementById("endDay").innerText     = data.end_day;
-                    document.getElementById("time").innerText       = data.start_time + ' ～ ' + data.end_time;
+                    document.getElementById("recruit").innerText             = data.recruit;
+                    document.getElementById("eventName").innerText           = data.event;
+                    document.getElementById("firstDay").innerText            = data.first_day;
+                    document.getElementById("endDay").innerText              = data.end_day;
+                    document.getElementById("time").innerText                = data.start_time + ' ～ ' + data.end_time;
+                    document.getElementById("hourlyWage").innerText          = data.hourly_wage;
+                    document.getElementById("transportationLimit").innerText = data.transportation_limit;
+                    document.getElementById("mealAllowance").innerText       = data.meal_allowance;
+                    document.getElementById("manager").innerText             = data.manager;
                     if (data.shift_url) {
                         document.getElementById("shiftUrl").querySelector("a").href = data.shift_url;
                         document.getElementById("shiftUrl").querySelector("a").innerText = data.shift_url;
                     }
-
-
-                    // イベント情報修正
-                    document.getElementById("inputRecruit").value       = data.recruit;
-                    const firstDay = data.first_day.split(/-/);
-                    const endDay = data.end_day.split(/-/);
-                    document.getElementById("inputFirstYear").value     = firstDay[0];
-                    document.getElementById("inputFirstMonth").value    = firstDay[1];
-                    document.getElementById("inputFirstDay").value      = firstDay[2];                    
-                    document.getElementById("inputEndYear").value       = endDay[0];
-                    document.getElementById("inputEndMonth").value      = endDay[1];
-                    document.getElementById("inputEndDay").value        = endDay[2];
-                    document.getElementById("inputTimeS").value         = data.start_time;
-                    document.getElementById("inputTimeE").value         = data.end_time;
-                    document.getElementById("inputShiftUrl").value      = data.shift_url;
+                    if (data.pay_day) {
+                        document.getElementById("payDay").innerHTML = data.pay_day.replaceAll(",", "<br>");
+                    }
 
 
                     // 勤怠情報・打刻情報
@@ -919,6 +1084,8 @@ function opDB(op, paramDB) {
                     th.className = "sticky3";
                     tr.appendChild(th);
 
+                    const firstDay = data.first_day.split(/-/);
+                    const endDay = data.end_day.split(/-/);
                     for (
                         let date = new Date(firstDay[0], firstDay[1] - 1 , firstDay[2]);
                         date <= new Date(endDay[0], endDay[1] - 1, endDay[2]);
@@ -986,17 +1153,125 @@ function opDB(op, paramDB) {
             }
             break;
 
+        case 'getEventNotice':
+            var param   = "function=" + "get_event_notice";
+            xmlhttp.onreadystatechange = function() {
+
+                if (this.readyState == 4 && this.status == 200) {
+                    const data = JSON.parse(this.response);
+
+                    if (data) {
+                        document.getElementById("eventInfoNoticeArea").style.display = 'flex';
+
+                        const dl = document.getElementById("eventInfoNoticeArea").querySelector('dl');
+
+                        for (let event in data) {
+                            var dt = document.createElement("dt");
+                            dt.innerText = event;
+
+                            var dd = document.createElement("dd");
+
+                            // 応募リスト
+                            if ('al_status' in data[event]) {
+                                var div1 = document.createElement("div");
+
+                                var title1        = document.createElement("div");
+                                var title1P       = document.createElement("p");
+                                title1P.innerText = '応募';
+                                title1.className = 'noticeTitle';
+                                title1.appendChild(title1P);
+
+                                var item1       = document.createElement("div");
+                                item1.className = 'noticeItem';
+                                for (let name in data[event].al_status) {
+                                    var nameP = document.createElement("p");
+                                    nameP.innerText = name;
+                                    nameP.className = 'noticeTitleA';
+
+                                    var nameS               = document.createElement("span");
+                                    nameS.innerText         = data[event].al_status[name];
+                                    nameS.style.background  = data[event].al_status[name]  == '採用' 
+                                        ? "#debecc"
+                                        : "#e3d7a3"
+                                    ;
+
+                                    nameP.appendChild(nameS);
+                                    item1.appendChild(nameP);
+                                }
+                                div1.appendChild(title1);
+                                div1.appendChild(item1);
+                                dd.appendChild(div1);
+                            }
+
+                            // シフト変更希望リスト
+                            if ('sl_change' in data[event]) {
+                                var div2 = document.createElement("div");
+
+                                var title2        = document.createElement("div");
+                                var title2P       = document.createElement("p");
+                                title2P.innerText = '変更';
+                                title2.className = 'noticeTitle';
+                                title2.appendChild(title2P);
+
+                                var item2       = document.createElement("p");
+                                item2.className = 'noticeItem';
+                                item2.innerText = '未承認： ' + data[event].sl_change + ' 件';
+
+                                div2.appendChild(title2);
+                                div2.appendChild(item2);
+                                dd.appendChild(div2);
+                            }
+
+
+                            // 支払日
+                            if ('pay_day' in data[event]) {
+                                var div3 = document.createElement("div");
+
+                                var title3        = document.createElement("din");
+                                var title3P       = document.createElement("p");
+                                title3P.innerText = '支払日';
+                                title3.className = 'noticeTitle';
+                                title3.appendChild(title3P);
+
+                                var item3       = document.createElement("p");
+                                item3.className = 'noticeItem';
+                                let payDayList = '';
+                                for (let pD in data[event].pay_day) {
+                                    payDayList = payDayList
+                                        ? payDayList + '<br>' + data[event].pay_day[pD] 
+                                        : data[event].pay_day[pD]
+                                    ;
+                                }
+                                item3.innerHTML = payDayList;
+
+                                div3.appendChild(title3);
+                                div3.appendChild(item3);
+                                dd.appendChild(div3);
+                            }                            
+
+                            dl.appendChild(dt);
+                            dl.appendChild(dd);
+                        }
+                    }
+                }
+            }
+            break;
+
         case 'registerEvent':
             var param = "function=" + "register_event"
-                + "&recruit="       + encodeURIComponent(paramDB.recruit)
-                + "&event="         + encodeURIComponent(paramDB.eventName)
-                + "&pass="          + encodeURIComponent(paramDB.pass)
-                + "&firstDay="      + encodeURIComponent(paramDB.firstDay)
-                + "&endDay="        + encodeURIComponent(paramDB.endDay)
-                + "&start_time="    + encodeURIComponent(paramDB.start_time)
-                + "&end_time="      + encodeURIComponent(paramDB.end_time)
-                + "&shiftUrl="      + encodeURIComponent(paramDB.shiftUrl)
-                + "&staffList="     + encodeURIComponent(paramDB.staffList)
+                + "&recruit="               + encodeURIComponent(paramDB.recruit)
+                + "&event="                 + encodeURIComponent(paramDB.eventName)
+                + "&pass="                  + encodeURIComponent(paramDB.pass)
+                + "&firstDay="              + encodeURIComponent(paramDB.firstDay)
+                + "&endDay="                + encodeURIComponent(paramDB.endDay)
+                + "&startTime="             + encodeURIComponent(paramDB.startTime)
+                + "&endTime="               + encodeURIComponent(paramDB.endTime)
+                + "&hourlyWage="            + encodeURIComponent(paramDB.hourlyWage)
+                + "&transportationLimit="   + encodeURIComponent(paramDB.transportationLimit)
+                + "&mealAllowance="         + encodeURIComponent(paramDB.mealAllowance)
+                + "&manager="               + encodeURIComponent(paramDB.manager)
+                + "&shiftUrl="              + encodeURIComponent(paramDB.shiftUrl)
+                + "&payDay="                + encodeURIComponent(paramDB.payDay)
             ;
 
             xmlhttp.onreadystatechange = function() {
@@ -1017,15 +1292,19 @@ function opDB(op, paramDB) {
 
         case 'updateEvent':
             var param = "function=" + "update_event"
-                + "&recruit="       + encodeURIComponent(paramDB.recruit)
-                + "&event="         + encodeURIComponent(paramDB.eventName)
-                + "&pass="          + encodeURIComponent(paramDB.pass)
-                + "&firstDay="      + encodeURIComponent(paramDB.firstDay)
-                + "&endDay="        + encodeURIComponent(paramDB.endDay)
-                + "&start_time="    + encodeURIComponent(paramDB.start_time)
-                + "&end_time="      + encodeURIComponent(paramDB.end_time)
-                + "&shiftUrl="      + encodeURIComponent(paramDB.shiftUrl)
-                + "&staffList="     + encodeURIComponent(paramDB.staffList)
+                + "&recruit="               + encodeURIComponent(paramDB.recruit)
+                + "&event="                 + encodeURIComponent(paramDB.eventName)
+                + "&pass="                  + encodeURIComponent(paramDB.pass)
+                + "&firstDay="              + encodeURIComponent(paramDB.firstDay)
+                + "&endDay="                + encodeURIComponent(paramDB.endDay)
+                + "&startTime="             + encodeURIComponent(paramDB.startTime)
+                + "&endTime="               + encodeURIComponent(paramDB.endTime)
+                + "&hourlyWage="            + encodeURIComponent(paramDB.hourlyWage)
+                + "&transportationLimit="   + encodeURIComponent(paramDB.transportationLimit)
+                + "&mealAllowance="         + encodeURIComponent(paramDB.mealAllowance)
+                + "&manager="               + encodeURIComponent(paramDB.manager)
+                + "&shiftUrl="              + encodeURIComponent(paramDB.shiftUrl)
+                + "&payDay="                + encodeURIComponent(paramDB.payDay)
             ;
 
             xmlhttp.onreadystatechange = function() {
@@ -1069,12 +1348,6 @@ function opDB(op, paramDB) {
             ;
 
             xmlhttp.onreadystatechange = function() {
-                // document.getElementById("staff").innerText = '';
-                const staff = document.getElementById("staff");
-                Array.from(staff.querySelectorAll("div")).forEach(function(e) {
-                    e.remove();
-                });
-
                 const selectStaff = document.getElementById("selectStampInfoStaff");
                 Array.from(selectStaff.querySelectorAll("option")).forEach(function(e) {
                     e.remove();
@@ -1087,6 +1360,16 @@ function opDB(op, paramDB) {
                     }
                 });
 
+                const deleteStaffName = document.getElementById("deleteStaffName");
+                Array.from(deleteStaffName.querySelectorAll("option")).forEach(function(e) {
+                    e.remove();
+                });
+                var InitialV = document.createElement("option"); 
+                InitialV.text = '';
+                InitialV.value = '';
+                InitialV.hidden = true;
+                deleteStaffName.appendChild(InitialV);
+
                 const payslipTable = document.getElementById("payslipArea").querySelector("tbody");
                 Array.from(payslipTable.querySelectorAll("tr")).forEach(function(e) {
                     if (!e.id) {
@@ -1094,44 +1377,18 @@ function opDB(op, paramDB) {
                     }
                 });
 
+
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
 
-                    let staffList = '';
                     if (data) {
                         Object.keys(data).forEach(function(key) {
-
-                            // イベント情報用のリスト作成
-                            staffList = staffList 
-                                + data[key].no + ':' 
-                                + data[key].name + ':' 
-                                + data[key].mail + ':' 
-                                + data[key].birthday + '\n'
-                            ;
-                            var div = document.createElement("div");
-                            var name = document.createElement("p");
-                            var mail = document.createElement("p");
-                            var birthday = document.createElement("p");
-                            name.innerText = data[key].no + '.' + data[key].name;
-                            name.id = 'staffName';
-                            mail.innerText = data[key].mail;
-                            mail.id = 'staffMail';
-                            birthday.innerText = data[key].birthday.substr(0, 4) 
-                                + '-' + data[key].birthday.substr(4, 2)
-                                + '-' + data[key].birthday.substr(6, 2);
-                            birthday.id = 'staffBirthday';
-                            div.appendChild(name);
-                            div.appendChild(mail);
-                            div.appendChild(birthday);
-                            staff.appendChild(div);
-
 
                             // 勤怠情報表示
                             var tr = document.createElement("tr");
                             var tr2 = document.createElement("tr");
                             workReportInfoTable.appendChild(tr);
                             workReportInfoTable.appendChild(tr2);
-
                             var nextParamDB = {
                                 'event' : paramDB['event'],
                                 'no'    : data[key].no,
@@ -1149,39 +1406,159 @@ function opDB(op, paramDB) {
                             selectStaff.appendChild(option);
 
 
-                            // 給与明細
+                            // スタッフ削除
+                            var option2 = document.createElement("option");
+                            option2.text = data[key].no + '.' + data[key].name;
+                            option2.value = data[key].name;
+                            deleteStaffName.appendChild(option2);
+
+
+                            // スタッフリスト
                             var tr3 = document.createElement("tr");
+
+                            // 氏名
                             var staffName = document.createElement("td");
-                            staffName.innerText = data[key].name;
-                            staffName.className = 'w15';
-                            tr3.appendChild(staffName);
+                            staffName.innerText = data[key].no + '.' + data[key].name;
+                            staffName.className = 'w15 sticky3 textLeft';
+                            
+                            // 就業規則
+                            var workRules       = document.createElement("td");
+                            workRules.className = 'w10';
+                            var workRulesP              = document.createElement("p");
+                            workRulesP.innerText        = data[key].work_rules;
+                            workRulesP.style.fontWeight = 'bold';
+                            var workRulesI           = document.createElement('input');
+                            workRulesI.type          = "checkbox";
+                            workRulesI.checked       = data[key].work_rules == 'レ' ? true : false; 
+                            workRules.appendChild(workRulesP);
+                            workRules.appendChild(workRulesI);
+                            
+                            // 経験者手当
+                            var experience       = document.createElement("td");
+                            experience.className = 'w10';
+                            var experienceP       = document.createElement("p");
+                            if (data[key].experience) {
+                                experienceP.innerText = data[key].experience + '円';
+                            }
+                            var experienceI             = document.createElement('input');
+                            experienceI.value           = data[key].experience;
+                            experienceI.type            = "text";
+                            experience.appendChild(experienceP);
+                            experience.appendChild(experienceI);
+                            
+                            // 利用駅
+                            var station = document.createElement("td");
+                            station.innerText = data[key].station;
+                            station.className = 'w10';
 
-                            var payslipUrl = document.createElement("td");
-                            payslipUrl.className = 'w70 textLeft';
+                            // 交通費
+                            var transportation = document.createElement("td");
+                            if (data[key].transportation) {
+                                transportation.innerText = data[key].transportation + '円';
+                            }
+                            transportation.className = 'w10';
 
+                            // 銀行口座
+                            var bank = document.createElement("td");
+                            if (data[key].bank) {
+                                bank.innerHTML = data[key].bank.replaceAll("_", "<br>");   
+                            }
+                            bank.className = 'w30 textLeft';                            
+
+                            // 給与明細URL
+                            var payslipUrl       = document.createElement("td");
+                            payslipUrl.className = 'w30 textLeft';
                             if (data[key].payslip) {
                                 data[key].payslip.split(/\n/).forEach(function(val) {
-                                    var a = document.createElement("a");
-                                    a.innerText = val;
-                                    a.href = val;
-                                    a.target = "_blank";
-                                    a.style.display = "block";
-                                    payslipUrl.appendChild(a);
+                                    var payslipUrlA             = document.createElement("a");
+                                    payslipUrlA.innerText       = val;
+                                    payslipUrlA.href            = val;
+                                    payslipUrlA.target          = "_blank";
+                                    payslipUrlA.style.display   = "block";
+                                    payslipUrl.appendChild(payslipUrlA);
                                 });
                             }
-                            
-                            var textarea = document.createElement("textarea");
-                            textarea.innerHTML = data[key].payslip;
-                            textarea.name = "payslip";
-                            payslipUrl.appendChild(textarea);
+                            var payslipUrlT         = document.createElement("textarea");
+                            payslipUrlT.innerHTML   = data[key].payslip;
+                            payslipUrlT.name        = "payslip";
+                            payslipUrl.appendChild(payslipUrlT);
+
+                            // Tシャツ
+                            var tShirt       = document.createElement("td");
+                            tShirt.className = 'w10';
+                            var tShirtP              = document.createElement("p");
+                            tShirtP.innerText        = data[key].t_shirt;
+                            tShirtP.style.fontWeight = 'bold';
+                            var tShirtI           = document.createElement('input');
+                            tShirtI.type          = "checkbox";
+                            tShirtI.checked       = data[key].t_shirt == 'レ' ? true : false; 
+                            tShirt.appendChild(tShirtP);
+                            tShirt.appendChild(tShirtI);
+
+
+                            tr3.appendChild(staffName);
+                            tr3.appendChild(workRules);
+                            tr3.appendChild(experience);
+                            tr3.appendChild(station);
+                            tr3.appendChild(transportation);
+                            tr3.appendChild(bank);
                             tr3.appendChild(payslipUrl);
+                            tr3.appendChild(tShirt);
 
                             payslipTable.appendChild(tr3);
                         });
                     }
+                }
+            }
+            break;
+            
+        case 'deleteStaffList':
+            var param = "function=" + "delete_staff_list"
+                + "&event="         + encodeURIComponent(paramDB.event)
+                + "&name="         + encodeURIComponent(paramDB.name)
+            ;
 
-                    // イベント情報表示
-                    document.getElementById("inputStaff").innerHTML = staffList;
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    // 登録完了
+                    if (this.response == 1) {
+                        // console.log(this.response, '登録');
+
+                        document.getElementById("deleteStaffMsg").innerText = '';
+
+                        getSelectEvent(paramDB.event);
+                    } else {
+                        document.getElementById("deleteStaffMsg").innerText = '*スタッフの削除に失敗しました。';
+                    }
+                }
+            }
+            break;
+
+        case 'registerStaffListAdd':
+            var param = "function=" + "register_staff_list_add"
+                + "&event="         + encodeURIComponent(paramDB.event)
+                + "&name="          + encodeURIComponent(paramDB.name)
+                + "&mail="          + encodeURIComponent(paramDB.mail)
+                + "&birthday="      + encodeURIComponent(paramDB.birthday)
+            ;
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    // 登録完了
+                    if (this.response == 1) {
+                        // console.log(this.response, '登録');
+
+                        document.getElementById("addStaffMsg").innerText = '';
+                        document.getElementById("addStaffName").value = '';
+                        document.getElementById("addStaffMail").value = '';
+                        document.getElementById("addStaffBirthday").value = 'yyyymmdd';
+
+                        getSelectEvent(paramDB.event);
+                    } else {
+                        document.getElementById("addStaffMsg").innerText = 'スタッフの追加ができませんでした。';
+                    }
                 }
             }
             break;
@@ -1193,14 +1570,13 @@ function opDB(op, paramDB) {
             ;
 
             xmlhttp.onreadystatechange = function() {
-                    console.log(this.readyState + ':' + this.response);
                 if (this.readyState == 4 && this.status == 200) {
                     if (this.response == 1) {
                         // console.log(this.response, '登録');
 
                         getSelectEvent(paramDB.event);
                     } else {
-                        document.getElementById("payslipMsg").innerText = '給与明細が更新できませんでした。';
+                        document.getElementById("payslipMsg").innerText = 'スタッフリストが更新できませんでした。';
                     }
                 }
             }

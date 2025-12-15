@@ -149,7 +149,7 @@ function staffLogin() {
             };
             opDB('staffLogin', paramDB);
         }
-    }    
+    }
 }
 
 
@@ -1008,7 +1008,7 @@ function opDB(op, paramDB) {
                     let i = 1;
                     Object.keys(data).forEach(function(key) {
 
-                        animeNewsStart= document.getElementById("openNews").animate(
+                        animeNewsStart = document.getElementById("openNews").animate(
                             [{ background : '#fff' }, { background : '#dc4618ff' }],
                             { duration: 2000, iterations: Infinity }
                         );

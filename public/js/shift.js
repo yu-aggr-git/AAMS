@@ -721,6 +721,7 @@ function getShiftDayInfo(value) {
 
         // 表示時間
         var timeA = displayDay[key].split(/_/);
+        console.log(startTimeH,timeA );
         var timeSH = Number(timeA[0].split(/:/)[0]);
         var timeEH = Number(timeA[1].split(/:/)[0]);
         startTimeH  = startTimeH < timeSH ? startTimeH : timeSH;
@@ -747,9 +748,13 @@ function getShiftDayInfo(value) {
                 var td = document.createElement("td");
                 td.innerText = "　";
                 if (
-                    h >= Number(startA[0]) &&
                     (
-                        h < Number(endA[0]) || 
+                        (h > Number(startA[0]) ) || 
+                        (h == Number(startA[0]) && m >= Number(startA[1]))
+
+                    ) &&
+                    (
+                        (h < Number(endA[0]) )|| 
                         (h == Number(endA[0]) && m <= Number(endA[1]))
                     )
                 ) {
@@ -856,7 +861,7 @@ function registerShiftChangeInfo(id) {
                     }
                 });
 
-                if (!selectDay && inputS == '×' && inputE == '×') {
+                if (!selectDay && inputS == beforeA[1] && inputE == beforeA[2]) {
                     // 内容確認
                     msg = '内容が変更されていません。';
                 }
@@ -1088,6 +1093,7 @@ function opDB(op, paramDB) {
                         document.getElementById("endDay").innerText     = data.end_day;
                         document.getElementById("startTime").innerText  = data.start_time;
                         document.getElementById("endTime").innerText    = data.end_time;
+                        document.getElementById("manager").innerText    = '現場責任者：' + (data.manager ? data.manager : '');
                         
                         const firstDay  = data.first_day.split(/-/);
                         const endDay    = data.end_day.split(/-/);                    
@@ -1631,14 +1637,21 @@ function opDB(op, paramDB) {
                         });
 
                         // 合計人数
+                        const adminUser = window.localStorage.getItem("adminUser");
                         for (let key in sum) {
                             var clacNum = Number(sum[key]) - Number(requiredNumÅ[key]);
 
-                            document.getElementById("totalNum_" + key).innerHTML = 
-                                '必要:' + requiredNumÅ[key] + '<br>'
-                                + '出:' + sum[key]
-                                + ' 差:' + clacNum
-                            ;
+                            if (adminUser) {
+                                document.getElementById("totalNum_" + key).innerHTML = 
+                                    '必要:' + requiredNumÅ[key] + '<br>'
+                                    + '出:' + sum[key]
+                                    + ' 差:' + clacNum
+                                ;
+                            } else {
+                                document.getElementById("totalNum_" + key).style.display = 'none';
+                            }
+
+                            
                         }
                     }
                 }

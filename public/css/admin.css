@@ -134,12 +134,98 @@ html::-webkit-scrollbar {
     }
 
 
+
+/* ───────────────────────────────────────────────────
+   イベント通知
+   ……………………………………………………………………………………………………………………………………… */
+
+   #eventInfoNoticeArea {
+        display         : none;
+        display         : flex;
+        margin-top      : 10vmin;
+        justify-content : space-between;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #eventInfoNoticeArea > dl {
+        width           : 70%;
+        margin          : 1vmin 0;
+        display         : flex;
+        flex-wrap       : wrap;
+    }
+    #eventInfoNoticeArea > dl > dt,
+    #eventInfoNoticeArea > dl > dd {
+        margin          : 0;
+        padding         : 1vmin;
+        border          : 0.1vmin solid #666; 
+        border-top      : none;
+        font-size       : 1.5vmin;
+        overflow-wrap   : anywhere;
+    }
+    #eventInfoNoticeArea > dl > dt:first-of-type,
+    #eventInfoNoticeArea > dl > dd:first-of-type {
+        background : #ececec;
+        border-top : 0.1vmin solid #666;
+    }
+    #eventInfoNoticeArea > dl > dt {
+        width           : 20%;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #eventInfoNoticeArea > dl > dd {
+        width           : 60%;
+        padding         : 0;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #eventInfoNoticeArea > dl > dd > div {
+        width           : 100%;
+        height          : 100%;
+        border-top      : 0.1vmin solid #e1e1e1;
+        display         : flex;
+        justify-content : start;
+        align-items     : center;
+    }
+    #eventInfoNoticeArea > dl > dd > div:first-child {
+        border-top : none; 
+    }
+    #eventInfoNoticeArea > dl > dd > div > .noticeTitle {
+        background      : #eaeaea;
+        width           : 20%;
+        height          : 100%;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #eventInfoNoticeArea > dl > dd > div > .noticeItem {
+        width       : 70%;
+        padding     : 0.5vmin 2vmin;
+    }
+    #eventInfoNoticeArea > dl > dd > div > .noticeItem > .noticeTitleA {
+        margin         : 1vmin 0;
+    }
+    #eventInfoNoticeArea > dl > dd > div > .noticeItem > .noticeTitleA span {
+        padding         : 0.1vmin 0.5vmin;
+        margin-left     : 1vmin;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
+    }
+
+
+
+    
+
+
 /* ───────────────────────────────────────────────────
    イベント情報
    ……………………………………………………………………………………………………………………………………… */
 
    #eventInfoArea {
-        display         : flex;
+        display         : none;
+        /* display         : flex; */
         justify-content : space-between;
         align-items     : center;
         flex-flow       : column;
@@ -187,7 +273,7 @@ html::-webkit-scrollbar {
         border          : 0.1vmin solid #666; 
         border-top      : none;
         font-size       : 1.5vmin;
-        overflow-wrap   : break-word;
+        overflow-wrap   : anywhere;
     }
     #eventInfoArea > dl > dt {
         width       : 30%;
@@ -202,35 +288,6 @@ html::-webkit-scrollbar {
     }
     #eventInfoArea > dl > dd > #shiftUrl {
         overflow: auto;
-    }
-    #eventInfoArea > dl > dd > #staff {
-        width : 100%;
-    }
-    #eventInfoArea > dl > dd > #staff > div {
-        border-bottom   : 0.1vmin solid #e1e1e1; 
-        display         : flex;
-        justify-content : center;
-        align-items     : center; 
-    }
-    #eventInfoArea > dl > dd > #staff > div:last-child {
-        border-bottom   : none; 
-    }
-    #eventInfoArea > dl > dd > #staff > div > #staffName {
-        width           : 30%;
-        padding         : 0.5vmin;
-        border-right    : 0.1vmin solid #e1e1e1;
-        word-break      : break-all;
-    }
-    #eventInfoArea > dl > dd > #staff > div > #staffMail {
-        width           : 45%;
-        padding         : 0.5vmin;
-        border-right    : 0.1vmin solid #e1e1e1;
-        word-break      : break-all;
-    }
-    #eventInfoArea > dl > dd > #staff > div > #staffBirthday {
-        width       : 20%;
-        padding     : 0.5vmin;
-        word-break  : break-all;
     }
     #eventInfoArea > dl > dd > #pass {
         color: #919191;
@@ -251,6 +308,17 @@ html::-webkit-scrollbar {
         -webkit-appearance  : none;
         appearance          : none;
     }
+    #eventInfoArea > dl > dd > #inputPayDayArea {
+        width           : 100%;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+        flex-flow       : column;
+    }
+    #eventInfoArea > dl > dd > #inputPayDayArea > div {
+        margin: 1vmin 0;
+    }
+    #eventInfoArea > dl > dd > #inputPayDayArea > div,
     #eventInfoArea > dl > dd > #inputFirstDayArea,
     #eventInfoArea > dl > dd > #inputEndDayArea,
     #eventInfoArea > dl > dd > #inputTimeArea {
@@ -259,6 +327,7 @@ html::-webkit-scrollbar {
         justify-content : center;
         align-items     : center;
     }
+    #eventInfoArea > dl > dd > #inputPayDayArea > div > select,
     #eventInfoArea > dl > dd > #inputFirstDayArea > select,
     #eventInfoArea > dl > dd > #inputEndDayArea > select,
     #eventInfoArea > dl > dd > #inputTimeArea > select {
@@ -267,6 +336,9 @@ html::-webkit-scrollbar {
         text-align      : center;
         text-align-last : center;
     }
+    #eventInfoArea > dl > dd > #inputHourlyWage,
+    #eventInfoArea > dl > dd > #inputTransportationLimit,
+    #eventInfoArea > dl > dd > #inputMealAllowance,
     #eventInfoArea > dl > dd > #inputRecruit {
         width           : 40%;
         margin          : 0 1vmin;
@@ -684,7 +756,7 @@ html::-webkit-scrollbar {
 
 
 /* ───────────────────────────────────────────────────
-   給与明細
+   スタッフリスト
    ……………………………………………………………………………………………………………………………………… */
     #payslipAreaOpen {
         display: none;
@@ -733,8 +805,12 @@ html::-webkit-scrollbar {
     }
     #payslipArea > #payslipList {
         width           : 100%;
+        max-height      : 60vmin;
         margin-top      : 2vmin;
         overflow-x      : auto;
+    }
+    #payslipArea > #payslipList::-webkit-scrollbar {
+        display: none;
     }
     #payslipArea > #payslipList > table {
         width           : 100%;
@@ -750,7 +826,7 @@ html::-webkit-scrollbar {
     }
     #payslipArea td,
     #payslipArea th {
-        width           : 15vmin;
+        background      : #fff;
         margin          : 0;
         padding         : 0 1.5vmin;
         font-size       : 2vmin;
@@ -762,32 +838,172 @@ html::-webkit-scrollbar {
     #payslipArea th {
         background : #ececec;
     }
-    #payslipArea .w15 {
-        width : 20%;
+    #payslipArea td > p,
+    #payslipArea td > a {
+        overflow : auto;
     }
-    #payslipArea .w70 {
-        width   : 80%;
-        padding : 0.5vmin 1.5vmin;
+    #payslipArea td > p::-webkit-scrollbar,
+    #payslipArea td > a::-webkit-scrollbar {
+        display: none;
+    }
+    #payslipArea .w10 {
+        width : 10vmin;
+    }
+    #payslipArea .w15 {
+        width : 15vmin;
+    }
+    #payslipArea .w30 {
+        width           : 30vmin;
+        padding         : 0.5vmin 1.5vmin;
+        white-space     : nowrap;
+    }
+    #payslipArea .w30::-webkit-scrollbar {
+        display: none;
     }
     #payslipArea .textLeft {
         text-align : left;
     }
+    #payslipArea > #payslipList > table input[type="text"],
     #payslipArea > #payslipList > table textarea {
         display             : none;
         background          : #ececec;
         width               : 95%;
         margin              : 0.5vmin 0;
         padding             : 0.5vmin 2.5%;
-        height              : 4vmin;
         border              : 0.1vmin solid #666;
         border-radius       : 100vh;
         font-size           : 2vmin;
+        text-align          : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+        white-space         : nowrap;
+    }
+    #payslipArea > #payslipList > table textarea {
+        height              : 4vmin;
         text-align          : left;
+        border-radius       : 1vh;
+    }
+    #payslipArea > #payslipList > table input[type="checkbox"] {
+        display             : none;
+        background          : #ececec;
+        width               : 3vmin;
+        height              : 3vmin;
+        margin              : auto;
+        border              : 0.1vmin solid #666;
+        font-size           : 2vmin;
+        font-weight         : bold;
+        text-align          : center;
         cursor              : pointer;
         outline             : none;
         -webkit-appearance  : none;
         appearance          : none;
     }
+    #payslipArea > #payslipList > table input[type="checkbox"]::before {
+        content: '✔';
+        visibility: hidden;
+    }
+    #payslipArea > #payslipList > table input[type="checkbox"]:checked::before {
+       visibility: visible;
+    }
+    #payslipArea > #payslipList > table textarea::-webkit-scrollbar {
+        display: none;
+    }
+    #payslipArea .sticky1 {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+        z-index         : 9;
+    }
+    #payslipArea .sticky2 {
+        position        : sticky;
+        top             : 0;
+        z-index         : 8;
+    }
+    #payslipArea .sticky3 {
+        position        : sticky;
+        top             : 0;
+        left            : 0;
+        z-index         : 7;
+    }
+    #payslipArea > #deleteStaff,
+    #payslipArea > #addStaff {
+        margin-top      : 5vmin;
+        margin-right    : auto;
+        overflow        : visible;
+        display         : flex;
+        justify-content : center;
+        align-items     : start;
+        flex-flow       : column;
+        flex-wrap       : wrap;
+    }
+    #payslipArea > #deleteStaff > #sendDeleteStaff,
+    #payslipArea > #addStaff > #sendAddStaff {
+        background      : #000;
+        margin-left     : 50vmin;
+        color           : #fff;
+    
+    }
+    #payslipArea > #deleteStaff > p,
+    #payslipArea > #addStaff > p {
+        width           : 100%;
+        font-size       : 2vmin;
+    }
+    #payslipArea dl {
+        width       : 60vmin;
+        margin      : 1.5vmin 0 1.5vmin 3vmin;
+        display     : flex;
+        flex-wrap   : wrap;
+    }
+    #payslipArea dl > dt,
+    #payslipArea dl > dd {
+        margin          : 0;
+        padding         : 1vmin;
+        border          : 0.1vmin solid #666;
+        font-size       : 2vmin;
+        overflow-wrap   : anywhere;
+    }
+    #payslipArea dl > dt {
+        background      : #ececec;
+        width           : 20%;
+        font-weight     : bold;
+        text-align      : center;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #payslipArea dl > dd {
+        width           : 70%;
+        padding         : 0.5vmin;
+        border-left     : none;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #payslipArea dl > dd > select,
+    #payslipArea dl > dd > input {
+        background          : #ececec;
+        margin              : 1vmin 0;
+        padding             : 0;
+        width               : 80%;
+        height              : 4vh;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        text-align-last     : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #payslipArea dl > dd > select {
+        padding             : 0.5vmin 3vmin;
+        text-align          : left;
+        text-align-last     : left;
+    }
+
 
 
 /* ───────────────────────────────────────────────────
@@ -795,7 +1011,8 @@ html::-webkit-scrollbar {
    ……………………………………………………………………………………………………………………………………… */
 
     #newsArea {
-        display         : flex;
+        display         : none;
+        /* display         : flex; */
         justify-content : space-between;
         align-items     : center;
         flex-flow       : column;
@@ -843,7 +1060,7 @@ html::-webkit-scrollbar {
         border          : 0.1vmin solid #666; 
         border-top      : none;
         font-size       : 1.5vmin;
-        overflow-wrap   : break-word;
+        overflow-wrap   : anywhere;
     }
     #newsArea > #newsRegister > dl > dt {
         width       : 30%;

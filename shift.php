@@ -170,17 +170,21 @@
                 <table>
                     <tbody>
                         <tr>
-                            <th rowspan="2">イベント情報</th>
-                            <td rowspan="2" id="eventName"></td>
+                            <th rowspan="3">イベント情報</th>
+                            <td rowspan="3" id="eventName"></td>
+                            <td colspan="3" id="manager"></td>
+                        </tr>
+
+                        <tr>
                             <td id="firstDay"></td>
                             <td id="separator">～</td>
                             <td id="endDay"></td>
                         </tr>
+                            
+                        <tr>
                             <td id="startTime"></td>
                             <td id="separator2">-</td>
                             <td id="endTime"></td>
-                        <tr>
-
                         </tr>
                     </tbody>
                 </table>
