@@ -721,7 +721,6 @@ function getShiftDayInfo(value) {
 
         // 表示時間
         var timeA = displayDay[key].split(/_/);
-        console.log(startTimeH,timeA );
         var timeSH = Number(timeA[0].split(/:/)[0]);
         var timeEH = Number(timeA[1].split(/:/)[0]);
         startTimeH  = startTimeH < timeSH ? startTimeH : timeSH;
