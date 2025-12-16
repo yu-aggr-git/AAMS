@@ -352,6 +352,10 @@
                     </div>
                 </div>
 
+                <div id="photoListArea">
+                    <a id="photoList" href="" target="_blank">顔写真</a>
+                </div>
+
                 <div>
                     <table id="formInfoTable">
                         <tbody>
@@ -364,8 +368,6 @@
                     </table>
                 </div>
             </div>
-
-
         </div>
 
         <!-- フッター -->

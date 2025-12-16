@@ -1321,6 +1321,8 @@
 
     // ────応募リスト：取得─────────────────────────────
     function get_application_list_all($dbh, $param) {
+        global $config;
+        
         $query = "
             SELECT *
             FROM application_list
@@ -1335,9 +1337,11 @@
             'event' => $param['event']
         ]);
 
+        $employeeData['photoList'] = $config['photo_list'];
+
         // 結果を配列で取得
         while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-            $employeeData[] = $row;
+            $employeeData['applicationList'][] = $row;
         }
 
         // PHPの配列をJSON形式のデータに変換

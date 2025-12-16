@@ -1153,16 +1153,20 @@ function opDB(op, paramDB) {
                     const data = JSON.parse(this.response);
 
                     if (data) {
-                        Object.keys(data).forEach(function(key) {
+                        document.getElementById("photoList").href = data.photoList;
+
+                        Object.keys(data.applicationList).forEach(function(key) {
+                            var application = data.applicationList;
+
                             var tr = document.createElement("tr");
                             var tdClass = "";
 
                             // ステータス：表示
                             var status          = document.createElement("td");
                             var statusP         = document.createElement("p");
-                            statusP.innerText   = data[key].status;
+                            statusP.innerText   = application.status;
                             statusP.className   = "statusP";
-                            switch (data[key].status) {
+                            switch (application.status) {
                                 case '保留':
                                         statusP.style.background   = "#dbebc4";
                                     break;
@@ -1196,8 +1200,8 @@ function opDB(op, paramDB) {
                             // 氏名
                             var name        = document.createElement("td");
                             var nameB       = document.createElement("button");
-                            nameB.innerText = data[key].no + '.' + data[key].name;
-                            nameB.value     = data[key].event + ":" + data[key].mail;
+                            nameB.innerText = application.no + '.' + application.name;
+                            nameB.value     = application.event + ":" + application.mail;
                             nameB.className = "nameB";
                             name.className  = "sticky2 " + tdClass;
                             name.appendChild(nameB);
@@ -1209,10 +1213,10 @@ function opDB(op, paramDB) {
                             statusOption.forEach(function(o) {
                                 var option = document.createElement("option");
                                 option.text = o;
-                                option.value = data[key].event + ":" + data[key].mail + ":" + o;
+                                option.value = application.event + ":" + application.mail + ":" + o;
                                 statusSelect.appendChild(option);
                             });
-                            statusSelect.value          = data[key].event + ":" + data[key].mail + ":" + data[key].status;
+                            statusSelect.value          = application.event + ":" + application.mail + ":" + application.status;
                             statusSelect.style.display  = "none";
                             statusSelect.className      = "statusS";
                             status.className            = "sticky4 " + tdClass;
@@ -1222,14 +1226,14 @@ function opDB(op, paramDB) {
                             // 応募メモ
                             var memo        = document.createElement("td");
                             memo.innerHTML  = 
-                                '応募：' + data[key].created_dt.slice(5, 11).replace('-', '/')
-                                + '<br>' + data[key].memo.replaceAll("\n", "<br>")
+                                '応募：' + application.created_dt.slice(5, 11).replace('-', '/')
+                                + '<br>' + application.memo.replaceAll("\n", "<br>")
                             ;
                             memo.className = "textLeft " + tdClass;
                             tr.appendChild(memo);
 
                             // シフト希望
-                            var availableA  = data[key].available.split(/,/);
+                            var availableA  = application.available.split(/,/);
                             availableA.forEach(function(d) {
                                 var availablD = d.split(/_/);
 
