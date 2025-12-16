@@ -844,6 +844,7 @@
             }
         }
 
+
         // シフト変更希望リストの取得
         $query2 = "
             SELECT
@@ -871,8 +872,32 @@
             }
         }
 
-        // イベント支払日の取得
+
+        // 勤怠修正情報の取得
         $query3 = "
+            SELECT
+                event,
+                count(request_dt) AS count
+            FROM
+                work_report_edit
+            WHERE
+                status IN ('申請中', '訂正中')
+            GROUP BY
+                event
+            ;
+        ";
+        $sth3 = $dbh->prepare($query3, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth3->execute();
+        while ($row = $sth3->fetch(PDO::FETCH_ASSOC)) {
+            $event = $row['event'];
+
+            if ($event && $row['count'] >= 1) {
+                $employeeData[$event]['wr_request'] = $row['count'];
+            }
+        }
+
+        // イベント支払日の取得
+        $query4 = "
             SELECT
                 event,
                 pay_day
@@ -880,9 +905,9 @@
                 event
             ;
         ";
-        $sth3 = $dbh->prepare($query3, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $sth3->execute();
-        while ($row = $sth3->fetch(PDO::FETCH_ASSOC)) {
+        $sth4 = $dbh->prepare($query4, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth4->execute();
+        while ($row = $sth4->fetch(PDO::FETCH_ASSOC)) {
             $event = $row['event'];
 
             foreach (explode(",", $row['pay_day']) as $data) {

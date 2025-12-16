@@ -1156,7 +1156,7 @@ function opDB(op, paramDB) {
                         document.getElementById("photoList").href = data.photoList;
 
                         Object.keys(data.applicationList).forEach(function(key) {
-                            var application = data.applicationList;
+                            var application = data.applicationList[key];
 
                             var tr = document.createElement("tr");
                             var tdClass = "";

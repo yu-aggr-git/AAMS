@@ -1203,13 +1203,14 @@ function opDB(op, paramDB) {
                                 dd.appendChild(div1);
                             }
 
+
                             // シフト変更希望リスト
                             if ('sl_change' in data[event]) {
                                 var div2 = document.createElement("div");
 
                                 var title2        = document.createElement("div");
                                 var title2P       = document.createElement("p");
-                                title2P.innerText = '変更';
+                                title2P.innerText = '出勤変更';
                                 title2.className = 'noticeTitle';
                                 title2.appendChild(title2P);
 
@@ -1223,18 +1224,38 @@ function opDB(op, paramDB) {
                             }
 
 
-                            // 支払日
-                            if ('pay_day' in data[event]) {
+                            // 勤怠修正情報
+                            if ('wr_request' in data[event]) {
                                 var div3 = document.createElement("div");
 
-                                var title3        = document.createElement("din");
+                                var title3        = document.createElement("div");
                                 var title3P       = document.createElement("p");
-                                title3P.innerText = '支払日';
+                                title3P.innerText = '打刻修正';
                                 title3.className = 'noticeTitle';
                                 title3.appendChild(title3P);
 
                                 var item3       = document.createElement("p");
                                 item3.className = 'noticeItem';
+                                item3.innerText = '未承認： ' + data[event].wr_request + ' 件';
+
+                                div3.appendChild(title3);
+                                div3.appendChild(item3);
+                                dd.appendChild(div3);
+                            }
+
+
+                            // 支払日
+                            if ('pay_day' in data[event]) {
+                                var div4 = document.createElement("div");
+
+                                var title4        = document.createElement("din");
+                                var title4P       = document.createElement("p");
+                                title4P.innerText = '支払日';
+                                title4.className = 'noticeTitle';
+                                title4.appendChild(title4P);
+
+                                var item4       = document.createElement("p");
+                                item4.className = 'noticeItem';
                                 let payDayList = '';
                                 for (let pD in data[event].pay_day) {
                                     payDayList = payDayList
@@ -1242,11 +1263,11 @@ function opDB(op, paramDB) {
                                         : data[event].pay_day[pD]
                                     ;
                                 }
-                                item3.innerHTML = payDayList;
+                                item4.innerHTML = payDayList;
 
-                                div3.appendChild(title3);
-                                div3.appendChild(item3);
-                                dd.appendChild(div3);
+                                div4.appendChild(title4);
+                                div4.appendChild(item4);
+                                dd.appendChild(div4);
                             }                            
 
                             dl.appendChild(dt);
