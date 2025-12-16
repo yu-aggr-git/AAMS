@@ -517,8 +517,7 @@ html::-webkit-scrollbar {
         color           : #000;    
     }
     #stampInfoArea > #stampInfoEditMenu {
-        width           : 40%;
-        margin-top      : 2vmin;
+        width           : 70vmin;
         display         : flex;
         justify-content : space-between;
         align-items     : center;
@@ -543,14 +542,18 @@ html::-webkit-scrollbar {
         background      : #000;
         color           : #fff;
     }
+    #stampInfoArea > p {
+        width       : 70vmin;
+        margin-top  : 3vmin;
+        padding     : 0;
+        font-size   : 1.5vmin;
+    }
     #stampInfoArea > #stampInfoEditMsg {
-        width           : 50%;
-        margin          : 1vmin 0 0 0;
-        padding         : 0;
+        margin-top      : 0;
         font-size       : 2vmin;
     }
     #stampInfoArea > table {
-        width                       : 50%;
+        width                       : 70vmin;
         margin-top                  : 2vmin;
         border-collapse             : separate;
         border-spacing              : 0;
@@ -588,7 +591,7 @@ html::-webkit-scrollbar {
     #stampInfoArea > table select,
     #stampInfoArea > table input {
         background          : #ececec;
-        width               : 5vmin;
+        width               : 80%;
         margin              : 0.5vw 0;
         padding             : 0;
         height              : 4vh;
@@ -605,24 +608,15 @@ html::-webkit-scrollbar {
     #stampInfoArea > table input {
         width : 90%;
     }
-    #stampInfoArea > table .separator {
-        width : 2vmin;
-    }
-    #stampInfoArea > table #editStampInfoStart div,
-    #stampInfoArea > table #editStampInfoBreak1s div,
-    #stampInfoArea > table #editStampInfoBreak1e div,
-    #stampInfoArea > table #editStampInfoBreak2s div,
-    #stampInfoArea > table #editStampInfoBreak2e div,
-    #stampInfoArea > table #editStampInfoBreak3s div,
-    #stampInfoArea > table #editStampInfoBreak3e div,
-    #stampInfoArea > table #editStampInfoEnd div {
-        display         : flex;
-        justify-content : center;
-        align-items     : center; 
-    }
     #stampInfoArea > table #stampInfoEvent {
         padding         : 0 5vmin;
         white-space     : normal;
+    }
+
+    #stampInfoArea > table .sepTh {
+        background  : transparent;
+        height      : 1vmin;
+        border      : none;
     }
 
 

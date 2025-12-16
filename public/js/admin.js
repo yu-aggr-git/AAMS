@@ -67,7 +67,7 @@ window.onload = () => {
 
     // ───打刻情報の表示──────────────────────────────────────────────────────────────
     document.getElementById("sendStampInfo").onclick = function() {
-        document.getElementById("stampInfoEditMsg").innerHTML = '';
+        document.getElementById("stampInfoEditMsg").innerText = '';
 
         const selectEvent = document.getElementById("eventName").textContent;
         const selectStaff = document.getElementById("selectStampInfoStaff").value;
@@ -83,14 +83,8 @@ window.onload = () => {
 
     
     // ───打刻情報の修正──────────────────────────────────────────────────────────────
-    document.getElementById("editStampInfoEdit").onclick = function() {
-        stampInfoEdit(this.id);
-    }
-    document.getElementById("cancelStampInfoEdit").onclick = function() {
-        stampInfoEdit(this.id);
-    }
     document.getElementById("sendStampInfoEdit").onclick = function() {
-        stampInfoEdit(this.id);
+        stampInfoEdit();
     }
    
 
@@ -201,14 +195,6 @@ function getSelectEvent(selectEvent) {
     document.getElementById("stampInfoEvent").innerText         = '';
     document.getElementById("stampInfoStaff").innerText         = '';
     document.getElementById("stampInfoDay").innerText           = '';
-    document.getElementById("stampInfoStart").innerText         = '';
-    document.getElementById("stampInfoBreak1s").innerText       = '';
-    document.getElementById("stampInfoBreak1e").innerText       = '';
-    document.getElementById("stampInfoBreak2s").innerText       = '';
-    document.getElementById("stampInfoBreak2e").innerText       = '';
-    document.getElementById("stampInfoBreak3s").innerText       = '';
-    document.getElementById("stampInfoBreak3e").innerText       = '';
-    document.getElementById("stampInfoEnd").innerText           = '';
     document.getElementById("workReportInfoEditMsg").innerText  = '';
     document.getElementById("payslipMsg").innerText             = '';
     const approve = document.getElementById('approveWorkReportInfo');
@@ -476,175 +462,69 @@ function eventEdit(id) {
 
 
 // 打刻情報の修正
-function stampInfoEdit(id) {
-    switch (id) {
-        case 'editStampInfoEdit':
-            document.getElementById("stampInfoEditMsg").innerHTML = '';
+function stampInfoEdit() {
+    document.getElementById("stampInfoEditMsg").innerText = '';
 
-            var itemList = {
-                'block' : [
-                    'cancelStampInfoEdit',
-                    'sendStampInfoEdit',
-                ],
-                'none'  : [
-                    'editStampInfoEdit',
-                    'stampInfoStart',
-                    'stampInfoBreak1s',
-                    'stampInfoBreak1e',
-                    'stampInfoBreak2s',
-                    'stampInfoBreak2e',
-                    'stampInfoBreak3s',
-                    'stampInfoBreak3e',
-                    'stampInfoEnd',
-                ],
-                'table-row'  : [
-                    'stampInfoReason'
-                ],
-                'table-cell'  : [
-                    'editStampInfoStart',
-                    'editStampInfoBreak1s',
-                    'editStampInfoBreak1e',
-                    'editStampInfoBreak2s',
-                    'editStampInfoBreak2e',
-                    'editStampInfoBreak3s',
-                    'editStampInfoBreak3e',
-                    'editStampInfoEnd',
-                ]
-            }
-            opView(itemList);
+    const inputEvent    = document.getElementById("stampInfoEvent").textContent;
+    const inputStaff    = document.getElementById("stampInfoStaff").textContent;
+    const inputDay      = document.getElementById("stampInfoDay").textContent;
 
-            break;
-    
-        case 'cancelStampInfoEdit':
-            var itemList = {
-                'block' : [
-                    'editStampInfoEdit',
-                ],
-                'none'  : [
-                    'cancelStampInfoEdit',
-                    'sendStampInfoEdit',
-                    'editStampInfoStart',
-                    'editStampInfoBreak1s',
-                    'editStampInfoBreak1e',
-                    'editStampInfoBreak2s',
-                    'editStampInfoBreak2e',
-                    'editStampInfoBreak3s',
-                    'editStampInfoBreak3e',
-                    'editStampInfoEnd',
-                    'stampInfoReason',
-                ],
-                'table-cell'  : [
-                    'stampInfoStart',
-                    'stampInfoBreak1s',
-                    'stampInfoBreak1e',
-                    'stampInfoBreak2s',
-                    'stampInfoBreak2e',
-                    'stampInfoBreak3s',
-                    'stampInfoBreak3e',
-                    'stampInfoEnd',
-                ]
-            }
-            opView(itemList);
-            break;
+    if (!inputEvent || !inputStaff || !inputDay) {
+        document.getElementById("stampInfoEditMsg").innerText = '訂正したいスタッフと日付を選択してください。';
+    } else {
+        const inputReason   = document.getElementById("editStampInfoReason").value;
+        const input = {
+            'start'     : document.getElementById("startEdit").value,
+            'break1s'   : document.getElementById("break1sEdit").value,
+            'break1e'   : document.getElementById("break1eEdit").value,
+            'break2s'   : document.getElementById("break2sEdit").value,
+            'break2e'   : document.getElementById("break2eEdit").value,
+            'break3s'   : document.getElementById("break3sEdit").value,
+            'break3e'   : document.getElementById("break3eEdit").value,
+            'end'       : document.getElementById("endEdit").value,
+        }
 
-        case 'sendStampInfoEdit':
-            const inputEvent    = document.getElementById("stampInfoEvent").textContent;
-            const inputStaff    = document.getElementById("stampInfoStaff").textContent;
-            const inputDay      = document.getElementById("stampInfoDay").textContent;
-            const inputReason   = document.getElementById("editStampInfoReason").value;
-            const input = {
-                'start' : {
-                    "h" : document.getElementById("editStampInfoStartHour").value,
-                    "m" : document.getElementById("editStampInfoStartMinutes").value,
-                },
-                'break1s' : {
-                    "h" : document.getElementById("editStampInfoBreak1sHour").value,
-                    "m" : document.getElementById("editStampInfoBreak1sMinutes").value,
-                },
-                'break1e' : {
-                    "h" : document.getElementById("editStampInfoBreak1eHour").value,
-                    "m" : document.getElementById("editStampInfoBreak1eMinutes").value,
-                },
-                'break2s' : {
-                    "h" : document.getElementById("editStampInfoBreak2sHour").value,
-                    "m" : document.getElementById("editStampInfoBreak2sMinutes").value,
-                },
-                'break2e' : {
-                    "h" : document.getElementById("editStampInfoBreak2eHour").value,
-                    "m" : document.getElementById("editStampInfoBreak2eMinutes").value,
-                },
-                'break3s' : {
-                    "h" : document.getElementById("editStampInfoBreak3sHour").value,
-                    "m" : document.getElementById("editStampInfoBreak3sMinutes").value,
-                },
-                'break3e' : {
-                    "h" : document.getElementById("editStampInfoBreak3eHour").value,
-                    "m" : document.getElementById("editStampInfoBreak3eMinutes").value,
-                },
-                'end' : {
-                    "h" : document.getElementById("editStampInfoEndHour").value,
-                    "m" : document.getElementById("editStampInfoEndMinutes").value,
-                },
-            }
+        if (!inputReason) {
+            document.getElementById("stampInfoEditMsg").innerText = '申請理由に入力が必要です。';
+        } else {
+            const item = ['start', 'break1s', 'break1e', 'break2s', 'break2e', 'break3s', 'break3e', 'end'];
 
-            if (!inputReason) {
-                document.getElementById("stampInfoEditMsg").innerText = '申請理由に入力が必要です。';
-            } else {
-                const item = ['start', 'break1s', 'break1e', 'break2s', 'break2e', 'break3s', 'break3e', 'end'];
+            const result = window.confirm('打刻時間を訂正してよろしいですか？');
+            if (result) {
+                let msg = '';
 
-                const result = window.confirm('打刻時間を訂正してよろしいですか？');
-                if (result) {
-                    let msg = '';
+                let count = 0;                    
+                for(let i = 0; i < item.length; i++) {
+                    let dataBefore = '';
+                    let dataAfter = '';
 
-                    let count = 0;                    
-                    for(let i = 0; i < item.length; i++) {
-                        let dataBefore = '';
-                        let dataAfter = '';
-
-                        if (input[item[i]].h != '-' && input[item[i]].m != '-' ) {
-                            var itemU   = item[i].charAt(0).toUpperCase() + item[i].slice(1);
-
-                            dataBefore  = document.getElementById('stampInfo' + itemU).textContent;
-                            dataAfter   = input[item[i]].h + ':' + input[item[i]].m;
-                
-                            var paramDB = {
-                                'requestDt'  : date().yyyymmddhhmmss,
-                                'event'      : inputEvent,
-                                'name'       : inputStaff,
-                                'day'        : inputDay, 
-                                'item'       : item[i],
-                                'dataBefore' : dataBefore != '' ? dataBefore : '-',
-                                'dataAfter'  : dataAfter,
-                                'reason'     : inputReason,
-                                'status'     : '訂正中',
-                            };
-                            opDB('registerWorkReportEdit', paramDB);
-                        } else if (
-                            (input[item[i]].h == '-' && input[item[i]].m != '-' ) ||
-                            (input[item[i]].h != '-' && input[item[i]].m == '-' )
-                        ) {
-                            msg = msg
-                                + '\n' + itemName(item[i]) + '=' + input[item[i]].h + ':' + input[item[i]].m 
-                                + ' は訂正登録できません。';
-                        } else if (
-                            (input[item[i]].h == '×' && input[item[i]].m != '×' ) ||
-                            (input[item[i]].h != '×' && input[item[i]].m == '×' )
-                        ) {
-                            msg = msg
-                                + '\n' + itemName(item[i]) + '=' + input[item[i]].h + ':' + input[item[i]].m 
-                                + ' は訂正登録できません。';
-                        } else {
-                            count++;
-                            if (count == item.length) {
-                                msg = '訂正する時刻と分数を入力してください。';
-                            }
+                    if (input[item[i]] != '-') {
+                        dataBefore  = document.getElementById(item[i] + 'Stamp').textContent;
+                        dataAfter   = input[item[i]];
+            
+                        var paramDB = {
+                            'requestDt'  : date().yyyymmddhhmmss,
+                            'event'      : inputEvent,
+                            'name'       : inputStaff,
+                            'day'        : inputDay, 
+                            'item'       : item[i],
+                            'dataBefore' : dataBefore != '' ? dataBefore : '-',
+                            'dataAfter'  : dataAfter,
+                            'reason'     : inputReason,
+                            'status'     : '訂正中',
+                        };
+                        opDB('registerWorkReportEdit', paramDB);
+                    } else {
+                        count++;
+                        if (count == item.length) {
+                            msg = '訂正する項目が1つも入力されていません。';
                         }
                     }
-
-                    document.getElementById("stampInfoEditMsg").innerText = msg;
                 }
+
+                document.getElementById("stampInfoEditMsg").innerText = msg;
             }
-            break;
+        }
     }
 }
 
@@ -1765,33 +1645,69 @@ function opDB(op, paramDB) {
 
             xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    stampInfoEdit('cancelStampInfoEdit');
-
                     document.getElementById("stampInfoEvent").innerText     = paramDB['event'];
                     document.getElementById("stampInfoStaff").innerText     = paramDB['name'];
                     document.getElementById("stampInfoDay").innerText       = paramDB['day'];
-                    document.getElementById("stampInfoStart").innerText     = '';
-                    document.getElementById("stampInfoBreak1s").innerText   = '';
-                    document.getElementById("stampInfoBreak1e").innerText   = '';
-                    document.getElementById("stampInfoBreak2s").innerText   = '';
-                    document.getElementById("stampInfoBreak2e").innerText   = '';
-                    document.getElementById("stampInfoBreak3s").innerText   = '';
-                    document.getElementById("stampInfoBreak3e").innerText   = '';
-                    document.getElementById("stampInfoEnd").innerText       = '';
+                    document.getElementById("startStamp").innerText         = '';
+                    document.getElementById("break1sStamp").innerText       = '';
+                    document.getElementById("break1eStamp").innerText       = '';
+                    document.getElementById("break2sStamp").innerText       = '';
+                    document.getElementById("break2eStamp").innerText       = '';
+                    document.getElementById("break3sStamp").innerText       = '';
+                    document.getElementById("break3eStamp").innerText       = '';
+                    document.getElementById("endStamp").innerText           = '';
+                    document.getElementById("startWork").innerText          = '';
+                    document.getElementById("break1sWork").innerText        = '';
+                    document.getElementById("break1eWork").innerText        = '';
+                    document.getElementById("break2sWork").innerText        = '';
+                    document.getElementById("break2eWork").innerText        = '';
+                    document.getElementById("break3sWork").innerText        = '';
+                    document.getElementById("break3eWork").innerText        = '';
+                    document.getElementById("endWork").innerText            = '';
 
                     if (this.response) {
                         const data = JSON.parse(this.response);
 
-                        document.getElementById("stampInfoStart").innerText     = data.start;
-                        document.getElementById("stampInfoBreak1s").innerText   = data.break1s;
-                        document.getElementById("stampInfoBreak1e").innerText   = data.break1e;
-                        document.getElementById("stampInfoBreak2s").innerText   = data.break2s;
-                        document.getElementById("stampInfoBreak2e").innerText   = data.break2e;
-                        document.getElementById("stampInfoBreak3s").innerText   = data.break3s;
-                        document.getElementById("stampInfoBreak3e").innerText   = data.break3e;
-                        document.getElementById("stampInfoEnd").innerText       = data.end;
+                        // 打刻
+                        document.getElementById("startStamp").innerText     = data.start;
+                        document.getElementById("break1sStamp").innerText   = data.break1s;
+                        document.getElementById("break1eStamp").innerText   = data.break1e;
+                        document.getElementById("break2sStamp").innerText   = data.break2s;
+                        document.getElementById("break2eStamp").innerText   = data.break2e;
+                        document.getElementById("break3sStamp").innerText   = data.break3s;
+                        document.getElementById("break3eStamp").innerText   = data.break3e;
+                        document.getElementById("endStamp").innerText       = data.end;
+
+                        // 勤怠
+                        const timeRegex = /^[0-9]{1,2}:[0-9]{2}$|^[0-9]{1,2}:[0-9]{2}:[0-9]{2}$/;
+                        var startWork   = timeRegex.test(data.start)    ? ceil(data.start)   : '';
+                        var break1sWork = timeRegex.test(data.break1s)  ? ceil(data.break1s) : '';
+                        var break1eWork = timeRegex.test(data.break1e)  ? ceil(data.break1e) : '';
+                        var break2sWork = timeRegex.test(data.break2s)  ? ceil(data.break2s) : '';
+                        var break2eWork = timeRegex.test(data.break2e)  ? ceil(data.break2e) : '';
+                        var break3sWork = timeRegex.test(data.break3s)  ? ceil(data.break3s) : '';
+                        var break3eWork = timeRegex.test(data.break3e)  ? ceil(data.break3e) : '';
+                        var endWork     = ''
+                        if (timeRegex.test(data.end)) {
+                            var endA    = data.end.split(/:/);
+                            var min     = Math.floor(endA[1] / 15) * 15;
+                            var hour    = Number(endA[0]);
+                            if (timeRegex.test(startWork)) {
+                                var clacStartA = startWork.split(/:/);
+                                hour = hour + (Number(clacStartA[0]) > hour ? 24 : 0);
+                            }
+                            endWork  = hour + ':' + min.toString().padStart(2, '0');
+                        }
+                        
+                        document.getElementById("startWork").innerText      = startWork;
+                        document.getElementById("break1sWork").innerText    = break1sWork;
+                        document.getElementById("break1eWork").innerText    = break1eWork;
+                        document.getElementById("break2sWork").innerText    = break2sWork;
+                        document.getElementById("break2eWork").innerText    = break2eWork;
+                        document.getElementById("break3sWork").innerText    = break3sWork;
+                        document.getElementById("break3eWork").innerText    = break3eWork;
+                        document.getElementById("endWork").innerText        = endWork;   
                     }
-                    
                 }
             }
             break;
@@ -1962,8 +1878,9 @@ function opDB(op, paramDB) {
                     if (this.response == 1) {
                         // console.log(this.response, '登録');
 
+                        document.getElementById("stampInfoEditMsg").innerText = '';
+
                         getSelectEvent(paramDB.event);
-                        stampInfoEdit('cancelStampInfoEdit');
                     } else {
                         const msg = document.getElementById("stampInfoEditMsg").textContent;
                         document.getElementById("stampInfoEditMsg").innerText = msg 
@@ -1992,7 +1909,26 @@ function opDB(op, paramDB) {
                     if (this.response == 1) {
                         // console.log(this.response, '登録');
 
-                        stampInfoEdit('cancelStampInfoEdit');
+                        document.getElementById("stampInfoEvent").innerText     = '';
+                        document.getElementById("stampInfoStaff").innerText     = '';
+                        document.getElementById("stampInfoDay").innerText       = '';
+                        document.getElementById("startStamp").innerText         = '';
+                        document.getElementById("break1sStamp").innerText       = '';
+                        document.getElementById("break1eStamp").innerText       = '';
+                        document.getElementById("break2sStamp").innerText       = '';
+                        document.getElementById("break2eStamp").innerText       = '';
+                        document.getElementById("break3sStamp").innerText       = '';
+                        document.getElementById("break3eStamp").innerText       = '';
+                        document.getElementById("endStamp").innerText           = '';
+                        document.getElementById("startWork").innerText          = '';
+                        document.getElementById("break1sWork").innerText        = '';
+                        document.getElementById("break1eWork").innerText        = '';
+                        document.getElementById("break2sWork").innerText        = '';
+                        document.getElementById("break2eWork").innerText        = '';
+                        document.getElementById("break3sWork").innerText        = '';
+                        document.getElementById("break3eWork").innerText        = '';
+                        document.getElementById("endWork").innerText            = '';
+
                         getSelectEvent(paramDB.event);
                     } else {
                         document.getElementById("workReportInfoEditMsg").innerText = 'ステータス変更ができませんでした。';
@@ -2258,7 +2194,6 @@ function ceil(data) {
     
     return dataClac;
 }
-
 
 
 // 項目名

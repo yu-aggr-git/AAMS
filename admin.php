@@ -301,12 +301,12 @@
                     <button id="sendStampInfo" type="button">選択</button>
                 </div>
 
+                <p>● 訂正したい項目のみ入力してください。（*打刻を取消しする場合は「×:×」を選択）</p>
+
                 <div id="stampInfoEditMenu">
                     <div></div>
                     <div id="stampInfoEdit">
-                        <button type="button" id="editStampInfoEdit"   hidden>訂正</button>
-                        <button type="button" id="cancelStampInfoEdit" hidden>取消</button>
-                        <button type="button" id="sendStampInfoEdit"   hidden>送信</button>
+                        <button type="button" id="sendStampInfoEdit">送信</button>
                     </div>
                 </div>
 
@@ -315,211 +315,161 @@
                 <table>
                     <tbody>
                         <tr>
-                            <th>イベント名</th>
-                            <td colspan="2" id="stampInfoEvent"></td>
+                            <th colspan="2">イベント名</th>
+                            <td colspan="5" id="stampInfoEvent"></td>
                         </tr>
                         <tr>
-                            <th>スタッフ名</th>
-                            <td colspan="2" id="stampInfoStaff"></td>
+                            <th colspan="2">スタッフ名</th>
+                            <td colspan="5" id="stampInfoStaff"></td>
                         </tr>
                         <tr>
-                            <th>日付</th>
-                            <td colspan="2" id="stampInfoDay"></td>
+                            <th colspan="2">日付</th>
+                            <td colspan="5" id="stampInfoDay"></td>
                         </tr>
+                        <tr>
+                            <th colspan="7" class="sepTh"></th>
+                        </tr>
+                        <tr>
+                            <th>項目</th>
+                            <th colspan="2">打刻</th>
+                            <th colspan="2">勤怠</th>
+                            <th colspan="2">訂正</th>
+                        </tr>
+
                         <tr>
                             <th>出勤</th>
-                            <td colspan="2" id="stampInfoStart"></td>
-                            <td colspan="2" id="editStampInfoStart" hidden>
-                                <div>
-                                    <select id="editStampInfoStartHour">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 23; $i++) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                            <td colspan="2" id="startStamp"></td>
+                            <td colspan="2" id="startWork"></td>
+                            <td colspan="2">
+                                <select id="startEdit">
+                                    <option value="-">-</option>
+                                    <?php for ($h = 0; $h <= 23; $h ++) : ?>
+                                        <?php for ($m = 0; $m <= 45; $m += 15) : ?>
+                                            <?php $m = sprintf('%02d', $m) ?>
+                                            <option value="<?php echo $h . ':' . $m ?>"><?php echo $h . ':' . $m ?></option>
                                         <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                    <p class="separator">：</p>
-                                    <select id="editStampInfoStartMinutes">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 45; $i += 15) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                                        <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                </div>
+                                    <?php endfor; ?>
+                                    <option value="×:×">×:×</option>
+                                </select>
                             </td>
                         </tr>
+
                         <tr>
                             <th>休憩1</th>
-                            <td id="stampInfoBreak1s"></td>
-                            <td id="stampInfoBreak1e"></td>
-                            <td id="editStampInfoBreak1s" hidden>
-                                <div>
-                                    <select id="editStampInfoBreak1sHour">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 23; $i++) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                            <td id="break1sStamp"></td>
+                            <td id="break1eStamp"></td>
+                            <td id="break1sWork"></td>
+                            <td id="break1eWork"></td>
+                            <td>
+                                <select id="break1sEdit">
+                                    <option value="-">-</option>
+                                    <?php for ($h = 0; $h <= 23; $h ++) : ?>
+                                        <?php for ($m = 0; $m <= 45; $m += 15) : ?>
+                                            <?php $m = sprintf('%02d', $m) ?>
+                                            <option value="<?php echo $h . ':' . $m ?>"><?php echo $h . ':' . $m ?></option>
                                         <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                    <p class="separator">：</p>
-                                    <select id="editStampInfoBreak1sMinutes">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 45; $i += 15) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                                        <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                </div>
+                                    <?php endfor; ?>
+                                    <option value="×:×">×:×</option>
+                                </select>
                             </td>
-                            <td id="editStampInfoBreak1e" hidden>
-                                <div>
-                                    <select id="editStampInfoBreak1eHour">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 23; $i++) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                            <td>
+                                <select id="break1eEdit">
+                                    <option value="-">-</option>
+                                    <?php for ($h = 0; $h <= 23; $h ++) : ?>
+                                        <?php for ($m = 0; $m <= 45; $m += 15) : ?>
+                                            <?php $m = sprintf('%02d', $m) ?>
+                                            <option value="<?php echo $h . ':' . $m ?>"><?php echo $h . ':' . $m ?></option>
                                         <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                    <p class="separator">：</p>
-                                    <select id="editStampInfoBreak1eMinutes">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 45; $i += 15) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                                        <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                </div>
+                                    <?php endfor; ?>
+                                    <option value="×:×">×:×</option>
+                                </select>
                             </td>
                         </tr>
+
                         <tr>
                             <th>休憩2</th>
-                            <td id="stampInfoBreak2s"></td>
-                            <td id="stampInfoBreak2e"></td>
-                            <td id="editStampInfoBreak2s" hidden>
-                                <div>
-                                    <select id="editStampInfoBreak2sHour">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 23; $i++) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                            <td id="break2sStamp"></td>
+                            <td id="break2eStamp"></td>
+                            <td id="break2sWork"></td>
+                            <td id="break2eWork"></td>
+                            <td>
+                                <select id="break2sEdit">
+                                    <option value="-">-</option>
+                                    <?php for ($h = 0; $h <= 23; $h ++) : ?>
+                                        <?php for ($m = 0; $m <= 45; $m += 15) : ?>
+                                            <?php $m = sprintf('%02d', $m) ?>
+                                            <option value="<?php echo $h . ':' . $m ?>"><?php echo $h . ':' . $m ?></option>
                                         <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                    <p class="separator">：</p>
-                                    <select id="editStampInfoBreak2sMinutes">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 45; $i += 15) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                                        <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                </div>
+                                    <?php endfor; ?>
+                                    <option value="×:×">×:×</option>
+                                </select>
                             </td>
-                            <td id="editStampInfoBreak2e" hidden>
-                                <div>
-                                    <select id="editStampInfoBreak2eHour">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 23; $i++) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                            <td>
+                                <select id="break2eEdit">
+                                    <option value="-">-</option>
+                                    <?php for ($h = 0; $h <= 23; $h ++) : ?>
+                                        <?php for ($m = 0; $m <= 45; $m += 15) : ?>
+                                            <?php $m = sprintf('%02d', $m) ?>
+                                            <option value="<?php echo $h . ':' . $m ?>"><?php echo $h . ':' . $m ?></option>
                                         <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                    <p class="separator">：</p>
-                                    <select id="editStampInfoBreak2eMinutes">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 45; $i += 15) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                                        <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                </div>
+                                    <?php endfor; ?>
+                                    <option value="×:×">×:×</option>
+                                </select>
                             </td>
                         </tr>
                         <tr>
                             <th>休憩3</th>
-                            <td id="stampInfoBreak3s"></td>
-                            <td id="stampInfoBreak3e"></td>
-                            <td id="editStampInfoBreak3s" hidden>
-                                <div>
-                                    <select id="editStampInfoBreak3sHour">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 23; $i++) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                            <td id="break3sStamp"></td>
+                            <td id="break3eStamp"></td>
+                            <td id="break3sWork"></td>
+                            <td id="break3eWork"></td>
+                            <td>
+                                <select id="break3sEdit">
+                                    <option value="-">-</option>
+                                    <?php for ($h = 0; $h <= 23; $h ++) : ?>
+                                        <?php for ($m = 0; $m <= 45; $m += 15) : ?>
+                                            <?php $m = sprintf('%02d', $m) ?>
+                                            <option value="<?php echo $h . ':' . $m ?>"><?php echo $h . ':' . $m ?></option>
                                         <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                    <p class="separator">：</p>
-                                    <select id="editStampInfoBreak3sMinutes">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 45; $i += 15) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                                        <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                </div>
+                                    <?php endfor; ?>
+                                    <option value="×:×">×:×</option>
+                                </select>
                             </td>
-                            <td id="editStampInfoBreak3e" hidden>
-                                <div>
-                                    <select id="editStampInfoBreak3eHour">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 23; $i++) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                            <td>
+                                <select id="break3eEdit">
+                                    <option value="-">-</option>
+                                    <?php for ($h = 0; $h <= 23; $h ++) : ?>
+                                        <?php for ($m = 0; $m <= 45; $m += 15) : ?>
+                                            <?php $m = sprintf('%02d', $m) ?>
+                                            <option value="<?php echo $h . ':' . $m ?>"><?php echo $h . ':' . $m ?></option>
                                         <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                    <p class="separator">：</p>
-                                    <select id="editStampInfoBreak3eMinutes">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 45; $i += 15) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                                        <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                </div>
-                            </td>
-                        </tr>                        
-                        <tr>
-                            <th>退勤</th>
-                            <td colspan="2" id="stampInfoEnd"></td>
-                            <td colspan="2" id="editStampInfoEnd" hidden>
-                                <div>
-                                    <select id="editStampInfoEndHour">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 23; $i++) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                                        <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                    <p class="separator">：</p>
-                                    <select id="editStampInfoEndMinutes">
-                                        <option value="-">-</option>
-                                        <?php for ($i = 0; $i <= 45; $i += 15) : ?>
-                                            <?php $i = sprintf('%02d', $i) ?>
-                                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                                        <?php endfor; ?>
-                                        <option value="×">×</option>
-                                    </select>
-                                </div>
+                                    <?php endfor; ?>
+                                    <option value="×:×">×:×</option>
+                                </select>
                             </td>
                         </tr>
-                        <tr id="stampInfoReason" hidden>
-                            <th>訂正理由</th>
+
+                        <tr>
+                            <th>退勤</th>
+                            <td colspan="2" id="endStamp"></td>
+                            <td colspan="2" id="endWork"></td>
                             <td colspan="2">
+                                <select id="endEdit">
+                                    <option value="-">-</option>
+                                    <?php for ($h = 0; $h <= 23; $h ++) : ?>
+                                        <?php for ($m = 0; $m <= 45; $m += 15) : ?>
+                                            <?php $m = sprintf('%02d', $m) ?>
+                                            <option value="<?php echo $h . ':' . $m ?>"><?php echo $h . ':' . $m ?></option>
+                                        <?php endfor; ?>
+                                    <?php endfor; ?>
+                                    <option value="×:×">×:×</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr id="stampInfoReason">
+                            <th>訂正理由</th>
+                            <td colspan="6">
                                 <input type="text" id="editStampInfoReason">
                             </td>
                         </tr>
