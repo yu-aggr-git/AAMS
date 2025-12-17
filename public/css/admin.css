@@ -672,7 +672,7 @@ html::-webkit-scrollbar {
         white-space     : nowrap;
         border-radius   : 100vh 100vh 100vh 0;
     }
-    #workReportInfoEditArea > #workReportInfoEditMenu > #workReportInfoEdit #sendWorkReportInfo {
+    #workReportInfoEditArea > #workReportInfoEditMenu > #workReportInfoEdit #updateWorkReportInfo {
         background      : #000;
         color           : #fff;
     }

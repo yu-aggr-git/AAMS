@@ -222,14 +222,6 @@ function getSelectEvent(selectEvent) {
     document.getElementById("editStampInfoReason").value        = '';
     document.getElementById("workReportInfoEditMsg").innerText  = '';
     document.getElementById("payslipMsg").innerText             = '';
-    const approve = document.getElementById('approveWorkReportInfo');
-    approve.value            = 'false';
-    approve.style.color      = '#000';
-    approve.style.background = '#fff';
-    const reject = document.getElementById('rejectWorkReportInfo');
-    reject.value            = 'false';
-    reject.style.color      = '#000';
-    reject.style.background = '#fff';
 
     if (selectEvent) {
         var itemList = {
@@ -248,6 +240,8 @@ function getSelectEvent(selectEvent) {
                 'payDay',
                 'deleteEvent',
                 'editEventEdit',
+                'approveWorkReportInfo',
+                'rejectWorkReportInfo',
                 'editPayslip'
             ],
             'none'  : [
@@ -267,6 +261,8 @@ function getSelectEvent(selectEvent) {
                 'registerEvent',
                 'cancelEventEdit',
                 'sendEventEdit',
+                'cancelWorkReportInfo',
+                'updateWorkReportInfo',
                 'newsAreaOpen',
                 'newsArea',
                 'cancelPayslip',
@@ -556,96 +552,130 @@ function stampInfoEdit() {
 
 // 勤怠修正情報の修正
 function workReportInfoEdit(id) {
+    const selectEvent = document.getElementById("eventName").textContent;
+
     const approve = document.getElementById('approveWorkReportInfo');
-    const approveValue = approve.value;
     const reject = document.getElementById('rejectWorkReportInfo');
-    const rejectValue = reject.value;
-    
-    switch (id) {
-        case 'approveWorkReportInfo':
-            if (approveValue == 'true') {
-                approve.value = 'false';
-                approve.style.color = '#000';
-                approve.style.background = '#fff';
-            } else {
-                approve.value = 'true';
-                approve.style.color = '#fff';
-                approve.style.background = '#000';
+    const cancel = document.getElementById('cancelWorkReportInfo');
+    const update = document.getElementById('updateWorkReportInfo');
 
-                if (rejectValue == 'true') {
-                    reject.value = 'false';
-                    reject.style.color = '#000';
-                    reject.style.background = '#fff';
-                }
-            }
-            break;
-    
-        case 'rejectWorkReportInfo':
-            if (rejectValue == 'true') {
-                reject.value = 'false';
-                reject.style.color = '#000';
-                reject.style.background = '#fff';
-            } else {
-                reject.value = 'true';
-                reject.style.color = '#fff';
-                reject.style.background = '#000';
+    cancel.style.display = 'block';
+    update.style.display = 'block';
+    approve.style.display = 'none';
+    reject.style.display = 'none';
 
-                if (approveValue == 'true') {
-                    approve.value = 'false';
-                    approve.style.color = '#000';
-                    approve.style.background = '#fff';
-                }
-            }
-            break;
-    }
+    let updateList = [];
 
-    
     const selectStatusB = document.querySelectorAll('.selectStatusB');
     selectStatusB.forEach(function(e) {
         e.onclick = function() {
             const statusBefore = e.innerText;
-            let statusAfter = '';            
+            let statusAfter = '';
+            let valueAfter = '';
 
-            if (approve.value == 'true' && reject.value == 'false') {
+            if (!statusBefore.includes('済')) {
+                var valArray = e.value.split(/\|/);
+
+                // 更新ステータス
                 switch (statusBefore) {
                     case '申請中':
-                        statusAfter = '承認済';
+                    case '承認':
+                    case '却下':
+                        statusAfter = id == 'approveWorkReportInfo' ? '承認済' : '却下済';
                         break;
-
+                
                     case '訂正中':
-                        statusAfter = '訂正済';
+                    case '訂正':
+                    case '取消':
+                        statusAfter = id == 'approveWorkReportInfo' ? '訂正済' : '取消済';
                         break;
                 }
-            } else if (approve.value == 'false' && reject.value == 'true') {
+
+                // 一時表示
                 switch (statusBefore) {
                     case '申請中':
+                        e.innerText = id == 'approveWorkReportInfo' ? '承認' : '却下';
+                        break;
+                
                     case '訂正中':
-                        statusAfter = '却下済';
+                        e.innerText = id == 'approveWorkReportInfo' ? '訂正' : '取消';
+                        break;
+
+                    case '承認':
+                    case '却下':
+                        e.innerText = '申請中';
+                        break;
+                
+                    case '訂正':
+                    case '取消':
+                        e.innerText = '訂正中';
                         break;
                 }
-            }
 
-            if (statusAfter) {
-                const result = window.confirm('勤怠修正のステータス変更をしてよろしいですか？');
-                if (result) {
-                    var val =  e.value;
-                    var valArray = val.split(/,/);
+                // 配列値の設定
+                switch (statusBefore) {
+                    case '申請中':
+                        valueAfter = statusAfter == '却下済' ? '|' + valArray[4] : '|' + valArray[5];
+                        break;
+                
+                    case '訂正中':
+                        valueAfter = statusAfter == '取消済' ? '' : '|' + valArray[5];
+                        break;
 
-                    var paramDB = {
-                        'statusAfter'   : statusAfter,
-                        'requestDt'     : valArray[0],
-                        'event'         : valArray[1],
-                        'name'          : valArray[2],
-                        'day'           : valArray[3],
-                        'item'          : valArray[4],
-                        'dataAfter'     : statusAfter == '却下済' ? valArray[5] : valArray[6],
-                    };
-                    opDB('updateWorkReport', paramDB);
+                    case '承認':
+                    case '訂正':
+                        valueAfter = '|' + valArray[5];
+                        break;
+
+                    case '却下':
+                        valueAfter = '|' + valArray[4];
+                        break;
+
+                    case '取消':
+                        valueAfter = '';
+                        break;
+                } 
+                var addVal =
+                    statusAfter 
+                    + '|' + valArray[0] 
+                    + '|' + valArray[1]
+                    + '|' + valArray[2]
+                    + '|' + valArray[3]
+                    + valueAfter
+                ;
+            
+                // 配列の追加・削除
+                if (statusBefore == '申請中' || statusBefore == '訂正中') {
+                    updateList.push(addVal);
+                } else {
+                    var found = updateList.indexOf(addVal)
+                    updateList.splice(found, 1);
+                }
+
+                // 更新
+                update.onclick = function() {
+                    if (updateList.length) {
+
+                        const result = window.confirm('勤怠修正のステータス変更をしてよろしいですか？');
+                        if (result) {
+                            var paramDB = {
+                                'event'         : selectEvent,
+                                'updateList'    : updateList
+                            };
+                            opDB('updateWorkReport', paramDB);
+                        }
+                    }                
                 }
             }
         }
     });
 
+    // 取消
+    cancel.onclick = function() {
+        updateList = [];
+
+        getSelectEvent(selectEvent);
+    }
 }
 
 
@@ -1076,18 +1106,37 @@ function opDB(op, paramDB) {
 
                             var dd = document.createElement("dd");
 
-                            // 応募リスト
-                            if ('al_status' in data[event]) {
+                            // 募集状況
+                            if ('recruit' in data[event]) {
                                 var div1 = document.createElement("div");
 
-                                var title1        = document.createElement("div");
+                                var title1        = document.createElement("din");
                                 var title1P       = document.createElement("p");
-                                title1P.innerText = '応募';
+                                title1P.innerText = '募集';
                                 title1.className = 'noticeTitle';
                                 title1.appendChild(title1P);
 
-                                var item1       = document.createElement("div");
+                                var item1       = document.createElement("p");
                                 item1.className = 'noticeItem';
+                                item1.innerHTML = data[event].recruit;
+
+                                div1.appendChild(title1);
+                                div1.appendChild(item1);
+                                dd.appendChild(div1);
+                            }
+
+                            // 応募リスト
+                            if ('al_status' in data[event]) {
+                                var div2 = document.createElement("div");
+
+                                var title2        = document.createElement("div");
+                                var title2P       = document.createElement("p");
+                                title2P.innerText = '応募';
+                                title2.className = 'noticeTitle';
+                                title2.appendChild(title2P);
+
+                                var item2       = document.createElement("div");
+                                item2.className = 'noticeItem';
                                 for (let name in data[event].al_status) {
                                     var nameP = document.createElement("p");
                                     nameP.innerText = name;
@@ -1101,47 +1150,27 @@ function opDB(op, paramDB) {
                                     ;
 
                                     nameP.appendChild(nameS);
-                                    item1.appendChild(nameP);
+                                    item2.appendChild(nameP);
                                 }
-                                div1.appendChild(title1);
-                                div1.appendChild(item1);
-                                dd.appendChild(div1);
-                            }
-
-
-                            // シフト変更希望リスト
-                            if ('sl_change' in data[event]) {
-                                var div2 = document.createElement("div");
-
-                                var title2        = document.createElement("div");
-                                var title2P       = document.createElement("p");
-                                title2P.innerText = '出勤変更';
-                                title2.className = 'noticeTitle';
-                                title2.appendChild(title2P);
-
-                                var item2       = document.createElement("p");
-                                item2.className = 'noticeItem';
-                                item2.innerText = '未承認： ' + data[event].sl_change + ' 件';
-
                                 div2.appendChild(title2);
                                 div2.appendChild(item2);
                                 dd.appendChild(div2);
                             }
 
 
-                            // 勤怠修正情報
-                            if ('wr_request' in data[event]) {
+                            // シフト変更希望リスト
+                            if ('sl_change' in data[event]) {
                                 var div3 = document.createElement("div");
 
                                 var title3        = document.createElement("div");
                                 var title3P       = document.createElement("p");
-                                title3P.innerText = '打刻修正';
+                                title3P.innerText = '出勤変更';
                                 title3.className = 'noticeTitle';
                                 title3.appendChild(title3P);
 
                                 var item3       = document.createElement("p");
                                 item3.className = 'noticeItem';
-                                item3.innerText = '未承認： ' + data[event].wr_request + ' 件';
+                                item3.innerText = '未承認： ' + data[event].sl_change + ' 件';
 
                                 div3.appendChild(title3);
                                 div3.appendChild(item3);
@@ -1149,18 +1178,38 @@ function opDB(op, paramDB) {
                             }
 
 
-                            // 支払日
-                            if ('pay_day' in data[event]) {
+                            // 勤怠修正情報
+                            if ('wr_request' in data[event]) {
                                 var div4 = document.createElement("div");
 
-                                var title4        = document.createElement("din");
+                                var title4        = document.createElement("div");
                                 var title4P       = document.createElement("p");
-                                title4P.innerText = '支払日';
+                                title4P.innerText = '打刻修正';
                                 title4.className = 'noticeTitle';
                                 title4.appendChild(title4P);
 
                                 var item4       = document.createElement("p");
                                 item4.className = 'noticeItem';
+                                item4.innerText = '未承認： ' + data[event].wr_request + ' 件';
+
+                                div4.appendChild(title4);
+                                div4.appendChild(item4);
+                                dd.appendChild(div4);
+                            }
+
+
+                            // 支払日
+                            if ('pay_day' in data[event]) {
+                                var div5 = document.createElement("div");
+
+                                var title5        = document.createElement("din");
+                                var title5P       = document.createElement("p");
+                                title5P.innerText = '支払日';
+                                title5.className = 'noticeTitle';
+                                title5.appendChild(title5P);
+
+                                var item5       = document.createElement("p");
+                                item5.className = 'noticeItem';
                                 let payDayList = '';
                                 for (let pD in data[event].pay_day) {
                                     payDayList = payDayList
@@ -1168,12 +1217,12 @@ function opDB(op, paramDB) {
                                         : data[event].pay_day[pD]
                                     ;
                                 }
-                                item4.innerHTML = payDayList;
+                                item5.innerHTML = payDayList;
 
-                                div4.appendChild(title4);
-                                div4.appendChild(item4);
-                                dd.appendChild(div4);
-                            }                            
+                                div5.appendChild(title5);
+                                div5.appendChild(item5);
+                                dd.appendChild(div5);
+                            }
 
                             dl.appendChild(dt);
                             dl.appendChild(dd);
@@ -1817,12 +1866,11 @@ function opDB(op, paramDB) {
                                             var statusB = document.createElement("button");
                                             statusB.innerText = dataItem[key].status;
                                             statusB.value = dataItem[key].request_dt
-                                                + ',' + paramDB['event'] 
-                                                + ',' + nameKey
-                                                + ',' + dayKey
-                                                + ',' + itemKey
-                                                + ',' + dataItem[key].data_before
-                                                + ',' + dataItem[key].data_after
+                                                + '|' + nameKey
+                                                + '|' + dayKey
+                                                + '|' + itemKey
+                                                + '|' + dataItem[key].data_before
+                                                + '|' + dataItem[key].data_after
                                             ;
                                             statusB.className = 'statusB selectStatusB';
                                             switch (dataItem[key].status) {
@@ -1917,13 +1965,8 @@ function opDB(op, paramDB) {
 
         case 'updateWorkReport':
             var param = "function=" + "update_work_report"
-                + "&statusAfter="   + encodeURIComponent(paramDB.statusAfter)
-                + "&requestDt="     + encodeURIComponent(paramDB.requestDt)
                 + "&event="         + encodeURIComponent(paramDB.event)
-                + "&name="          + encodeURIComponent(paramDB.name)
-                + "&day="           + encodeURIComponent(paramDB.day)
-                + "&item="          + encodeURIComponent(paramDB.item)
-                + "&after="         + encodeURIComponent(paramDB.dataAfter)
+                + "&updateList="    + encodeURIComponent(paramDB.updateList)
                 + "&approvalD="     + encodeURIComponent(date().yyyymmdd)
             ;
 

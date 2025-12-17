@@ -489,8 +489,10 @@
                 <div id="workReportInfoEditMenu">
                     <p id="workReportInfoEditMsg" class="errorMsg"></p>
                     <div id="workReportInfoEdit">
-                        <button type="button" id="approveWorkReportInfo" value="false">承認</button>
-                        <button type="button" id="rejectWorkReportInfo" value="false">却下</button>
+                        <button type="button" id="cancelWorkReportInfo" hidden>取消</button>
+                        <button type="button" id="updateWorkReportInfo" hidden>更新</button>
+                        <button type="button" id="approveWorkReportInfo">承認</button>
+                        <button type="button" id="rejectWorkReportInfo">却下</button>
                     </div>
                 </div>
 

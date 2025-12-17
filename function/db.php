@@ -900,7 +900,8 @@
         $query4 = "
             SELECT
                 event,
-                pay_day
+                pay_day,
+                recruit
             FROM
                 event
             ;
@@ -914,10 +915,14 @@
                 if ($data) {
                     $today = date("Y-m-d");
 
-                    if(strtotime($today) <= strtotime($data)){
+                    if (strtotime($today) <= strtotime($data)) {
                        $employeeData[$event]['pay_day'][] = $data;
-                    }                    
+                    }
                 }
+            }
+
+            if ($row['recruit'] == '募集中') {
+                $employeeData[$event]['recruit'][] = $row['recruit'];
             }
         }
 
@@ -1192,64 +1197,100 @@
 
     // ────勤怠情報・勤怠修正情報：更新─────────────────────────────
     function update_work_report($dbh, $param) {
-        $query1 = "
-            UPDATE
-                work_report_edit
-            SET
-                status      = :statusAfter,
-                approval_d  = :approvalD
-            WHERE
-                    request_dt  = :requestDt
-                AND event       = :event
-                AND name        = :name
-                AND day         = :day
-                AND item        = :item
-        ;";
 
-        $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $count = $sth1->execute([
-            'statusAfter'   => $param['statusAfter'],
-            'requestDt'     => $param['requestDt'],
-            'event'         => $param['event'],
-            'name'          => $param['name'],
-            'day'           => $param['day'],
-            'item'          => $param['item'],
-            'approvalD'     => $param['approvalD'],
-        ]);
+        foreach (explode(",", $param['updateList']) as $data) {
 
-        $query2 = "
-            INSERT INTO
-                work_report(event, name, day, start, end, break1s, break1e, break2s, break2e, break3s, break3e)
-            VALUES
-                (:event, :name, :day, :start, :end, :break1s, :break1e, :break2s, :break2e, :break3s, :break3e)
-            ON DUPLICATE KEY UPDATE
-                start   = IF(VALUES(start)   IS NULL, start,   IF(VALUES(start)     = '×:×', '-', VALUES(start))),
-                end     = IF(VALUES(end)     IS NULL, end,     IF(VALUES(end)       = '×:×', '-', VALUES(end))),
-                break1s = IF(VALUES(break1s) IS NULL, break1s, IF(VALUES(break1s)   = '×:×', '-', VALUES(break1s))),
-                break1e = IF(VALUES(break1e) IS NULL, break1e, IF(VALUES(break1e)   = '×:×', '-', VALUES(break1e))),
-                break2s = IF(VALUES(break2s) IS NULL, break2s, IF(VALUES(break2s)   = '×:×', '-', VALUES(break2s))),
-                break2e = IF(VALUES(break2e) IS NULL, break2e, IF(VALUES(break2e)   = '×:×', '-', VALUES(break2e))),
-                break3s = IF(VALUES(break3s) IS NULL, break3s, IF(VALUES(break3s)   = '×:×', '-', VALUES(break3s))),
-                break3e = IF(VALUES(break3e) IS NULL, break3e, IF(VALUES(break3e)   = '×:×', '-', VALUES(break3e)))
-        ";
+            if ($data) {
+                $dataArray      = explode("|", $data);
+                $statusAfter    = $dataArray[0];
+                $requestDt      = $dataArray[1];
+                $name           = $dataArray[2];
+                $day            = $dataArray[3];
+                $item           = $dataArray[4];
 
-        $nextParam = [
-            'event'     => $param['event'],
-            'name'      => $param['name'],
-            'day'       => $param['day'],
-            'start'     => null,
-            'end'       => null,
-            'break1s'   => null,
-            'break1e'   => null,
-            'break2s'   => null,
-            'break2e'   => null,
-            'break3s'   => null,
-            'break3e'   => null
-        ];
-        $nextParam[$param['item']] = $param['after'];
+                if ($statusAfter == '取消済') {
+                    $query3 = "
+                        DELETE FROM
+                            work_report_edit
+                        WHERE
+                                request_dt  = :requestDt
+                            AND event       = :event
+                            AND name        = :name
+                            AND day         = :day
+                            AND item        = :item
+                    ";
+                    $sth3 = $dbh->prepare($query3, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+                    $count = $sth3->execute([
+                        'requestDt'     => $requestDt,
+                        'event'         => $param['event'],
+                        'name'          => $name,
+                        'day'           => $day,
+                        'item'          => $item
+                    ]);
+                } else {
+                    $after = $dataArray[5];
 
-        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $sth2->execute($nextParam);
+                    $query1 = "
+                        UPDATE
+                            work_report_edit
+                        SET
+                            status      = :statusAfter,
+                            approval_d  = :approvalD
+                        WHERE
+                                request_dt  = :requestDt
+                            AND event       = :event
+                            AND name        = :name
+                            AND day         = :day
+                            AND item        = :item
+                    ;";
+
+                    $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+                    $count = $sth1->execute([
+                        'statusAfter'   => $statusAfter,
+                        'requestDt'     => $requestDt,
+                        'event'         => $param['event'],
+                        'name'          => $name,
+                        'day'           => $day,
+                        'item'          => $item,
+                        'approvalD'     => $param['approvalD'],
+                    ]);
+
+                    $query2 = "
+                        INSERT INTO
+                            work_report(event, name, day, start, end, break1s, break1e, break2s, break2e, break3s, break3e)
+                        VALUES
+                            (:event, :name, :day, :start, :end, :break1s, :break1e, :break2s, :break2e, :break3s, :break3e)
+                        ON DUPLICATE KEY UPDATE
+                            start   = IF(VALUES(start)   IS NULL, start,   IF(VALUES(start)     = '×:×', '-', VALUES(start))),
+                            end     = IF(VALUES(end)     IS NULL, end,     IF(VALUES(end)       = '×:×', '-', VALUES(end))),
+                            break1s = IF(VALUES(break1s) IS NULL, break1s, IF(VALUES(break1s)   = '×:×', '-', VALUES(break1s))),
+                            break1e = IF(VALUES(break1e) IS NULL, break1e, IF(VALUES(break1e)   = '×:×', '-', VALUES(break1e))),
+                            break2s = IF(VALUES(break2s) IS NULL, break2s, IF(VALUES(break2s)   = '×:×', '-', VALUES(break2s))),
+                            break2e = IF(VALUES(break2e) IS NULL, break2e, IF(VALUES(break2e)   = '×:×', '-', VALUES(break2e))),
+                            break3s = IF(VALUES(break3s) IS NULL, break3s, IF(VALUES(break3s)   = '×:×', '-', VALUES(break3s))),
+                            break3e = IF(VALUES(break3e) IS NULL, break3e, IF(VALUES(break3e)   = '×:×', '-', VALUES(break3e)))
+                    ";
+
+                    $nextParam = [
+                        'event'     => $param['event'],
+                        'name'      => $name,
+                        'day'       => $day,
+                        'start'     => null,
+                        'end'       => null,
+                        'break1s'   => null,
+                        'break1e'   => null,
+                        'break2s'   => null,
+                        'break2e'   => null,
+                        'break3s'   => null,
+                        'break3e'   => null
+                    ];
+                    $nextParam[$item] = $after;
+
+                    $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+                    $sth2->execute($nextParam);
+                }
+            }
+        }
 
         echo $count;
     }
