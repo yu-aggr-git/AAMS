@@ -40,11 +40,10 @@
 
                 <div class="text">
                     <p>
-                        （ ※応募済みの登録内容も確認ができます。）
+                        （ ※イベントが募集中の場合、応募済みの登録内容も確認ができます。 ）
                     </p>
                 </div>
             </div>
-
 
             <!-- 情報入力 -->
             <div id="applicationInfoInputArea">

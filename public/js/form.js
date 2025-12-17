@@ -182,12 +182,19 @@ function opDB(op, paramDB) {
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
 
-                    Object.keys(data).forEach(function(key) {
-                        var option = document.createElement("option");
-                        option.text = data[key];
-                        option.value = data[key];
-                        select.appendChild(option);
-                    });
+                    if (data) {
+                        Object.keys(data).forEach(function(key) {
+                            var option = document.createElement("option");
+                            option.text = data[key];
+                            option.value = data[key];
+                            select.appendChild(option);
+                        });
+                    } else {
+                        document.getElementById("sendEventSelect").setAttribute("disabled", true);
+                        document.getElementById("sendEventSelect").style.background     = '#ececec';
+                        document.getElementById("sendEventSelect").style.borderColor    = '#ececec';
+                        document.getElementById("eventSelectMsg").innerText = '※現在、募集中のイベントはございません。';
+                    }
                 }
             }
             break;
