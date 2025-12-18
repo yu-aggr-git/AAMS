@@ -1077,17 +1077,17 @@
             'event'     => $param['event'],
         ]);
 
-        // 応募リスト
-        $query5 = "
-            DELETE FROM
-                application_list
-            WHERE
-                event = :event
-        ";
-        $sth5 = $dbh->prepare($query5, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $sth5->execute([
-            'event'     => $param['event'],
-        ]);
+        // 応募リスト（※削除不要）
+        // $query5 = "
+        //     DELETE FROM
+        //         application_list
+        //     WHERE
+        //         event = :event
+        // ";
+        // $sth5 = $dbh->prepare($query5, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        // $sth5->execute([
+        //     'event'     => $param['event'],
+        // ]);
 
         // シフト変更希望
         $query6 = "
