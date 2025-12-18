@@ -232,12 +232,14 @@ function getSelectEvent(selectEvent) {
                 'firstDay',
                 'endDay',
                 'time',
+                'place',
                 'hourlyWage',
                 'transportationLimit',
                 'mealAllowance',
                 'manager',
                 'shiftUrl',
                 'payDay',
+                'memo',
                 'deleteEvent',
                 'editEventEdit',
                 'approveWorkReportInfo',
@@ -252,12 +254,14 @@ function getSelectEvent(selectEvent) {
                 'inputFirstDayArea',
                 'inputEndDayArea',
                 'inputTimeArea',
+                'inputPlace',
                 'inputHourlyWage',
                 'inputTransportationLimit',
                 'inputMealAllowance',
                 'inputMealManager',
                 'inputShiftUrl',
                 'inputPayDayArea',
+                'inputMemo',
                 'registerEvent',
                 'cancelEventEdit',
                 'sendEventEdit',
@@ -306,12 +310,14 @@ function eventEdit(id) {
             + document.getElementById("inputEndDay").value,
         'startTime'             : document.getElementById("inputTimeS").value,
         'endTime'               : document.getElementById("inputTimeE").value,
+        'place'                 : document.getElementById("inputPlace").value,
         'hourlyWage'            : document.getElementById("inputHourlyWage").value,
         'transportationLimit'   : document.getElementById("inputTransportationLimit").value,
         'mealAllowance'         : document.getElementById("inputMealAllowance").value,
         'manager'               : document.getElementById("inputMealManager").value,
         'shiftUrl'              : document.getElementById("inputShiftUrl").value,
-        'payDay'                : ''
+        'payDay'                : '',
+        'memo'                  : document.getElementById("inputMemo").value
     };
 
    let payDayA = [];
@@ -390,8 +396,8 @@ function eventEdit(id) {
             
         case 'editEventEdit':
             var itemList = {
-                'block' : ['inputRecruit', 'eventName', 'inputPass',  'inputHourlyWage', 'inputTransportationLimit', 'inputMealAllowance', 'inputMealManager', 'inputShiftUrl', 'inputPayDayArea', 'cancelEventEdit' ,'sendEventEdit'],
-                'none'  : ['recruit','pass', 'firstDay', 'endDay', 'time', 'hourlyWage', 'transportationLimit', 'mealAllowance', 'manager', 'shiftUrl', 'payDay', 'inputEventName', 'deleteEvent', 'editEventEdit'],
+                'block' : ['inputRecruit', 'eventName', 'inputPass',  'inputPlace', 'inputHourlyWage', 'inputTransportationLimit', 'inputMealAllowance', 'inputMealManager', 'inputShiftUrl', 'inputPayDayArea', 'inputMemo', 'cancelEventEdit' ,'sendEventEdit'],
+                'none'  : ['recruit','pass', 'firstDay', 'endDay', 'time', 'place', 'hourlyWage', 'transportationLimit', 'mealAllowance', 'manager', 'shiftUrl', 'payDay', 'memo', 'inputEventName', 'deleteEvent', 'editEventEdit'],
                 'flex'  : ['inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea']
             }
             opView(itemList);
@@ -406,6 +412,7 @@ function eventEdit(id) {
             document.getElementById("inputEndDay").value                = '';
             document.getElementById("inputTimeS").value                 = '';
             document.getElementById("inputTimeE").value                 = '';
+            document.getElementById("inputPlace").value                 = '';
             document.getElementById("inputHourlyWage").value            = '';
             document.getElementById("inputTransportationLimit").value   = '';
             document.getElementById("inputMealAllowance").value         = '';
@@ -420,6 +427,7 @@ function eventEdit(id) {
             document.getElementById("inputPayDay3Year").value           = '';
             document.getElementById("inputPayDay3Month").value          = '';
             document.getElementById("inputPayDay3Day").value            = '';
+            document.getElementById("inputMemo").value                  = '';
 
 
             // 値取得
@@ -428,8 +436,8 @@ function eventEdit(id) {
             const timeText      = document.getElementById("time").textContent.split(/ /);
             const payDayText    = document.getElementById("payDay").innerHTML.split('<br>');
 
-            document.getElementById("inputPass").placeholder            = '変更しない場合は入力しないこと';
             document.getElementById("inputRecruit").value               = document.getElementById("recruit").textContent;
+            document.getElementById("inputPass").placeholder            = '変更しない場合は入力しないこと';
             document.getElementById("inputFirstYear").value             = firstDayText[0];
             document.getElementById("inputFirstMonth").value            = firstDayText[1];
             document.getElementById("inputFirstDay").value              = firstDayText[2];
@@ -438,6 +446,7 @@ function eventEdit(id) {
             document.getElementById("inputEndDay").value                = endDayText[2];
             document.getElementById("inputTimeS").value                 = timeText[0];
             document.getElementById("inputTimeE").value                 = timeText[2];
+            document.getElementById("inputPlace").value                 = document.getElementById("place").textContent;
             document.getElementById("inputHourlyWage").value            = document.getElementById("hourlyWage").textContent;
             document.getElementById("inputTransportationLimit").value   = document.getElementById("transportationLimit").textContent;
             document.getElementById("inputMealAllowance").value         = document.getElementById("mealAllowance").textContent;
@@ -452,14 +461,15 @@ function eventEdit(id) {
                 document.getElementById("inputPayDay" + iPayDayText + "Day").value = payDayTextA[2];
 
                 iPayDayText++;
-            }); 
+            });
+            document.getElementById("inputMemo").value                  = document.getElementById("memo").innerHTML.replaceAll("<br>", "\n");
 
             break;
 
         case 'cancelEventEdit':
             var itemList = {
-                'block' : ['recruit', 'pass', 'firstDay', 'endDay', 'time', 'hourlyWage', 'transportationLimit', 'mealAllowance', 'manager', 'shiftUrl', 'payDay', 'deleteEvent', 'editEventEdit'],
-                'none'  : ['inputRecruit', 'inputPass', 'inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea',  'inputHourlyWage', 'inputTransportationLimit', 'inputMealAllowance', 'inputMealManager', 'inputShiftUrl', 'inputPayDayArea', 'cancelEventEdit' ,'sendEventEdit']
+                'block' : ['recruit', 'pass', 'firstDay', 'endDay', 'time', 'place', 'hourlyWage', 'transportationLimit', 'mealAllowance', 'manager', 'shiftUrl', 'payDay', 'memo', 'deleteEvent', 'editEventEdit'],
+                'none'  : ['inputRecruit', 'inputPass', 'inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea',  'inputPlace', 'inputHourlyWage', 'inputTransportationLimit', 'inputMealAllowance', 'inputMealManager', 'inputShiftUrl', 'inputPayDayArea', 'inputMemo', 'cancelEventEdit' ,'sendEventEdit']
             }
             opView(itemList);
             break;
@@ -959,18 +969,21 @@ function opDB(op, paramDB) {
             ;
 
             xmlhttp.onreadystatechange = function() {
-                document.getElementById("recruit").innerText = '';
-                document.getElementById("eventName").innerText = '';
-                document.getElementById("firstDay").innerText  = '';
-                document.getElementById("endDay").innerText  = '';
-                document.getElementById("time").innerText  = '';
-                document.getElementById("hourlyWage").innerText  = '';
-                document.getElementById("transportationLimit").innerText  = '';
-                document.getElementById("mealAllowance").innerText  = '';
-                document.getElementById("manager").innerText  = '';
-                document.getElementById("shiftUrl").querySelector("a").href = '';
+                document.getElementById("recruit").innerText                     = '';
+                document.getElementById("eventName").innerText                   = '';
+                document.getElementById("firstDay").innerText                    = '';
+                document.getElementById("endDay").innerText                      = '';
+                document.getElementById("time").innerText                        = '';
+                document.getElementById("place").innerText                       = '';
+                document.getElementById("hourlyWage").innerText                  = '';
+                document.getElementById("transportationLimit").innerText         = '';
+                document.getElementById("mealAllowance").innerText               = '';
+                document.getElementById("manager").innerText                     = '';
+                document.getElementById("shiftUrl").querySelector("a").href      = '';
                 document.getElementById("shiftUrl").querySelector("a").innerText = '';
-                document.getElementById("payDay").innerText  = '';
+                document.getElementById("payDay").innerText                      = '';
+                document.getElementById("memo").innerText                        = '';
+
 
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
@@ -981,6 +994,7 @@ function opDB(op, paramDB) {
                     document.getElementById("firstDay").innerText            = data.first_day;
                     document.getElementById("endDay").innerText              = data.end_day;
                     document.getElementById("time").innerText                = data.start_time + ' ～ ' + data.end_time;
+                    document.getElementById("place").innerText               = data.place;
                     document.getElementById("hourlyWage").innerText          = data.hourly_wage;
                     document.getElementById("transportationLimit").innerText = data.transportation_limit;
                     document.getElementById("mealAllowance").innerText       = data.meal_allowance;
@@ -992,6 +1006,7 @@ function opDB(op, paramDB) {
                     if (data.pay_day) {
                         document.getElementById("payDay").innerHTML = data.pay_day.replaceAll(",", "<br>");
                     }
+                    document.getElementById("memo").innerText                = data.memo;
 
 
                     // 勤怠情報・打刻情報
@@ -1241,12 +1256,14 @@ function opDB(op, paramDB) {
                 + "&endDay="                + encodeURIComponent(paramDB.endDay)
                 + "&startTime="             + encodeURIComponent(paramDB.startTime)
                 + "&endTime="               + encodeURIComponent(paramDB.endTime)
+                + "&place="                 + encodeURIComponent(paramDB.place)
                 + "&hourlyWage="            + encodeURIComponent(paramDB.hourlyWage)
                 + "&transportationLimit="   + encodeURIComponent(paramDB.transportationLimit)
                 + "&mealAllowance="         + encodeURIComponent(paramDB.mealAllowance)
                 + "&manager="               + encodeURIComponent(paramDB.manager)
                 + "&shiftUrl="              + encodeURIComponent(paramDB.shiftUrl)
                 + "&payDay="                + encodeURIComponent(paramDB.payDay)
+                + "&memo="                  + encodeURIComponent(paramDB.memo)
             ;
 
             xmlhttp.onreadystatechange = function() {
@@ -1274,12 +1291,14 @@ function opDB(op, paramDB) {
                 + "&endDay="                + encodeURIComponent(paramDB.endDay)
                 + "&startTime="             + encodeURIComponent(paramDB.startTime)
                 + "&endTime="               + encodeURIComponent(paramDB.endTime)
+                + "&place="                 + encodeURIComponent(paramDB.place)
                 + "&hourlyWage="            + encodeURIComponent(paramDB.hourlyWage)
                 + "&transportationLimit="   + encodeURIComponent(paramDB.transportationLimit)
                 + "&mealAllowance="         + encodeURIComponent(paramDB.mealAllowance)
                 + "&manager="               + encodeURIComponent(paramDB.manager)
                 + "&shiftUrl="              + encodeURIComponent(paramDB.shiftUrl)
                 + "&payDay="                + encodeURIComponent(paramDB.payDay)
+                + "&memo="                  + encodeURIComponent(paramDB.memo)
             ;
 
             xmlhttp.onreadystatechange = function() {

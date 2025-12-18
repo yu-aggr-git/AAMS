@@ -192,6 +192,12 @@
                         </div>
                     </dd>
 
+                    <dt>開催場所</dt>
+                    <dd>
+                        <p hidden id="place"></p>
+                        <input type="text" id="inputPlace">
+                    </dd>
+
                     <dt>時給</dt>
                     <dd>
                         <p hidden id="hourlyWage"></p>
@@ -258,6 +264,12 @@
                                 </div>
                             <?php endfor; ?>
                         </div>
+                    </dd>
+
+                    <dt>メモ</dt>
+                    <dd>
+                        <p hidden id="memo"></p>
+                        <textarea id="inputMemo"></textarea>
                     </dd>
                 </dl>
             </div>

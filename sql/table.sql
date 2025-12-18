@@ -22,6 +22,7 @@ create table aams.event(
     end_day                 VARCHAR(10)  NOT NULL                            COMMENT '開催最終日(yyyy-mm-dd)',
     start_time              VARCHAR(5)  NOT NULL                             COMMENT '開始時間',
     end_time                VARCHAR(5)  NOT NULL                             COMMENT '終了時間',
+    place                   VARCHAR(100)                                     COMMENT '開催場所',
     hourly_wage             INTEGER                                          COMMENT '時給',
     transportation_limit    INTEGER                                          COMMENT '交通費上限',
     meal_allowance          INTEGER                                          COMMENT '食事手当',
@@ -31,6 +32,7 @@ create table aams.event(
     required_num            VARCHAR(2000)                                    COMMENT '必要人数',
     shift_updated_dt        VARCHAR(19)                                      COMMENT 'シフト更新日時',
     recruit                 VARCHAR(5)  NOT NULL                             COMMENT '募集状況',
+    memo                    VARCHAR(255)                                     COMMENT 'メモ',
     PRIMARY KEY (event)
 );
 

@@ -954,9 +954,9 @@
 
         $query = "
             INSERT INTO
-                event(event, pass, first_day, end_day, start_time, end_time, hourly_wage, transportation_limit, meal_allowance, pay_day, manager, shift_url, recruit)
+                event(event, pass, first_day, end_day, start_time, end_time, place, hourly_wage, transportation_limit, meal_allowance, pay_day, manager, shift_url, recruit, memo)
             VALUES
-                (:event, :pass, :firstDay, :endDay, :startTime, :endTime, :hourlyWage, :transportationLimit, :mealAllowance, :payDay, :manager, :shiftUrl, :recruit)
+                (:event, :pass, :firstDay, :endDay, :startTime, :endTime, :place, :hourlyWage, :transportationLimit, :mealAllowance, :payDay, :manager, :shiftUrl, :recruit, :memo)
         ";
 
         $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
@@ -968,12 +968,14 @@
             'endDay'                => $param['endDay'],
             'startTime'             => $param['startTime'],
             'endTime'               => $param['endTime'],
+            'place'                 => $param['place'],
             'hourlyWage'            => $param['hourlyWage'] ? $param['hourlyWage'] : NULL,
             'transportationLimit'   => $param['transportationLimit'] ? $param['transportationLimit'] : NULL,
             'mealAllowance'         => $param['mealAllowance'] ? $param['mealAllowance'] : NULL,
             'manager'               => $param['manager'],
             'shiftUrl'              => $param['shiftUrl'] ? $param['shiftUrl'] : $config['shift_url'] . '?event=' . urlencode($param['event']),
-            'payDay'                => $param['payDay']
+            'payDay'                => $param['payDay'],
+            'memo'                  => $param['memo'],
         ]);
 
         echo $count;
@@ -990,13 +992,15 @@
                 end_day                 = :endDay,
                 start_time              = :startTime,
                 end_time                = :endTime,
+                place                   = :place,
                 hourly_wage             = :hourlyWage,
                 transportation_limit    = :transportationLimit,
                 meal_allowance          = :mealAllowance,
                 pay_day                 = :payDay,
                 manager                 = :manager,
                 shift_url               = :shiftUrl,
-                recruit                 = :recruit
+                recruit                 = :recruit,
+                memo                    = :memo
             WHERE
                 event = :event
         ";
@@ -1010,12 +1014,14 @@
             'endDay'                => $param['endDay'],
             'startTime'             => $param['startTime'],
             'endTime'               => $param['endTime'],
+            'place'                 => $param['place'],
             'hourlyWage'            => $param['hourlyWage'] ? $param['hourlyWage'] : NULL,
             'transportationLimit'   => $param['transportationLimit'] ? $param['transportationLimit'] : NULL,
             'mealAllowance'         => $param['mealAllowance'] ? $param['mealAllowance'] : NULL,
             'manager'               => $param['manager'],
             'shiftUrl'              => $param['shiftUrl'],
-            'payDay'                => $param['payDay']
+            'payDay'                => $param['payDay'],
+            'memo'                  => $param['memo'],
         ]);
 
         echo $count;
