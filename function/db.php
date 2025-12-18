@@ -664,7 +664,7 @@
                         AND name    = :name
                 ;";
                 $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-                $count = $sth1->execute([
+                $sth1->execute([
                     'event' => $param['event'],
                     'name'  => $name,
                     'booth'  => $booth,
@@ -684,7 +684,7 @@
                 event = :event
         ;";
         $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $sth2->execute([
+        $count = $sth2->execute([
             'event'             => $param['event'],
             'updateNum'         => $param['updateNum'],
             'shiftUpdatedDt'    => $param['shiftUpdatedDt']

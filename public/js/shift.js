@@ -252,9 +252,6 @@ function eventSelect() {
 
     // イベント情報の取得
     opDB('getEvent', paramDB);
-
-    // シフト情報の表示
-    getItem("shiftInfoOpen", selectEvent);
 }
 
 
@@ -559,7 +556,7 @@ function editShift() {
                 document.getElementById("shiftInfoMsg").innerText = emsg;
             } else {
                 // 更新実行
-                if (updateShift.length === 0) {
+                if (updateShift.length === 0 && !updateNum) {
                     document.getElementById("cancelShiftInfo").click();
                 } else {
                     var paramDB = {
@@ -1015,9 +1012,6 @@ function opDB(op, paramDB) {
                         // 項目の表示
                         document.getElementById("formInfoOpen").style.display   = 'none';
                         document.getElementById("selectItemArea").style.display = 'flex';
-
-                        // シフト情報の表示
-                        getItem("shiftInfoOpen", paramDB['event']);
                     } else {
                         document.getElementById("shiftLoginArea").style.display  = 'flex';
                     }
@@ -1081,6 +1075,9 @@ function opDB(op, paramDB) {
                     Array.from(shiftInfoTr.getElementsByClassName("sticky3")).forEach(function(e) {
                         e.remove();
                     });
+                    Array.from(shiftInfoTr.getElementsByClassName("numEdit")).forEach(function(e) {
+                        e.remove();
+                    });
 
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
@@ -1094,6 +1091,15 @@ function opDB(op, paramDB) {
                         document.getElementById("endTime").innerText    = data.end_time;
                         document.getElementById("manager").innerText    = '現場責任者：' + (data.manager ? data.manager : '');
                         
+                        // 必要人数
+                        var requiredNumÅ = [];
+                        if (data.required_num) {
+                            (data.required_num.split(/,/)).forEach(function(day) {
+                                var dayA = day.split(/_/);
+                                requiredNumÅ[dayA[0]] = dayA[1];
+                            });
+                        }
+
                         const firstDay  = data.first_day.split(/-/);
                         const endDay    = data.end_day.split(/-/);                    
                         for (
@@ -1119,9 +1125,22 @@ function opDB(op, paramDB) {
                             shiftInfoB.innerHTML     = day + '<br>' + getDOW(day).dow;
                             shiftInfoB.value         = day;
                             shiftInfoB.className     = "shiftInfoB";
+
+                            // シフト：必要人数編集
+                            var numB              = document.createElement("input");
+                            numB.value            = requiredNumÅ[day];
+                            numB.style.display    = 'none';
+                            numB.id               = day + '_inputNum';
+                            numB.className        = 'numEdit shiftEdit';
+                            numB.maxLength        = 5;
+
                             shiftInfoTh.appendChild(shiftInfoB);
+                            shiftInfoTh.appendChild(numB);
                             shiftInfoTr.appendChild(shiftInfoTh);
                         }
+
+                        // シフト情報の表示
+                        getItem("shiftInfoOpen", data.event);
                     } else {
                         location.assign('shift.php');
                     }
@@ -1362,7 +1381,7 @@ function opDB(op, paramDB) {
                     e.remove();
                 });
                 Array.from(shiftInfoTr.getElementsByClassName("numEdit")).forEach(function(e) {
-                    e.remove();
+                    e.style.display = 'none';
                 });
                 Array.from(shiftInfoTr.getElementsByClassName("textDiv")).forEach(function(e) {
                     e.remove();
@@ -1494,12 +1513,7 @@ function opDB(op, paramDB) {
                                     numP.id         = "totalNum_" + day;
 
                                     // 必要人数：編集
-                                    var numB              = document.createElement("input");
-                                    numB.value            = requiredNumÅ[day];
-                                    numB.style.display    = 'none';
-                                    numB.id               = day + '_inputNum';
-                                    numB.className        = 'numEdit shiftEdit';
-                                    numB.maxLength        = 5;
+                                    document.getElementById(day + '_inputNum').value = requiredNumÅ[day];
 
                                     // 説明
                                     var textD       = document.createElement("div");
@@ -1522,7 +1536,6 @@ function opDB(op, paramDB) {
                                     textD.appendChild(text4);
 
                                     dayth.appendChild(numP);
-                                    dayth.appendChild(numB);
                                     dayth.appendChild(textD);
                                 }
 
