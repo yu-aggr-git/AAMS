@@ -428,6 +428,7 @@ html::-webkit-scrollbar {
         text-align      : center;
         border          : 0.1vmin solid #666;
         border-collapse : collapse;
+        word-break      : break-all;
     }
     #staffworkReportEditInfoArea th {
         background      : #ececec;
