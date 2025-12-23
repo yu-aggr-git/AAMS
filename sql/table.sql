@@ -122,3 +122,11 @@ create table aams.shift_change_list(
     approval_d      VARCHAR(10)                     COMMENT '処理日',
     PRIMARY KEY (request_dt, event, name)
 );
+
+drop table aams.day_report;
+create table aams.day_report(
+    event       VARCHAR(100) NOT NULL                            COMMENT 'イベント名',
+    day         VARCHAR(10)  NOT NULL                            COMMENT '日付',
+    report      VARCHAR(2000)                                    COMMENT '日報',
+    PRIMARY KEY (event, day)
+);

@@ -65,6 +65,19 @@ window.onload = () => {
     }
 
 
+    // ───日報の表示──────────────────────────────────────────────────────────────
+    document.getElementById("dayReportSelect").onchange = function() {
+        const selectEvent = document.getElementById("selectEvent").value;
+
+        // シフトの取得
+        var paramDB = {
+            'event' : selectEvent,
+            'day' : document.getElementById("dayReportSelect").value
+        };
+        opDB('getDayReport', paramDB);
+    }
+
+
     // ───打刻情報の表示──────────────────────────────────────────────────────────────
     document.getElementById("sendStampInfo").onclick = function() {
         document.getElementById("stampInfoEditMsg").innerText = '';
@@ -273,6 +286,7 @@ function getSelectEvent(selectEvent) {
                 'updatePayslip'
             ],
             'flex'  : [
+                'dayReportArea',
                 'workReportInfoAreaOpen',
                 'stampInfoAreaOpen',
                 'workReportInfoEditAreaOpen',
@@ -1014,6 +1028,7 @@ function opDB(op, paramDB) {
                     const tr2 = document.getElementById("workReportInfoHeader2");
                     const tr3 = document.getElementById("workReportInfoHeader3");
                     const selectDay = document.getElementById("selectStampInfoDay");
+                    const dayReportSelect = document.getElementById("dayReportSelect");
 
                     Array.from(tr.querySelectorAll("th")).forEach(function(e) {
                         e.remove();
@@ -1025,6 +1040,9 @@ function opDB(op, paramDB) {
                         e.remove();
                     });
                     Array.from(selectDay.querySelectorAll("option")).forEach(function(e) {
+                        e.remove();
+                    });
+                    Array.from(dayReportSelect.querySelectorAll("option")).forEach(function(e) {
                         e.remove();
                     });
 
@@ -1071,7 +1089,22 @@ function opDB(op, paramDB) {
                         option.text = date.toLocaleDateString('sv-SE');
                         option.value = date.toLocaleDateString('sv-SE');
                         selectDay.appendChild(option);
+
+                        var option2 = document.createElement("option");
+                        option2.text = date.toLocaleDateString('sv-SE');
+                        option2.value = date.toLocaleDateString('sv-SE');
+                        dayReportSelect.appendChild(option2);
                     }
+
+                    // 日報の取得
+                    let yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    dayReportSelect.value = yesterday.toISOString().split("T")[0];;
+                    var nextParamDB = {
+                        'event' : paramDB['event'],
+                        'day'   : yesterday.toISOString().split("T")[0]
+                    };
+                    opDB('getDayReport', nextParamDB);
                 }
             }
             break;
@@ -2207,6 +2240,25 @@ function opDB(op, paramDB) {
                         document.getElementById("updateNews").style.display     = 'none';
                     } else {
                         document.getElementById("newsMsg").innerText = '*お知らせの削除に失敗しました。';
+                    }
+                }
+            }
+            break;
+
+        case 'getDayReport':
+            var param   = "function=" + "get_day_report"
+                + "&event=" + encodeURIComponent(paramDB['event'])
+                + "&day="   + encodeURIComponent(paramDB['day'])
+            ;
+
+            xmlhttp.onreadystatechange = function() {
+                document.getElementById("dayReport").innerText = '';
+                
+                if (this.readyState == 4 && this.status == 200) {
+                    const data = JSON.parse(this.response);
+
+                    if (data) {
+                        document.getElementById("dayReport").innerHTML = data.report.replaceAll("\n", "<br>");
                     }
                 }
             }

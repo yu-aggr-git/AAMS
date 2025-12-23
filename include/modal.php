@@ -30,9 +30,9 @@
 
         <div class="modalBody">
             <div id="menuList">
-                <button type="button" id="shift">シフト</button>
                 <button type="button" id="openEdit">打刻修正</button>
-                <button type="button" id="openNews" hidden>お知らせ</button>
+                <button type="button" id="openDayReport">日報報告</button>
+
                 <button type="button" id="changeEvent">イベント切換え</button>
             </div>
         </div>
@@ -215,6 +215,124 @@
         </div>
 
         <button type="button" id="closeEdit" class="closeModal">閉じる</button>
+    </div>
+
+
+    <!-- 日報報告 -->
+    <div id="dayReport">
+        <div class="modalTitle">
+            <p class="title">日報報告</p>
+        </div>
+
+        <div class="modalBody">
+            <p class="guidance">【1】日付を選択してください。</p>
+            <div id="dayReportSelectArea">
+                <select id="dayReportSelect"></select>
+            </div>
+
+            <div id="dayReportDispArea">
+                <p class="guidance">日報は提出されています。</p>
+                <div id="dayReportDispList">
+                    <p></p>
+                </div>
+            </div>
+
+            <div id="dayReportEditArea">
+                <p class="guidance">【2】申請の処理をしてください。</p>
+                <div id="dayReportEditList">
+                    <div>
+                        <table>
+                            <tbody>
+                                <tr id="dayReportEditListHeader">
+                                    <th class="sticky1">承認／却下</th>
+                                    <th>名前</th>
+                                    <th>項目</th>
+                                    <th>修正前</th>
+                                    <th>修正後</th>
+                                    <th class="w25">理由</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <p class="guidance">【3】訂正する勤怠を選択してください。</p>
+                <div id="dayReportList">
+                    <div>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th class="sticky1">名前</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="sticky1">項目</th>
+                                </tr>
+                                
+                                <tr>
+                                    <th class="sticky1">出勤</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="sticky1 borderTopNone borderBottom">休憩1：開始</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="sticky1 borderTopNone">休憩1：終了</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="sticky1 borderTopNone borderBottom">休憩2：開始</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="sticky1 borderTopNone">休憩2：終了</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="sticky1 borderTopNone borderBottom">休憩3：開始</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="sticky1 borderTopNone">休憩3：終了</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="sticky1 borderTopNone">退勤</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="sticky1">休憩時間</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="sticky1">実働</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <p class="guidance">【4】訂正する内容を記入してください。</p>
+                <div id="inputDayReportArea">
+                    <textarea id="inputDayReport" placeholder="（例）&#13;&#10;・訂正事項なし&#13;&#10;・山田太郎[出勤]09:45 → 10:00(*シフト時間前に打刻)&#13;&#10;・佐藤花子[出勤]- → 無断欠勤&#13;&#10;"></textarea>
+                </div>
+
+                <p class="guidance">【5】イベントパスワードを入力して送信してください。</p>
+                <div id="inputEventPassArea">
+                    <input type="password" id="inputEventPass">
+                </div>
+
+                <div id="sendDayReportArea">
+                    <p id="dayReportMsg" class="errorMsg"></p>
+
+                    <button type="button" id="sendDayReport">送信</button>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="closeDayReport" class="closeModal">閉じる</button>
     </div>
     
 

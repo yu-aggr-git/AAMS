@@ -1,0 +1,192 @@
+// 現在日時
+function common_date() {
+    const d = new Date();
+    d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
+    const yyyymmdd = d.toISOString().replace('T', ' ').substring(0, 10);
+    const hhmmss = d.toISOString().replace('T', ' ').substring(11, 19);
+
+    return {
+        "yyyymmdd"  : yyyymmdd,
+        "hhmmss"    : hhmmss,
+        "yyyymmddhhmmss"  : yyyymmdd + ' ' + hhmmss,
+    }
+}
+
+
+// 項目名
+function common_itemName(item) {
+    const name = {
+        'start'     : '出勤',
+        'break1s'   : '休憩1：開始',
+        'break1e'   : '休憩1：終了',
+        'break2s'   : '休憩2：開始',
+        'break2e'   : '休憩2：終了',
+        'break3s'   : '休憩3：開始',
+        'break3e'   : '休憩3：終了',
+        'end'       : '退勤'
+    };
+
+    return name[item];
+}
+
+
+// 時間計算
+function common_clac(day, bt, at, method) {
+    const dayA = day.split(/-/);
+    const btA = bt.split(/:/);
+    const atA = at.split(/:/);
+
+    let dayBy = new Date(dayA[0], dayA[1], dayA[2], btA[0], btA[1], '00');
+    let dayAt = new Date(dayA[0], dayA[1], dayA[2], atA[0], atA[1], '00');
+
+    switch (method) {
+        case 'diff':
+            var result = dayAt.getTime() - dayBy.getTime();
+
+            var min = Math.floor(result / 1000 / 60 % 60);
+            var hour = Math.floor(result / 1000 / 60 / 60 % 24);
+
+            min = Math.ceil(min / 15) * 15;
+            hour = Number(hour) + Number((min == 60 ? 1 : 0)); 
+            break;
+    
+        case 'sum':
+            var totalMinutes = Number(btA[1]) + Number(atA[1]);
+            var carryHours = Math.floor(totalMinutes / 60);
+
+            var min = totalMinutes % 60;
+            var hour = Number(btA[0]) + Number(atA[0]) + Number(carryHours);
+
+            min = (Math.ceil(min / 15) * 15);
+            break;
+    }
+    
+    return hour + ':' +  (min == 60 ? '00' : min.toString().padStart(2, '0'));
+}
+
+
+// 切り上げ（開始、休憩）
+function common_ceil(data) {
+    var dataA  = data.split(/:/);
+
+    var min  = Math.ceil(dataA[1] / 15) * 15;
+    var hour = Number(dataA[0]) + Number((min == 60 ? 1 : 0));
+    dataClac = hour + ':' + (min == 60 ? '00' : min.toString().padStart(2, '0'));
+    
+    return dataClac;
+}
+
+
+// 切り捨て（退勤）
+function common_floor(start, end) {
+    var endA    = end.split(/:/);
+
+    var min  = Math.floor(endA[1] / 15) * 15;
+    var hour = Number(endA[0]);
+
+    if (start) {
+        var startA = start.split(/:/);
+        hour = hour + (Number(startA[0]) > hour ? 24 : 0);
+    }
+
+    dataClac = hour + ':' + min.toString().padStart(2, '0');
+    
+    return dataClac;
+}
+
+
+// シフト時間の算出
+function common_shift_time(day, start, end) {
+
+    // 拘束時間
+    const sumTime   = common_clac(day, start, end, 'diff');
+    const sumTimeA  = sumTime.split(/:/);
+
+    // 休憩時間
+    const breakTime = (sumTimeA[0] < 6)
+        ? '0:00'
+        : (sumTimeA[0] < 8)
+            ? '1:00'
+            : '1:30'
+    ;
+
+    // 実働時間
+    const workTime = common_clac(day, breakTime, sumTime, 'diff');
+
+    return {
+        "breakTime" : breakTime,
+        "workTime"  : workTime
+    }
+}
+
+
+// 勤怠時間の算出
+function common_report_time(day, start, break1s, break1e, break2s, break2e, break3s, break3e, end) {
+
+    // 休憩
+    let breakTime = '0:00';
+    if (
+        (common_validation_time(break1s) && !common_validation_time(break1e))  || 
+        (common_validation_time(break2s) && !common_validation_time(break2e))  ||
+        (common_validation_time(break3s) && !common_validation_time(break3e))  ||
+        (!common_validation_time(break1s) && common_validation_time(break1e))  || 
+        (!common_validation_time(break2s) && common_validation_time(break3e))  || 
+        (!common_validation_time(break2s) && common_validation_time(break3e))
+    ) {
+        breakTime = '＊';
+    } else {
+        // 1
+        if (common_validation_time(break1s) && common_validation_time(break1e)) {
+            breakTime = common_clac(day, break1s, break1e, 'diff');
+        }
+
+        // 2
+        if (common_validation_time(break2s) && common_validation_time(break2e)) {
+            breakTime = common_clac(
+                day,
+                breakTime,
+                common_clac(day, break2s, break2e, 'diff'),
+                'sum'
+            );
+        }
+
+        // 3
+        if (common_validation_time(break3s) && common_validation_time(break3e)) {
+            breakTime = common_clac(
+                day,
+                breakTime,
+                common_clac(day, break3s, break3e, 'diff'),
+                'sum'
+            );
+        }
+    }
+
+    var workTime = '＊';
+    if (common_validation_time(start) && common_validation_time(end) && common_validation_time(breakTime)) {
+        // 拘束時間
+        const sumTime   = common_clac(day, start, end, 'diff');
+
+        // 実働時間
+        workTime = common_clac(day, breakTime, sumTime, 'diff');
+    }
+
+    return {
+        "breakTime" : breakTime,
+        "workTime"  : workTime
+    }
+}
+
+
+// バリデーション＿h:mm または h:mm:ss
+function common_validation_time(time) {
+    const timeRegex = /^[0-9]{1,2}:[0-9]{2}$|^[0-9]{1,2}:[0-9]{2}:[0-9]{2}$/;
+
+    return timeRegex.test(time);
+}
+
+
+
+
+
+
+

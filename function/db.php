@@ -17,6 +17,10 @@
             case 'get_work_report_day' :
                 get_work_report_day($dbh, $_POST);
                 break;
+            
+            case 'get_work_report_day_all' :
+                get_work_report_day_all($dbh, $_POST);
+                break;
 
             case 'register_work_report' :
                 register_work_report($dbh, $_POST);
@@ -62,10 +66,6 @@
 
             case 'register_staff_list_pass' :
                 register_staff_list_pass($dbh, $_POST);
-                break;
-
-            case 'get_shift_url' :
-                get_shift_url($dbh, $_POST);
                 break;
 
             case 'update_staff_list_payslip' :
@@ -195,7 +195,17 @@
             
             case 'register_shift_change_list' :
                 register_shift_change_list($dbh, $_POST);
-                break;                
+                break;
+                
+                
+            // 日報
+            case 'register_day_report' :
+                register_day_report($dbh, $_POST);
+                break;
+
+            case 'get_day_report' :
+                get_day_report($dbh, $_POST);
+                break;
         }
 
         $dbh->commit();
@@ -294,6 +304,146 @@
         $result = $sth->fetch(PDO::FETCH_ASSOC);
         echo $result ? json_encode($result) : '';
     }
+
+    // ────勤怠情報：取得（1日全員）───────────────────────
+    function get_work_report_day_all($dbh, $param) {
+
+        // スタッフリスト
+        $query1 = "
+            SELECT name, shift
+            FROM staff_list
+            WHERE
+                event = :event
+            ORDER BY no asc
+        ";
+        $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth1->execute([
+            'event' => $param['event']
+        ]);
+        $sth1->execute();
+        while ($row = $sth1->fetch(PDO::FETCH_ASSOC)) {
+            $name   = $row['name'];
+            $shift  = $row['shift'];
+            $employeeData['staffList'][$name] = array(
+                'shift'             => [],
+                'workReport'        => [],
+                'workReportEdit'    => []
+            );
+
+            if ($shift) {
+                foreach (explode(",", $shift) as $data) {
+                    if ($data) {
+                        $dataArray  = explode("_", $data);
+                        $shiftDay   = $dataArray[0];
+                        $shiftStart = $dataArray[1];
+                        $shifEndd   = $dataArray[2];
+
+                        if ($shiftDay == $param['day']) {
+                            $employeeData['staffList'][$name]['shift'] = array(
+                                'start' => $shiftStart,
+                                'end'   => $shifEndd
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
+        // 勤怠情報
+        $query2 = "
+            SELECT *
+            FROM work_report
+            WHERE
+                    event = :event
+                AND day = :day
+        ";
+        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth2->execute([
+            'event' => $param['event'],
+            'day'   => $param['day']
+        ]);
+        $sth2->execute();
+        while ($row = $sth2->fetch(PDO::FETCH_ASSOC)) {
+            $name   = $row['name'];
+
+            if ($name) {
+                $employeeData['staffList'][$name]['workReport'] = array(
+                    'start'     => $row['start'],
+                    'end'       => $row['end'],
+                    'break1s'   => $row['break1s'],
+                    'break1e'   => $row['break1e'],
+                    'break2s'   => $row['break2s'],
+                    'break2e'   => $row['break2e'],
+                    'break3s'   => $row['break3s'],
+                    'break3e'   => $row['break3e']
+                );
+            }
+        }
+
+        // 勤怠修正情報
+        $query3 = "
+            SELECT *
+            FROM work_report_edit
+            WHERE
+                    event   = :event
+                AND day     = :day
+                AND status  = '申請中'
+        ";
+        $sth3 = $dbh->prepare($query3, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth3->execute([
+            'event' => $param['event'],
+            'day'   => $param['day']
+        ]);
+        $sth3->execute();
+        while ($row = $sth3->fetch(PDO::FETCH_ASSOC)) {
+            $name   = $row['name'];
+
+            if ($name) {
+                $employeeData['staffList'][$name]['workReportEdit'][] = array(
+                    'request_dt'    => $row['request_dt'],
+                    'day'           => $row['day'],
+                    'item'          => $row['item'],
+                    'data_before'   => $row['data_before'],
+                    'data_after'    => $row['data_after'],
+                    'reason'        => $row['reason']
+                );
+            }
+        }
+
+        // イベント
+        $query4 = "
+            SELECT
+                e.first_day,
+                e.end_day,
+                dr.report
+            FROM
+                event e
+            LEFT JOIN
+                day_report dr
+                ON  dr.event = e.event
+                AND dr.day   = :day
+            WHERE
+                e.event = :event
+        ";
+        $sth4 = $dbh->prepare($query4, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth4->execute([
+            'event' => $param['event'],
+            'day'   => $param['day']
+        ]);
+        $sth4->execute();
+        while ($row = $sth4->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData['event'] = array(
+                'first_day' => $row['first_day'],
+                'end_day'   => $row['end_day'],
+                'report'    => $row['report']
+            );
+        }
+        
+        $json = json_encode($employeeData);
+        echo $json;
+    }
+
+
 
     // ────勤怠情報：登録─────────────────────────────
     function register_work_report($dbh, $param) {
@@ -602,7 +752,6 @@
         echo $count;
     }
 
-
     // ────スタッフリスト：更新（給与明細）─────────────────────────────
     function update_staff_list_payslip($dbh, $param) {
 
@@ -729,7 +878,12 @@
         // 結果を返却
         $result = $sth->fetch(PDO::FETCH_ASSOC);
         $check = password_verify($param['pass'], $result['pass']);
-        echo $check ? 'true' : 'false';
+
+        if (array_key_exists('return', $param)) {
+            return $check ? 'true' : 'false';
+        } else {
+            echo $check ? 'true' : 'false';
+        }
     }
 
     // ────イベント：取得─────────────────────────────
@@ -929,24 +1083,6 @@
         $json = json_encode($employeeData);
         echo $json;
     }
-
-    // ────イベント：URL取得─────────────────────────────
-    function get_shift_url($dbh, $param) {
-        $query = "
-            SELECT shift_url
-            FROM event
-            WHERE event = :event
-        ";
-
-        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $sth->execute([
-            'event' => $param['event']
-        ]);
-
-        // 結果を返却
-        $result = $sth->fetch(PDO::FETCH_ASSOC);
-        echo $result ? $result['shift_url'] : '';
-    }
     
     // ────イベント：登録─────────────────────────────
     function register_event($dbh, $param) {
@@ -1098,6 +1234,18 @@
         ";
         $sth6 = $dbh->prepare($query6, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $sth6->execute([
+            'event'     => $param['event'],
+        ]);
+
+        // 日報
+        $query7 = "
+            DELETE FROM
+                day_report
+            WHERE
+                event = :event
+        ";
+        $sth7 = $dbh->prepare($query7, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth7->execute([
             'event'     => $param['event'],
         ]);
 
@@ -1298,7 +1446,9 @@
             }
         }
 
-        echo $count;
+        if (!array_key_exists('return', $param)) {
+            echo $count;
+        }
     }
 
 
@@ -1911,7 +2061,7 @@
         echo $result['count'];
     }
 
-        // ────シフト変更希望：登録─────────────────────────────
+    // ────シフト変更希望：登録─────────────────────────────
     function register_shift_change_list($dbh, $param) {
 
         $query1 = "
@@ -1960,5 +2110,77 @@
         }
 
         echo $count;
+    }
+
+
+
+    // ────日報：登録─────────────────────────────
+    function register_day_report($dbh, $param) {
+
+        if (
+            check_login_event(
+                $dbh,
+                [
+                    'event'     => $param['event'],
+                    'pass'      => $param['eventPass'],
+                    'return'    => true
+                ]
+            ) == 'true'
+        ) {
+            // 日報の登録
+            $query = "
+                INSERT INTO
+                    day_report(event, day, report)
+                VALUES
+                    (:event, :day, :report)
+                ON DUPLICATE KEY UPDATE
+                    report    = VALUES(report)
+            ";
+            $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+            $count = $sth->execute([
+                'event'     => $param['event'],
+                'day'       => $param['day'],
+                'report'    => $param['dayReport']
+            ]);
+
+            // 勤怠情報・勤怠修正情報の更新
+            if ($param['approvalD']) {
+                update_work_report(
+                    $dbh,
+                    [
+                        'event'         => $param['event'],
+                        'updateList'    => $param['updateList'],
+                        'approvalD'     => $param['approvalD'],
+                        'return'        => true
+                    ]
+                );
+            }
+
+            echo $count;
+        } else {
+            echo 'false';
+        }
+    }
+
+    // ────日報：取得─────────────────────────────
+    function get_day_report($dbh, $param) {
+        $query = "
+            SELECT *
+            FROM day_report
+            WHERE
+                    event   = :event
+                AND day     = :day
+        ";
+
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth->execute([
+            'event' => $param['event'],
+            'day' => $param['day']
+        ]);
+
+        // 結果を返却
+        $result = $sth->fetch(PDO::FETCH_ASSOC);
+        $json = json_encode($result);
+        echo $json;
     }
     

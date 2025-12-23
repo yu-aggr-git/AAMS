@@ -129,7 +129,7 @@ function stamp(event) {
                     '【イベント】  '    + event     + '\n' 
                 +   '【  名前  】  '    + selectStaff      + '\n' 
                 +   '【  日付  】  '    + day  + '\n' 
-                +   '【  項目  】  '    + itemName(item) + '\n' 
+                +   '【  項目  】  '    + common_itemName(item) + '\n' 
                 +   '【  修正  】  '    + '-' + '　→　' + inputHour + ':' + inputMinutes + '\n' 
                 +   '【  理由  】  '    + '打刻漏れ' + '\n' 
                 +   '\n以上の内容で、打刻漏れ申請をしてよろしいですか？'
@@ -157,7 +157,7 @@ function stamp(event) {
                 '【イベント】  '    + event     + '\n' 
             +   '【  名前  】  '    + selectStaff      + '\n' 
             +   '【  日付  】  '    + date().yyyymmdd  + '\n' 
-            +   '【  項目  】  '    + itemName(item) + '\n' 
+            +   '【  項目  】  '    + common_itemName(item) + '\n' 
             +   '\n以上の内容で、打刻をしてよろしいですか？'
         );
         if (result) {
@@ -246,14 +246,10 @@ function online(event) {
 
         // イベントの切換え
         document.getElementById("changeEvent").onclick = function() {
+            var paramIndexedDB = {event : event};
+            opIndexedDB('deleteStaffList', paramIndexedDB);
             localStorage.removeItem('event');
             window.location.reload();
-        }
-
-        // シフトへ遷移
-        document.getElementById("shift").onclick = function() {
-            paramDB = { 'event': event, };
-            opDB('redirectShift', paramDB);
         }
 
         // ローカルデータをDBに反映（5分毎）
@@ -267,7 +263,22 @@ function online(event) {
         // 勤怠修正
         document.getElementById("openEdit").onclick = function() {
             editData(event);
-        }        
+        }
+
+        // 日報選択
+        document.getElementById("openDayReport").onclick = function() {
+            sendDayReport(event);
+        }
+        document.getElementById("dayReportList").addEventListener('click', (e) => {
+            if (e.target.tagName  === 'BUTTON') {
+                // 日報記入
+                const inputDayReport = document.getElementById("inputDayReport");
+                var report = inputDayReport.value;
+
+                var value = '・' + e.target.value + ' → 00:00(*理由)' + '\n';
+                inputDayReport.value = report + value;
+            }
+        })
     }
 }
 
@@ -380,7 +391,7 @@ function editData(event) {
                     '【イベント】  '    + event     + '\n' 
                 +   '【  名前  】  '    + selectStaff      + '\n' 
                 +   '【  日付  】  '    + selectDay  + '\n' 
-                +   '【  項目  】  '    + itemName(inputItem) + '\n' 
+                +   '【  項目  】  '    + common_itemName(inputItem) + '\n' 
                 +   '【  修正  】  '    + (dataBefore != '' ? dataBefore : '-') + '　→　' + dataAfter + '\n' 
                 +   '【  理由  】  '    + inputReason + '\n' 
                 +   '\n以上の内容で、打刻修正の申請をしてよろしいですか？'
@@ -422,6 +433,78 @@ function editData(event) {
         document.getElementById("editWorkReportReason").value = '';
     }
 }
+
+
+// 日報報告
+function sendDayReport(event) {
+    document.getElementById("dayReportMsg").innerText   =  '';
+    document.getElementById("inputDayReport").value     =  '';
+    document.getElementById("inputEventPass").value     =  '';
+
+    document.getElementById("menu").style.display       = 'none';
+    document.getElementById("dayReport").style.display  = 'block';
+
+    // ローカルデータをDBに反映
+    registerData(event);
+
+    // 日付リストの表示
+    paramDB = {
+        'event' : event,
+        'day'   : date().yyyymmdd,
+    };
+    opDB('getWorkReportDayAll', paramDB);
+
+    // 選択肢切り替え
+    let selectDay =  '';
+    document.getElementById("dayReportSelect").onchange = function() {      
+        selectDay = document.getElementById("dayReportSelect").value;
+
+        paramDB['day'] = selectDay;
+        opDB('getWorkReportDayAll', paramDB);
+
+    }
+
+    // 送信
+    const inputDayReport = document.getElementById("inputDayReport");
+    document.getElementById("sendDayReport").onclick = function() {
+        var eventPass = document.getElementById("inputEventPass").value;
+
+        if (!selectDay || !inputDayReport.value || !eventPass) {
+            document.getElementById("dayReportMsg").innerText = 'すべての項目に入力が必要です。';
+        } else {
+            let dayReportEditList = [];
+            for(let status of document.getElementById("dayReportEditList").querySelectorAll("input[type=radio]")) {
+                if(status.checked) {
+                    dayReportEditList.push(status.value);
+                }
+            }
+
+            var result = window.confirm(
+                    '【イベント】  '    + event     + '\n' 
+                +   '【  日付  】  '    + selectDay  + '\n' 
+                +   '\n日報の送信をしてよろしいですか？'
+            );
+            if (result) {
+                paramDB['dayReport']    = inputDayReport.value;
+                paramDB['updateList']   = dayReportEditList;
+                paramDB['approvalD']    = date().yyyymmdd;
+                paramDB['eventPass']    = eventPass;
+                opDB('registerDayReport', paramDB);
+            }
+        }
+    }
+
+
+    // 閉じる
+    document.getElementById("closeDayReport").onclick = function() {
+        document.getElementById("modal").style.display      = 'none';
+        document.getElementById("dayReport").style.display  = 'none';
+        document.getElementById("dayReportMsg").innerText   =  '';
+        document.getElementById("inputDayReport").value     =  '';
+        document.getElementById("inputEventPass").value     =  '';
+    }
+}
+
 
 
 // ローカルデータをDBに反映
@@ -549,7 +632,33 @@ function opIndexedDB(op, paramIndexedDB) {
                     // console.log('transaction complete');
                 }
             }
-            break;   
+            break;
+
+        case 'deleteStaffList':
+            openReq.onsuccess = function(event) {
+                var db    = event.target.result;
+                var trans = db.transaction(staffList, 'readwrite');
+                var store = trans.objectStore(staffList);
+                var index = store.index('eventIndex');
+
+                var putReq  = index.getAll(paramIndexedDB['event']);
+
+                putReq.onsuccess = function(event) {
+                    // console.log('put data success');
+                    var data = event.target.result;
+
+                    Object.keys(data).forEach(function(key) { 
+                        store.delete([
+                            paramIndexedDB['event'],
+                            data[key].name
+                        ]);
+                    });
+                }
+                trans.oncomplete = function() {
+                    // console.log('transaction complete');
+                }
+            }
+            break;
 
         case 'getWorkStatus':
             openReq.onsuccess = function(event) {
@@ -1108,19 +1217,6 @@ function opDB(op, paramDB) {
             }
             break;
 
-        case 'redirectShift':
-            var param   = "function=" + "get_shift_url"
-                + "&event=" + encodeURIComponent(paramDB['event']) 
-            ;
-            xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    const url = this.responseText;
-
-                    window.open(url, '_blank')
-                }
-            }
-            break;
-
         case 'getStaffList':
             var param = "function=" + "get_staff_list"
                 + "&event=" + encodeURIComponent(paramDB['event'])
@@ -1175,6 +1271,393 @@ function opDB(op, paramDB) {
                             select.appendChild(option);
                         });
                     }
+                }
+            }
+            break;
+
+        case 'getWorkReportDayAll':
+            var param   = "function=" + "get_work_report_day_all"
+                + "&event=" + encodeURIComponent(paramDB['event'])
+                + "&day="   + encodeURIComponent(paramDB['day'])
+            ;
+
+            xmlhttp.onreadystatechange = function() {
+                document.getElementById("dayReportMsg").innerText   =  '';
+                document.getElementById("inputDayReport").value     =  '';
+                document.getElementById("inputEventPass").value     =  '';
+
+                const dayReportSelect = document.getElementById("dayReportSelect");
+                Array.from(dayReportSelect.querySelectorAll("option")).forEach(function(e) {
+                    e.remove();
+                });
+
+                const dayReportEditList = document.getElementById("dayReportEditList").querySelector("tbody");
+                Array.from(dayReportEditList.querySelectorAll("tr")).forEach(function(e) {
+                    if (!e.id) {
+                        e.remove();
+                    }               
+                });
+
+                const dayReportList = document.getElementById("dayReportList");
+                Array.from(dayReportList.querySelectorAll("td")).forEach(function(e) {
+                    e.remove();                  
+                });
+
+                if (this.readyState == 4 && this.status == 200) {
+                    const data = JSON.parse(this.response);
+
+                    if (data) {
+
+                        // 日付選択肢
+                        const firstDay  = data.event.first_day.split(/-/);
+                        const endDay    = data.event.end_day.split(/-/);
+                        for (
+                            let date = new Date(firstDay[0], firstDay[1] - 1 , firstDay[2]);
+                            date <= new Date(endDay[0], endDay[1] - 1, endDay[2]);
+                            date.setDate(date.getDate() + 1)
+                        ){
+                            var option = document.createElement("option");
+                            option.text = date.toLocaleDateString('sv-SE');
+                            option.value = date.toLocaleDateString('sv-SE');
+                            dayReportSelect.appendChild(option);
+                        }
+                        dayReportSelect.value = paramDB['day'];
+
+                        if (data.event.report) {
+                            document.getElementById("dayReportDispArea").style.display = 'flex';
+                            document.getElementById("dayReportEditArea").style.display = 'none';
+
+                            document.getElementById("dayReportDispList").querySelector('p').innerHTML = data.event.report.replaceAll("\n", "<br>");
+                        } else  {
+                            document.getElementById("dayReportDispArea").style.display = 'none';
+                            document.getElementById("dayReportEditArea").style.display = 'flex';
+
+                            // 名前
+                            const dayReportListA = dayReportList.querySelectorAll("tr");
+                            Object.keys(data.staffList).forEach(function(keyName) {
+                                var namaData = data.staffList[keyName];
+
+                                // 勤怠修正情報
+                                if (Object.keys(namaData.workReportEdit).length) {
+                                    Object.keys(namaData.workReportEdit).forEach(function(keyEdit) {
+                                        var editData = namaData.workReportEdit[keyEdit];
+
+                                        var workReportEditTr = document.createElement("tr");
+
+                                        // ステータス
+                                        var status       = document.createElement("td");
+                                        status.className = 'sticky1';
+                                        var statusI1    = document.createElement("input");
+                                        statusI1.type   = 'radio';
+                                        statusI1.name   = 'status' + keyEdit;
+                                        statusI1.value  = 
+                                            '承認済'
+                                            + '|' + editData.request_dt
+                                            + '|' + keyName
+                                            + '|' + editData.day
+                                            + '|' + editData.item
+                                            + '|' + editData.data_after
+                                        ;
+                                        statusI1.id     = 'approve' + keyEdit;
+                                        var statusL1        = document.createElement("label");
+                                        statusL1.htmlFor    = 'approve' + keyEdit;
+                                        statusL1.innerText  = '承認';
+                                        var statusI2    = document.createElement("input");
+                                        statusI2.type   = 'radio';
+                                        statusI2.name   = 'status' + keyEdit;
+                                        statusI2.value  = 
+                                            '却下済'
+                                            + '|' + editData.request_dt
+                                            + '|' + keyName
+                                            + '|' + editData.day
+                                            + '|' + editData.item
+                                            + '|' + editData.data_before
+                                        ;
+                                        statusI2.id     = 'reject' + keyEdit;
+                                        var statusL2        = document.createElement("label");
+                                        statusL2.htmlFor    = 'reject' + keyEdit;
+                                        statusL2.innerText  = '却下';
+                                        status.appendChild(statusI1);
+                                        status.appendChild(statusL1);
+                                        status.appendChild(statusI2);
+                                        status.appendChild(statusL2);
+                                        workReportEditTr.appendChild(status);
+
+
+                                        // 名前
+                                        var reportEditname        = document.createElement("td");
+                                        reportEditname.innerText  = keyName;
+                                        workReportEditTr.appendChild(reportEditname);
+
+                                        // 項目
+                                        var item        = document.createElement("td");
+                                        item.innerText  = common_itemName(editData.item);
+                                        workReportEditTr.appendChild(item);
+
+                                        // 修正前
+                                        var before        = document.createElement("td");
+                                        before.innerHTML  = 
+                                            editData.day 
+                                            + '<br>' 
+                                            + editData.data_before
+                                        ;
+                                        workReportEditTr.appendChild(before);
+
+                                        // 修正後
+                                        var after        = document.createElement("td");
+                                        after.innerHTML  = 
+                                            editData.day 
+                                            + '<br>' 
+                                            + editData.data_after
+                                        ;
+                                        workReportEditTr.appendChild(after);
+
+                                        // 理由
+                                        var reason        = document.createElement("td");
+                                        reason.innerText  = editData.reason;
+                                        reason.className = 'w25';
+                                        workReportEditTr.appendChild(reason);
+
+                                        dayReportEditList.appendChild(workReportEditTr);
+                                    });
+                                }
+
+                                // 勤怠情報
+                                if (
+                                    Object.keys(namaData.workReport).length ||
+                                    common_validation_time(namaData.shift.start) ||
+                                    common_validation_time(namaData.shift.end)
+                                ) {
+                                    var dataSS = 'start' in namaData.shift ? namaData.shift.start : '';
+                                    var dataSE = 'end' in namaData.shift ? namaData.shift.end : '';
+
+                                    var dataWS   = 'start' in namaData.workReport ? namaData.workReport.start : '';
+                                    var dataWB1s = 'break1s' in namaData.workReport ? namaData.workReport.break1s : '';
+                                    var dataWB1e = 'break1e' in namaData.workReport ? namaData.workReport.break1e : '';
+                                    var dataWB2s = 'break2s' in namaData.workReport ? namaData.workReport.break2s : '';
+                                    var dataWB2e = 'break2e' in namaData.workReport ? namaData.workReport.break2e : '';
+                                    var dataWB3s = 'break3s' in namaData.workReport ? namaData.workReport.break3s : '';
+                                    var dataWB3e = 'break3e' in namaData.workReport ? namaData.workReport.break3e : '';
+                                    var dataWE   = 'end' in namaData.workReport ? namaData.workReport.end : '';
+                                    
+                                    // 名前
+                                    var name        = document.createElement("td");
+                                    name.colSpan    = '3';
+                                    name.innerText  = keyName;
+                                    name.className  = 'ececec bold';
+                                    dayReportListA[0].appendChild(name);
+
+                                    // 項目
+                                    var item1               = document.createElement("td");
+                                    item1.innerText         = 'シフト';
+                                    item1.className         = 'ececec bold borderRight';
+                                    var item2               = document.createElement("td");
+                                    item2.innerText         = '打刻';
+                                    item2.className         = 'ececec bold borderRight borderLeftNone';
+                                    var item3               = document.createElement("td");                                
+                                    item3.innerText         = '勤怠';
+                                    item3.className         = 'ececec bold borderLeftNone';
+                                    dayReportListA[1].appendChild(item1);
+                                    dayReportListA[1].appendChild(item2);
+                                    dayReportListA[1].appendChild(item3);
+                                    
+                                    // 出勤
+                                    var start1       = document.createElement("td");
+                                    start1.innerText = dataSS;
+                                    start1.className = 'borderRight';
+                                    var start2       = document.createElement("td");
+                                    start2.innerText = dataWS;
+                                    start2.className = 'borderRight borderLeftNone';
+                                    var start3       = document.createElement("td");
+                                    start3.className = 'borderLeftNone';
+                                    var start3B      = document.createElement("button");
+                                    var ceilWS       = common_validation_time(dataWS)
+                                        ? common_ceil(dataWS)
+                                        : '-'
+                                    ;
+                                    start3B.innerText = ceilWS;
+                                    start3B.value = keyName + '[出勤]' + ceilWS;
+                                    start3.appendChild(start3B);
+                                    dayReportListA[2].appendChild(start1);
+                                    dayReportListA[2].appendChild(start2);
+                                    dayReportListA[2].appendChild(start3);
+
+                                    // 休憩1：開始
+                                    var break1s1        = document.createElement("td");
+                                    break1s1.rowSpan    = '6';
+                                    break1s1.className  = 'borderTopNone borderRight diagonalLine';
+                                    var break1s2        = document.createElement("td");
+                                    break1s2.innerText  = dataWB1s;
+                                    break1s2.className  = 'borderBottom borderTopNone borderRight borderLeftNone';
+                                    var break1s3        = document.createElement("td");
+                                    break1s3.className  = 'borderBottom borderTopNone borderLeftNone';
+                                    var break1sB        = document.createElement("button");
+                                    var ceilWB1s        = common_validation_time(dataWB1s)
+                                        ? common_ceil(dataWB1s)
+                                        : '-'
+                                    ;
+                                    break1sB.innerText = ceilWB1s;
+                                    break1sB.value = keyName + '[休憩1：開始]' + ceilWB1s;
+                                    break1s3.appendChild(break1sB);
+                                    dayReportListA[3].appendChild(break1s1);
+                                    dayReportListA[3].appendChild(break1s2);
+                                    dayReportListA[3].appendChild(break1s3);
+
+                                    // 休憩1：終了
+                                    var break1e2        = document.createElement("td");
+                                    break1e2.innerText  = dataWB1e;
+                                    break1e2.className  = 'borderTopNone borderRight borderLeftNone';
+                                    var break1e3        = document.createElement("td");
+                                    break1e3.className  = 'borderTopNone borderLeftNone';
+                                    var break1eB        = document.createElement("button");
+                                    var ceilWB1e        = common_validation_time(dataWB1e)
+                                        ? common_ceil(dataWB1e)
+                                        : '-'
+                                    ;
+                                    break1eB.innerText = ceilWB1e;
+                                    break1eB.value = keyName + '[休憩1：終了]' + ceilWB1e;
+                                    break1e3.appendChild(break1eB);
+                                    dayReportListA[4].appendChild(break1e2);
+                                    dayReportListA[4].appendChild(break1e3);
+
+                                    // 休憩2：開始
+                                    var break2s2        = document.createElement("td");
+                                    break2s2.innerText  = dataWB2s;
+                                    break2s2.className  = 'borderBottom borderTopNone borderRight borderLeftNone';
+                                    var break2s3        = document.createElement("td");
+                                    break2s3.className  = 'borderBottom borderTopNone borderLeftNone';
+                                    var break2sB        = document.createElement("button");
+                                    var ceilWB2s        = common_validation_time(dataWB2s)
+                                        ? common_ceil(dataWB2s)
+                                        : '-'
+                                    ;
+                                    break2sB.innerText = ceilWB2s;
+                                    break2sB.value = keyName + '[休憩2：開始]' + ceilWB2s;
+                                    break2s3.appendChild(break2sB);
+                                    dayReportListA[5].appendChild(break2s2);
+                                    dayReportListA[5].appendChild(break2s3);
+
+                                    // 休憩2：終了
+                                    var break2e2        = document.createElement("td");
+                                    break2e2.innerText  = dataWB2e;
+                                    break2e2.className  = 'borderTopNone borderRight borderLeftNone';
+                                    var break2e3        = document.createElement("td");
+                                    break2e3.className  = 'borderTopNone borderLeftNone';
+                                    var break2eB        = document.createElement("button");
+                                    var ceilWB2e =      common_validation_time(dataWB2e)
+                                        ? common_ceil(dataWB2e)
+                                        : '-'
+                                    ;
+                                    break2eB.innerText = ceilWB2e;
+                                    break2eB.value = keyName + '[休憩2：終了]' + ceilWB2e;
+                                    break2e3.appendChild(break2eB);
+                                    dayReportListA[6].appendChild(break2e2);
+                                    dayReportListA[6].appendChild(break2e3);
+
+                                    // 休憩3：開始
+                                    var break3s2        = document.createElement("td");
+                                    break3s2.innerText  = dataWB3s;
+                                    break3s2.className  = 'borderBottom borderTopNone borderRight borderLeftNone';
+                                    var break3s3        = document.createElement("td");
+                                    break3s3.className  = 'borderBottom borderTopNone borderLeftNone';
+                                    var break3sB        = document.createElement("button");
+                                    var ceilWB3s        = common_validation_time(dataWB3s)
+                                        ? common_ceil(dataWB3s)
+                                        : '-'
+                                    ;
+                                    break3sB.innerText = ceilWB3s;
+                                    break3sB.value = keyName + '[休憩3：開始]' + ceilWB3s;
+                                    break3s3.appendChild(break3sB);
+                                    dayReportListA[7].appendChild(break3s2);
+                                    dayReportListA[7].appendChild(break3s3);
+
+                                    // 休憩3：終了
+                                    var break3e2        = document.createElement("td");
+                                    break3e2.innerText  = dataWB3e;
+                                    break3e2.className  = 'borderTopNone borderRight borderLeftNone';
+                                    var break3e3        = document.createElement("td");
+                                    break3e3.className  = 'borderTopNone borderLeftNone';
+                                    var break3eB        = document.createElement("button");
+                                    var ceilWB3e        = common_validation_time(dataWB3e)
+                                        ? common_ceil(dataWB3e)
+                                        : '-'
+                                    ;
+                                    break3eB.innerText = ceilWB3e;
+                                    break3eB.value = keyName + '[休憩3：終了]' + ceilWB3e;
+                                    break3e3.appendChild(break3eB);
+                                    dayReportListA[8].appendChild(break3e2);
+                                    dayReportListA[8].appendChild(break3e3);
+
+                                    // 退勤
+                                    var end1       = document.createElement("td");
+                                    end1.innerText = dataSE;
+                                    end1.className = 'borderTopNone borderRight';
+                                    var end2       = document.createElement("td");
+                                    end2.innerText = dataWE;
+                                    end2.className = 'borderTopNone borderRight borderLeftNone';
+                                    var end3       = document.createElement("td");
+                                    end3.className = 'borderTopNone borderLeftNone';
+                                    var end3B      = document.createElement("button");
+                                    var ceilWE     = common_validation_time(dataWE)
+                                        ? common_floor(ceilWS, dataWE)
+                                        : '-'
+                                    ;
+                                    end3B.innerText = ceilWE;
+                                    end3B.value = keyName + '[退勤]' + ceilWE;
+                                    end3.appendChild(end3B);
+                                    dayReportListA[9].appendChild(end1);
+                                    dayReportListA[9].appendChild(end2);
+                                    dayReportListA[9].appendChild(end3);
+
+
+                                    // 時間計算
+                                    var shiftTimeB = '';
+                                    var shiftTimeW = '';
+                                    if (common_validation_time(dataSS) && common_validation_time(dataSE)) {
+                                        var shiftTime = common_shift_time(paramDB['day'], dataSS, dataSE);
+                                        shiftTimeB = shiftTime.breakTime;
+                                        shiftTimeW = shiftTime.workTime;
+                                    }
+                                    var reportTime = common_report_time(
+                                        paramDB['day'],
+                                        ceilWS,
+                                        ceilWB1s,
+                                        ceilWB1e,
+                                        ceilWB2s,
+                                        ceilWB2e,
+                                        ceilWB3s,
+                                        ceilWB3e,
+                                        ceilWE
+                                    );
+                                    var reportTimeB = reportTime.breakTime;
+                                    var reportTimeW  = reportTime.workTime;
+
+                                    // 休憩時間
+                                    var sumBreak1       = document.createElement("td");
+                                    sumBreak1.innerText = shiftTimeB;
+                                    sumBreak1.className = 'bold borderRight';
+                                    var sumBreak2       = document.createElement("td");
+                                    sumBreak2.colSpan   = '2';
+                                    sumBreak2.innerText = reportTimeB;
+                                    sumBreak2.className = 'bold borderLeftNone';
+                                    dayReportListA[10].appendChild(sumBreak1);
+                                    dayReportListA[10].appendChild(sumBreak2);
+
+                                    // 実働時間
+                                    var sumWork1       = document.createElement("td");
+                                    sumWork1.innerText = shiftTimeW;
+                                    sumWork1.className = 'bold borderRight';
+                                    var sumWork2       = document.createElement("td");
+                                    sumWork2.colSpan   = '2';
+                                    sumWork2.innerText = reportTimeW;
+                                    sumWork2.className = 'bold borderLeftNone';
+                                    dayReportListA[11].appendChild(sumWork1);
+                                    dayReportListA[11].appendChild(sumWork2);
+                                }
+                            });
+                        }
+                    }
+
                 }
             }
             break;
@@ -1268,7 +1751,7 @@ function opDB(op, paramDB) {
 
                                         item.rowSpan = itemNum[itemKey];
                                         if (itemNum[itemKey] == 1) {
-                                            item.innerText = itemName(itemKey);
+                                            item.innerText = common_itemName(itemKey);
                                             item.style.background = (i % 2 == 0) ? '#f5f5f5ff' : '#fff';
                                             item.className = 'sticky2';
                                             tr.appendChild(item);
@@ -1387,26 +1870,41 @@ function opDB(op, paramDB) {
             }
             break;
 
+        case 'registerDayReport':
+            var param = "function=" + "register_day_report"
+                + "&event="         + encodeURIComponent(paramDB['event'])
+                + "&day="           + encodeURIComponent(paramDB['day'])
+                + "&dayReport="     + encodeURIComponent(paramDB['dayReport'])
+                + "&updateList="    + encodeURIComponent(paramDB['updateList'])
+                + "&approvalD="     + encodeURIComponent(paramDB['approvalD'])
+                + "&eventPass="     + encodeURIComponent(paramDB['eventPass'])
+            ;
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    // 登録完了
+                    if (this.response == 1) {
+                        // console.log(this.response, '登録');
+
+                        nextParamDB = {
+                            'event' : paramDB['event'],
+                            'day'   : paramDB['day'],
+                        };
+                        opDB('getWorkReportDayAll', nextParamDB);
+                    } else if (this.response == 'false') {
+                        document.getElementById("dayReportMsg").innerHTML = 'パスワードが誤っています。';
+                    }else {
+                        document.getElementById("dayReportMsg").innerHTML = '日報の登録ができませんでした。';
+                    }
+                }
+            }
+            break;
+
 
     }
 
     xmlhttp.open("POST", strUrl, true);
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlhttp.send(param);
-}
-
-// 項目名
-function itemName(item) {
-    const name = {
-        'start'     : '出勤',
-        'break1s'   : '休憩1：開始',
-        'break1e'   : '休憩1：終了',
-        'break2s'   : '休憩2：開始',
-        'break2e'   : '休憩2：終了',
-        'break3s'   : '休憩3：開始',
-        'break3e'   : '休憩3：終了',
-        'end'       : '退勤'
-    };
-
-    return name[item];
 }

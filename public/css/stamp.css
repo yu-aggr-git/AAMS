@@ -68,6 +68,9 @@
     text-align      : center;
     cursor          : pointer;
 }
+#modal > #menu > .modalBody > #menuList > #changeEvent {
+    margin : auto 0 15% 0;
+}
 
 
 /* ──モーダル：打刻─────────────────────────────────────── */
@@ -379,6 +382,7 @@
     text-align      : center;
     border          : 0.1vmin solid #666;
     border-collapse : collapse;
+    word-break      : break-all;
 }
 #modal > #edit > .modalBody > #editList th {
     background      : #ececec;
@@ -430,6 +434,250 @@
     cursor          : pointer;
 }
 
+
+/* ──モーダル：日報報告─────────────────────────────────────── */
+#modal > #dayReport {
+    height  : 80vh;
+    padding : 0.1vmin 0;
+}
+#modal > #dayReport > .modalBody button {
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    text-align      : center;
+    cursor          : pointer;
+}
+#modal > #dayReport > .modalBody {
+    overflow        : auto;
+}
+#modal > #dayReport > .modalBody::-webkit-scrollbar {
+    display: none;
+}
+#modal > #dayReport > .modalBody .guidance {
+    margin : 2.5% auto 2.5% 5%;
+}
+#modal > #dayReport > .modalBody #dayReportSelectArea {
+    width           : 80%;
+    margin-bottom   : 2.5vmin;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+}
+#modal > #dayReport > .modalBody #dayReportSelectArea > select {
+    background          : #ececec;
+    margin-right        : auto;
+    padding             : 0;
+    width               : 30%;
+    height              : 4vmin;
+    border              : 0.1vmin solid #666;
+    border-radius       : 100vh;
+    font-size           : 2vmin;
+    font-weight         : bold;
+    text-align          : center;
+    text-align-last     : center;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+}
+#modal > #dayReport > .modalBody #dayReportDispArea,
+#modal > #dayReport > .modalBody #dayReportEditArea {
+    width           : 100%;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    flex-flow       : column;
+}
+#modal > #dayReport > .modalBody #dayReportDispList,
+#modal > #dayReport > .modalBody #dayReportEditList,
+#modal > #dayReport > .modalBody #dayReportList {
+    width           : 80%;
+    margin-bottom   : 2.5vmin;
+    display         : flex;
+    justify-content : start;
+}
+#modal > #dayReport > .modalBody #dayReportDispList {
+    padding     : 1vmin;
+    border      : 0.1vmin solid #666;
+}
+#modal > #dayReport > .modalBody #dayReportDispList > p {
+    text-align  : left;
+}
+#modal > #dayReport > .modalBody #dayReportEditList > div,
+#modal > #dayReport > .modalBody #dayReportList > div {
+    width           : 100%;
+    overflow-x      : auto;
+}
+#modal > #dayReport > .modalBody #dayReportEditList > div::-webkit-scrollbar,
+#modal > #dayReport > .modalBody #dayReportList > div::-webkit-scrollbar {
+    display: none;
+}
+#modal > #dayReport > .modalBody #dayReportEditList > div > table,
+#modal > #dayReport > .modalBody #dayReportList > div > table {
+    width           : 100%;
+    border-collapse : separate;
+    border-spacing  : 0;
+    border-radius   : 100vh 0;
+}
+#modal > #dayReport > .modalBody #dayReportEditList table > tbody,
+#modal > #dayReport > .modalBody #dayReportList table > tbody {
+    width        : 100%;
+    display      : table;
+    table-layout : fixed;
+}
+#modal > #dayReport > .modalBody #dayReportEditList td,
+#modal > #dayReport > .modalBody #dayReportEditList th,
+#modal > #dayReport > .modalBody #dayReportList td,
+#modal > #dayReport > .modalBody #dayReportList th {
+    margin          : 0;
+    padding         : 0 1.5vmin;
+    font-size       : 2vmin;
+    text-align      : center;
+    border          : 0.1vmin solid #666;
+    border-collapse : collapse;
+
+}
+#modal > #dayReport > .modalBody #dayReportEditList th,
+#modal > #dayReport > .modalBody #dayReportList th {
+    background      : #ececec;
+    width           : 15vmin;
+}
+#modal > #dayReport > .modalBody #dayReportEditList td,
+#modal > #dayReport > .modalBody #dayReportList td {
+    background      : #fff;
+    width           : 30vmin;
+    padding         : 0.5vmin;
+    word-break      : break-all;
+}
+#modal > #dayReport > .modalBody #dayReportList td > button {
+    width       : 7vmin;
+    padding     : 0.5vmin;
+    font-size   : 2vmin;
+}
+#modal > #dayReport > .modalBody #dayReportEditList td > input[type=radio] {
+    display : none; 
+}
+#modal > #dayReport > .modalBody #dayReportEditList td > input[type=radio]:checked + label {
+    background  : #dc4618ff;
+    color       : #fff;
+}
+#modal > #dayReport > .modalBody #dayReportEditList td > label {
+    background          : #ececec;
+    width               : 100%;
+    height              : 15vmin;
+    margin              : 0.5vmin;
+    padding             : 0.5vmin 1vmin;
+    border              : 0.1vmin solid #666;
+    border-radius       : 100vh;
+    font-size           : 2vmin;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+}
+#modal > #dayReport > .modalBody #dayReportEditList .sticky1,
+#modal > #dayReport > .modalBody #dayReportList .sticky1 {
+    position        : sticky;
+    top             : 0;
+    left            : 0;
+    z-index         : 2;
+}
+#modal > #dayReport > .modalBody #dayReportList .borderRight {
+    border-right : 0.1vmin solid #666;
+}
+#modal > #dayReport > .modalBody #dayReportList .borderLeftNone {
+    border-left : none;
+}
+#modal > #dayReport > .modalBody #dayReportList .borderBottom {
+    border-bottom : 0.1vmin dotted #666;
+}
+#modal > #dayReport > .modalBody #dayReportList .borderTopNone {
+    border-top : none;
+}
+#modal > #dayReport > .modalBody #dayReportList .ececec {
+    background : #ececec;
+}
+#modal > #dayReport > .modalBody #dayReportList .bold {
+    font-weight : bold;
+}
+#modal > #dayReport > .modalBody #dayReportEditList .w25 {
+    width : 25vmin;
+}
+#modal > #dayReport > .modalBody #dayReportList .diagonalLine {
+    background-image : linear-gradient(
+        to left top,
+        transparent calc(50% - 0.05vmin),
+        #666 50%,
+        #666 calc(50% + 0.05vmin),
+        transparent calc(50% + 0.1vmin)
+        )
+    ;
+}
+#modal > #dayReport > .modalBody #inputDayReportArea {
+    width           : 80%;
+    margin-bottom   : 2.5vmin;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+}
+#modal > #dayReport > .modalBody #inputDayReportArea > #inputDayReport {
+    background          : #ececec;
+    width               : 100%;
+    height              : 15vmin;
+    padding             : 0.5vmin 1vmin;
+    border              : 0.1vmin solid #666;
+    border-radius       : 1vh;
+    font-size           : 2vmin;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+}
+#modal > #dayReport > .modalBody #inputEventPassArea {
+    width           : 80%;
+    margin-bottom   : 2.5vmin;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+}
+#modal > #dayReport > .modalBody #inputEventPassArea > input {
+    background          : #ececec;
+    margin-right        : auto;
+    margin-bottom       : 2vh;
+    padding             : 0;
+    width               : 30%;
+    height              : 4vh;
+    border              : 0.1vmin solid #666;
+    border-radius       : 100vh;
+    font-size           : 2vmin;
+    text-align          : center;
+    text-align-last     : center;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+}
+#modal > #dayReport > .modalBody #sendDayReportArea {
+    width           : 80%;
+    padding-bottom  : 15vh;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    flex-flow       : column;
+}
+#modal > #dayReport > .modalBody #sendDayReportArea > #dayReportMsg {
+    width : 100%;
+}
+#modal > #dayReport > .modalBody #sendDayReportArea > #sendDayReport {
+    background      : #000;
+    margin-top      : 1vh;
+    padding         : 0 1vw;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    font-size       : 2vmin;
+    text-align      : center;
+    color           : #fff;
+    cursor          : pointer;
+}
 
 
 /* ──メイン─────────────────────────────────────── */

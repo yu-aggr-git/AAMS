@@ -272,6 +272,21 @@
                         <textarea id="inputMemo"></textarea>
                     </dd>
                 </dl>
+
+                <!-- イベント日報 -->
+                <div id="dayReportArea">
+                    <div>
+                        <p>・イベント日報：</p>
+                        <select id="dayReportSelect"></select>
+                    </div>
+
+                    <dl>
+                        <dt>内容</dt>
+                        <dd>
+                            <p id="dayReport"></p>
+                        </dd>
+                    </dl>
+                </div>
             </div>
 
 
