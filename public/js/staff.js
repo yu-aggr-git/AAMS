@@ -1,42 +1,6 @@
 window.onload = () => {
-
-    // ───ネットワーク判定────────────────────────────────────────
-    var isOnline = navigator.onLine;
-    isOnline ? online() : offline();
-
-    window.addEventListener("online", function(){
-        window.location.reload();
-    }, false);
-
-    window.addEventListener("offline", function() {
-        window.location.reload();
-    }, false)
-
-}
-
-
-// オフライン
-function offline() {
-    console.log('インターネットから切断されました');
-
-    // 表示切替
-    document.getElementById("modal").style.display = 'none';
-    document.getElementById("networkStatus").textContent = 'off-line';
-    document.getElementById("networkStatus").style.background = '#41438bff';
-}
-
-
-// オンライン
-function online() {
-    console.log('インターネットに接続中です');
-
     let paramDB = {};
     
-    // 表示切替
-    document.getElementById("networkStatus").textContent = 'on-line';
-    document.getElementById("networkStatus").style.background = '#dc4618ff';
-
-
     // ログイン
     let staffUser = window.localStorage.getItem("staffUser");
     if (!staffUser) {
@@ -57,7 +21,6 @@ function online() {
         localStorage.removeItem('staffUser');
         window.location.reload();
     }
-
 
     // お知らせ
     document.getElementById("openNews").onclick = function() {
@@ -80,7 +43,6 @@ function online() {
         }
     });
     
-
     // パスワードの設定
     document.getElementById("setPassOpen").onclick = function() {
         staffUser = window.localStorage.getItem("staffUser");
@@ -91,6 +53,16 @@ function online() {
         opDB('registerStaffListPass', paramDB);
     }
 
+    // 登録情報の編集
+    document.getElementById("editStaffInfo").onclick = function() {
+        staffInfoEdit(this.id);
+    }
+    document.getElementById("cancelStaffInfo").onclick = function() {
+        staffInfoEdit(this.id);
+    }
+    document.getElementById("updateStaffInfo").onclick = function() {
+        staffInfoEdit(this.id);
+    }
 
     // イベントの選択
     document.getElementById("sendSelectStaffEvent").onclick = function() {
@@ -98,7 +70,6 @@ function online() {
         const selectEvent = document.getElementById("selectStaffEvent").value;
         getSelectEvent(selectEvent, staffUser);
     }
-
 
     // 勤怠情報の取得
     document.getElementById("workReportOpen").onclick = function() {
@@ -117,7 +88,6 @@ function online() {
         getWorkReport(this.id, event, name);
     }
 
-
     // 勤怠情報の取得
     document.getElementById("sendStaffStampEdit").onclick = function() {
         stampInfoEdit();
@@ -125,7 +95,9 @@ function online() {
 }
 
 
-// スタッフログイン
+// ──────────────────────────────────────────────────────
+//  スタッフログイン
+// ………………………………………………………………………………………………………………………………………………
 function staffLogin() {
     document.getElementById("modal").style.display = 'flex';
     document.getElementById("staffLogin").style.display = 'flex';
@@ -136,8 +108,8 @@ function staffLogin() {
 
     document.getElementById("sendStaffLogin").onclick = function() {
         var inputStaffEventName = document.getElementById("staffEventName").value;
-        var inputStaffMail      = document.getElementById("staffMail").value;
-        var inputStaffPass      = document.getElementById("staffPass").value;
+        var inputStaffMail      = document.getElementById("staffMail").value.trim();
+        var inputStaffPass      = document.getElementById("staffPass").value.trim();
 
         if (!inputStaffMail || !inputStaffPass) {
             document.getElementById("staffLoginMsg").innerText = 'すべての項目に入力が必要です。';
@@ -153,7 +125,9 @@ function staffLogin() {
 }
 
 
-// パスワードリセット
+// ──────────────────────────────────────────────────────
+//  パスワードリセット
+// ………………………………………………………………………………………………………………………………………………
 function resetPassword() {
     const inputStaffMail = document.getElementById("staffMail").value;
 
@@ -182,7 +156,10 @@ function resetPassword() {
     }
 }
 
-// お知らせの表示
+
+// ──────────────────────────────────────────────────────
+//  お知らせの表示
+// ………………………………………………………………………………………………………………………………………………
 function dispNews() {
     document.getElementById("modal").style.display = 'flex';
     document.getElementById("news").style.display = 'flex';
@@ -196,7 +173,10 @@ function dispNews() {
     opDB('getNewsList', paramDB);
 }
 
-// イベントの選択
+
+// ──────────────────────────────────────────────────────
+//  イベントの選択
+// ………………………………………………………………………………………………………………………………………………
 function getSelectEvent(selectEvent, staffUser) {
     let paramDB = {};
 
@@ -215,7 +195,12 @@ function getSelectEvent(selectEvent, staffUser) {
     };
     opDB('checkStaffListPass', paramDB);
 
-    document.getElementById("selectItemArea").style.display = 'flex';
+    // 表示／非表示
+    common_op_view({
+        'block' : ['editStaffInfo', 'stationP', 'transportationP', 'bankP'],
+        'none'  : ['cancelStaffInfo', 'updateStaffInfo', 'inputStationArea', 'inputTransportation', 'inputBankArea'],
+        'flex'  : ['selectItemArea']
+    });
 
     // お知らせ確認
     paramDB = {
@@ -226,7 +211,69 @@ function getSelectEvent(selectEvent, staffUser) {
 }
 
 
-// 勤怠情報の取得
+// ──────────────────────────────────────────────────────
+//  登録情報の編集
+// ………………………………………………………………………………………………………………………………………………
+function staffInfoEdit(id) {
+    const event = document.getElementById("eventName").textContent;
+    const user  = window.localStorage.getItem("staffUser");
+    const name  = document.getElementById("staffName").textContent;
+
+    switch (id) {
+        case 'editStaffInfo':
+                common_op_view({
+                    'block' : ['cancelStaffInfo', 'updateStaffInfo', 'inputBankArea', 'inputTransportation'],
+                    'none'  : ['editStaffInfo', 'stationP', 'transportationP', 'bankP'],
+                    'flex'  : ['inputStationArea', 'inputBankArea'],
+                });
+
+                var stationA = document.getElementById("stationP").textContent.split(/：/)[1].split(/～/);
+                var transportationA = document.getElementById("transportationP").textContent.split(/：/);
+                var bankA = document.getElementById("bankP").textContent.split(/：/)[1].split(/ /);
+                common_text_entry({
+                    'value' : {
+                        'inputStation1'         : stationA[0] ?? '',
+                        'inputStation2'         : stationA[1] ?? '',
+                        'inputTransportation'   : transportationA[1] ? transportationA[1].slice(0, -1) : '',
+                        'inputBank1'            : bankA[0] ?? '',
+                        'inputBank2'            : bankA[1] ?? '',
+                        'inputBank3'            : bankA[2] ?? '普通',
+                        'inputBank4'            : bankA[3] ?? '',
+                    }
+                });
+            break;
+    
+        case 'cancelStaffInfo':
+                getSelectEvent(event, user);
+            break;
+
+        case 'updateStaffInfo':
+                var paramDB = {
+                    'event'             : event,
+                    'user'              : user,
+                    'name'              : name,
+                    'station'           : 
+                        document.getElementById("inputStation1").value
+                        + '～' + document.getElementById("inputStation2").value
+                    ,
+                    'transportation'    : document.getElementById("inputTransportation").value,
+                    'bank'              : 
+                        document.getElementById("inputBank1").value
+                        + '_' + document.getElementById("inputBank2").value
+                        + '_' + document.getElementById("inputBank3").value
+                        + '_' + document.getElementById("inputBank4").value
+                    ,
+                };
+                opDB('updateStaffListInfo', paramDB);
+            break;
+    }
+
+}
+
+
+// ──────────────────────────────────────────────────────
+//  勤怠情報の取得
+// ………………………………………………………………………………………………………………………………………………
 function getWorkReport(id, event, name) {
     const workReport            = document.getElementById('workReportOpen');
     const workReportValue       = workReport.value;
@@ -260,7 +307,6 @@ function getWorkReport(id, event, name) {
                 'name'  : name
             };
             opDB('getWorkReport', paramDB);
-
             break;
 
         case 'workReportEditOpen':
@@ -287,7 +333,6 @@ function getWorkReport(id, event, name) {
                 'name'  : name
             };
             opDB('getWorkReportEdit', paramDB);
-            
             break;
 
         case 'stampEditOpen':
@@ -313,7 +358,9 @@ function getWorkReport(id, event, name) {
 }
 
 
-// 打刻情報の修正
+// ──────────────────────────────────────────────────────
+//  打刻情報の修正
+// ………………………………………………………………………………………………………………………………………………
 function stampInfoEdit() {
     document.getElementById("staffStampEditMsg").innerText = '';
 
@@ -372,7 +419,6 @@ function stampInfoEdit() {
 // ──────────────────────────────────────────────────────
 //  DBの操作
 // ………………………………………………………………………………………………………………………………………………
-
 function opDB(op, paramDB) {
     var strUrl      = "function/db.php";
     const xmlhttp   = new XMLHttpRequest();
@@ -438,39 +484,44 @@ function opDB(op, paramDB) {
             ;
 
             xmlhttp.onreadystatechange = function() {
-                document.getElementById("eventName").innerText = '';
-                document.getElementById("firstDay").innerText  = '';
-                document.getElementById("endDay").innerText  = '';
-                document.getElementById("shift").querySelector("a").href = '';
-                document.getElementById("shift").querySelector("a").style.display = 'none';
-
-
-                const table = document.getElementById("staffWorkReportInfoArea");
-                Array.from(table.querySelectorAll("th")).forEach(function(e) {
-                    if (!e.id) {
-                        e.remove();
+                // 初期値
+                common_text_entry({
+                    'innerText' : {
+                        'eventName'     : '',
+                        'eventPlace'    : '（）',
+                        'eventDays'     : '期間：',
+                        'eventPayDay'   : '支払日：'
+                    },
+                    'href'      : {
+                        'aShift' : ''
                     }
                 });
-                Array.from(table.querySelectorAll("td")).forEach(function(e) {
-                    e.remove();
+                common_clear_children({
+                    'all'   : {
+                        'staffWorkReportInfoArea'   : 'td',
+                        'editStampDay'              : 'option',
+                    },
+                    'notId' : {
+                        'staffWorkReportInfoArea' : 'th',
+                    }
                 });
 
-                const select = document.getElementById("editStampDay");
-                Array.from(select.querySelectorAll("option")).forEach(function(e) {
-                    e.remove();
-                });
 
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
 
-                    document.getElementById("eventName").innerText  = data.event;
-                    document.getElementById("firstDay").innerText   = data.first_day;
-                    document.getElementById("endDay").innerText     = data.end_day;
-                    if (data.shift_url) {
-                        document.getElementById("shift").querySelector("a").href = data.shift_url;
-                        document.getElementById("shift").querySelector("a").style.display = 'block';
-                    }
-                    
+                    common_text_entry({
+                        'innerText' : {
+                            'eventName'     :  data.event,
+                            'eventPlace'    :  '（' + (data.place ?? '') + '）',
+                            'eventDays'     : '期間：' + data.first_day + ' ～ ' + data.end_day,
+                            'eventPayDay'   : '支払日：' + (data.pay_day ?? ''),
+                            'aShift'        : data.shift_url
+                        },
+                        'href' : {
+                            'aShift' : data.shift_url
+                        }
+                    });                    
 
                     const firstDay  = data.first_day.split(/-/);
                     const endDay    = data.end_day.split(/-/);
@@ -593,7 +644,7 @@ function opDB(op, paramDB) {
                         var option = document.createElement("option");
                         option.text = date.toLocaleDateString('sv-SE');
                         option.value = date.toLocaleDateString('sv-SE');
-                        select.appendChild(option);
+                        document.getElementById("editStampDay").appendChild(option);
                     }
                 }
             }
@@ -769,35 +820,46 @@ function opDB(op, paramDB) {
                 + "&mail="  + encodeURIComponent(paramDB['mail']) 
             ;
             xmlhttp.onreadystatechange = function() {
-                document.getElementById("mail").innerText = '';
-                document.getElementById("staffName").innerText  = '';
-                document.getElementById("birthday").innerText  = '';
-                document.getElementById("payslip").innerText  = '';
+                // 初期値
+                common_text_entry({
+                    'innerText' : {
+                        'staffName'         : '',
+                        'birthday'          : '',
+                        'mail'              : '',
+                        'stationP'          : '利用駅：',
+                        'transportationP'   : '往復：',
+                        'bankP'             : '口座：',
+                        'payslip'           : ''
+                    }
+                });
 
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
 
-                    document.getElementById("staffName").innerText  = data.name;
-                    document.getElementById("mail").innerText = data.mail;
-                    document.getElementById("birthday").innerText  = data.birthday.substr(0, 4) + '年' 
-                        + data.birthday.substr(4, 2) + '月' 
-                        + data.birthday.substr(6, 2) + '日生';
-
+                    common_text_entry({
+                        'innerText' : {
+                            'staffName'         : data.name,
+                            'birthday'          : data.birthday.substr(0, 4) + '年' + data.birthday.substr(4, 2) + '月' + data.birthday.substr(6, 2) + '日生',
+                            'mail'              : data.mail,
+                            'stationP'          : '利用駅：' + (data.station ?? ''),
+                            'transportationP'   : '往復：' + (data.transportation ?? '') + '円',
+                            'bankP'             : '口座：' + (data.bank ? data.bank.replaceAll("_", " ") : ''),
+                        }
+                    });
 
                     if (data.payslip) {
                         data.payslip.split(/\n/).forEach(function(val) {
-                            var a = document.createElement("a");
-                            a.innerText = val;
-                            a.href = val;
-                            a.target = "_blank";
+                            var a           = document.createElement("a");
+                            a.innerText     = val;
+                            a.href          = val;
+                            a.target        = "_blank";
                             a.style.display = "block";
                             document.getElementById("payslip").appendChild(a);
                         });
                     } else {
-                        document.getElementById("payslip").innerText  = '＊給与明細は公開前です。';
+                        document.getElementById("payslip").innerText = '＊給与明細は公開前です。';
                     }
-                    
-                    
+
 
                     // 勤怠情報の表示
                     getWorkReport("workReportOpen", paramDB['event'], data.name);
@@ -835,6 +897,26 @@ function opDB(op, paramDB) {
                         document.getElementById("staffEventInfoMsgArea").style.display = 'none';
                     } else {
                         document.getElementById("staffEventInfoMsg").innerText = 'パスワード設定ができませんでした。';
+                    }
+                }
+            }
+            break;
+
+        case 'updateStaffListInfo':
+            var param   = "function=" + "update_staff_list_info"
+                + "&event="             + encodeURIComponent(paramDB['event']) 
+                + "&name="              + encodeURIComponent(paramDB['name']) 
+                + "&station="           + encodeURIComponent(paramDB['station']) 
+                + "&transportation="    + encodeURIComponent(paramDB['transportation']) 
+                + "&bank="              + encodeURIComponent(paramDB['bank']) 
+            ;
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    if (this.response == 1) {
+                        // console.log(this.response, '登録');
+
+                        getSelectEvent(paramDB['event'], paramDB['user']);
                     }
                 }
             }

@@ -294,7 +294,7 @@ function checkLoginEvent() {
     // ログイン
     document.getElementById("sendUser").onclick = function() {
         const inputEvent  = document.getElementById("loginEventName").value;
-        const inputPass   = document.getElementById("loginEventPass").value;
+        const inputPass   = document.getElementById("loginEventPass").value.trim();
 
         if (!inputEvent || !inputPass) {
             document.getElementById("loginMsg").innerHTML = 'すべての項目に入力が必要です。';

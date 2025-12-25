@@ -196,8 +196,8 @@ function login(id) {
 
             document.getElementById("sendStaffLogin").onclick = function() {
                 var inputStaffEventName = document.getElementById("staffEventName").value;
-                var inputStaffMail      = document.getElementById("staffMail").value;
-                var inputStaffPass      = document.getElementById("staffPass").value;
+                var inputStaffMail      = document.getElementById("staffMail").value.trim();
+                var inputStaffPass      = document.getElementById("staffPass").value.trim();
 
                 if (!inputStaffMail || !inputStaffPass) {
                     document.getElementById("staffLoginMsg").innerText = 'すべての項目に入力が必要です。';
@@ -218,8 +218,8 @@ function login(id) {
             document.body.style.overflow                        = 'hidden';
 
             document.getElementById("sendAdminUser").onclick = function() {
-                var inputAdminUser = document.getElementById("adminUser").value;
-                var inputAdminUserPass = document.getElementById("adminUserPass").value;
+                var inputAdminUser = document.getElementById("adminUser").value.trim();
+                var inputAdminUserPass = document.getElementById("adminUserPass").value.trim();
 
                 if (!inputAdminUser || !inputAdminUserPass) {
                     document.getElementById("adminMsg").innerText = 'すべての項目に入力が必要です。';

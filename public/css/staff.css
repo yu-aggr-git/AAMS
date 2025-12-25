@@ -23,6 +23,7 @@ a:active{
 }
 
 #menuBar > #menuButton {
+    margin          : 0 0 2vmin auto;
     display         : flex;
     justify-content : start;
     align-items     : center;
@@ -197,7 +198,7 @@ html::-webkit-scrollbar {
     }
     #staffEventInfoArea > table {
         width                       : 80%;
-        border-collapse             : separate;
+        border-collapse             : collapse;
         border-spacing              : 0;
         border-radius               : 100vh 0;
     }
@@ -215,46 +216,77 @@ html::-webkit-scrollbar {
         border          : 0.1vmin solid #666;
         border-collapse : collapse;
     }
-    #staffEventInfoArea > table tr:first-child th,
-    #staffEventInfoArea > table tr:first-child td {
-        border-bottom: none;
+    #staffEventInfoArea > table td {
+        text-align      : left;
     }
     #staffEventInfoArea > table th {
         width       : 15%;
         background  : #ececec;
         font-weight : normal;
     }
-    #staffEventInfoArea > table #eventName,
-    #staffEventInfoArea > table #mail {
-        width       : 45%;
-        text-align  : start;
-    }
-    #staffEventInfoArea > table #staffName,
-    #staffEventInfoArea > table #payslip {
-        text-align  : start;
-    }
     #staffEventInfoArea > table #payslip > a {
         word-break : break-all;
     }
-    #staffEventInfoArea > table #firstDay,
-    #staffEventInfoArea > table #endDay,
-    #staffEventInfoArea > table #birthday {
-        width: 15%;
+    #staffEventInfoArea > table th > button {
+        margin          : 1vmin auto;
+        padding         : 0 1vmin;
+        font-size       : 1.5vmin;
+        color           : black;
+        border          : 0.1vmin solid #666;
+        border-radius   : 100vh;
     }
-    #staffEventInfoArea > table #separator,
-    #staffEventInfoArea > table #shift {
-        width: 5%;
+    #staffEventInfoArea > table th > #updateStaffInfo {
+        background      : #000;
+        color           : #fff;
     }
-    #staffEventInfoArea > table #shift > a {
-        display: none;
+    #staffEventInfoArea > table td > #inputStationArea,
+    #staffEventInfoArea > table td > #inputBankArea {
+        display         : none;
+        /* display         : flex; */
+        justify-content : space-evenly;
+        align-items     : center;
+        flex-wrap       : wrap;
     }
-    #staffEventInfoArea > table #firstDay,
-    #staffEventInfoArea > table #separator {
+    #staffEventInfoArea > table td select,
+    #staffEventInfoArea > table td input {
+        background          : #ececec;
+        margin              : 0.5vmin 0;
+        padding             : 0.5vmin;
+        width               : 85%;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        text-align-last     : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #staffEventInfoArea > table td #inputStation1,
+    #staffEventInfoArea > table td #inputStation2{
+        width : 40%;
+    }
+    #staffEventInfoArea > table td #inputBank3 {
+        width : 20%;
+    }
+    #staffEventInfoArea > table td #inputBank4 {
+        width : 60%;
+    }
+    #staffEventInfoArea > table .borderRightNone {
         border-right: none;
     }
-    #staffEventInfoArea > table #endDay,
-    #staffEventInfoArea > table #separator {
+    #staffEventInfoArea > table .borderLeftNone {
         border-left: none;
+    }
+    #staffEventInfoArea > table .borderTopNone {
+        border-top: none;
+    }
+    #staffEventInfoArea > table .borderBottomNone {
+        border-bottom: none;
+    }
+    #staffEventInfoArea > table .textCenter {
+        text-align : center;
     }
     #staffEventInfoArea > #staffEventInfoMsgArea {
         display         : none;
@@ -278,6 +310,7 @@ html::-webkit-scrollbar {
         border-radius       : 100vh;
         font-size           : 2vmin;
         text-align          : center;
+        text-align-last     : center;
         cursor              : pointer;
         outline             : none;
         -webkit-appearance  : none;
@@ -529,10 +562,6 @@ html::-webkit-scrollbar {
     #staffStampEditArea > div > div > #editStampHour,
     #staffStampEditArea > div > div > #editStampMinutes {
         width : 25%;
-    }
-    #staffStampEditArea > div > div > .separator {
-        width       : 10%;
-        text-align  : center;
     }
     #staffStampEditArea > div > #staffStampEditMsg {
         width       : 100%;

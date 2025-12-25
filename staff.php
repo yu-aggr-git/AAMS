@@ -63,10 +63,6 @@
             
             <!-- メニュー -->
             <div id="menuBar">
-                <div id="network">
-                    <p id="networkStatus"></p>
-                </div>
-
                 <div id="menuButton">
                     <button type="button" id="openNews">お知らせ</button>
                     <a id="game" href="nomonomo.php" target="_blank">ゲームで遊ぶ！</a>
@@ -94,19 +90,68 @@
                 <table>
                     <tbody>
                         <tr>
-                            <th>イベント</th>
-                            <td colspan="2" id="eventName"></td>
-                            <td id="firstDay"></td>
-                            <td id="separator">～</td>
-                            <td id="endDay"></td>
-                            <td id="shift"><a href="" target="_blank">📅</a></td>
+                            <th rowspan="3">イベント</th>
+                            <td colspan="6" id="eventName" class="borderBottomNone"></td>
                         </tr>
                         <tr>
-                            <th>登録情報</th>
-                            <td  id="staffName"></td>
-                            <td colspan="3" id="mail"></td>
-                            <td colspan="2" id="birthday"></td>
+                            <td colspan="6" id="eventPlace" class="borderTopNone"></td>
                         </tr>
+                        <tr>
+                            <td colspan="3" id="eventDays" class="borderRightNone"></td>
+                            <td colspan="3" id="eventPayDay" class="borderLeftNone"></td>
+                        </tr>
+
+                        <tr>
+                            <th>シフト</th>
+                            <td colspan="6" id="shift">
+                                <a href="" target="_blank" id="aShift"></a>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th rowspan="4">
+                                <p>登録情報</p>
+
+                                <button type="button" id="editStaffInfo" hidden>編集</button>
+                                <button type="button" id="cancelStaffInfo" hidden>取消</button>
+                                <button type="button" id="updateStaffInfo" hidden>完了</button>
+                            </th>
+                            <td colspan="4" id="staffName"></td>
+                            <td colspan="2" id="birthday" class="textCenter"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" id="mail"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" id="station">
+                                <p id="stationP"></p>
+                                <div id="inputStationArea">
+                                    <input type="text" id="inputStation1" placeholder="乗車駅">
+                                    <p>～</p>
+                                    <input type="text" id="inputStation2" placeholder="降車駅">
+                                </div>
+                            </td>
+                            <td colspan="2" id="transportation" class="textCenter">
+                                <p id="transportationP"></p>
+                                <input type="text" id="inputTransportation" placeholder="往復交通費" hidden>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" id="bank">
+                                <p id="bankP"></p>
+                                <div id="inputBankArea">
+                                    <p>＊ゆうちょ銀行の場合、「記号･番号から振込用の店名・預金種目・口座番号への変換の公式」を参照</p>
+                                    <input type="text" id="inputBank1" placeholder="銀行名">
+                                    <input type="text" id="inputBank2" placeholder="支店名">
+                                    <select id="inputBank3">
+                                        <option value="普通">普通</option>
+                                        <option value="当座">当座</option>
+                                    </select>
+                                    <input type="text" id="inputBank4" placeholder="口座番号">
+                                </div>
+                            </td>
+                        </tr>
+
                         <tr>
                             <th>給与明細</th>
                             <td colspan="6" id="payslip"></td>

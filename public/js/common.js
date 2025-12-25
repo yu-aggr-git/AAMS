@@ -189,4 +189,95 @@ function common_validation_time(time) {
 
 
 
+// 表示／非表示の操作
+// ──────────────────────
+// itemList = {
+//     'block' : [],
+//     'none'  : [],
+//     'flex'  : []
+// }
+// …………………………………………………………
+function common_op_view(itemList) {
+    let id = '';
 
+    Object.keys(itemList).forEach(function(op) {
+        Object.keys(itemList[op]).forEach(function(item) {
+            id = itemList[op][item];
+
+            document.getElementById(id).style.display = op;
+        });
+    });
+}
+
+
+// テキストの入力
+// ──────────────────────
+// itemList = {
+//     'innerText'  : { 'id' : 'item' },
+//     'innerHTML'  : { 'id' : 'item' },
+//     'value'      : { 'id' : 'item' },
+//     'href'       : { 'id' : 'item' }
+// }
+// …………………………………………………………
+function common_text_entry(itemList) {
+    let item = '';
+
+    Object.keys(itemList).forEach(function(op) {
+        Object.keys(itemList[op]).forEach(function(id) {  
+            item = itemList[op][id];
+
+            switch (op) {
+                case 'innerText':
+                    document.getElementById(id).innerText = item;
+                    break;
+
+                case 'innerHTML':
+                    document.getElementById(id).innerHTML = item;
+                    break;
+            
+                case 'value':
+                    document.getElementById(id).value = item;
+                    break;
+
+                case 'href':
+                    document.getElementById(id).href = item;
+                    break;
+            }            
+        });
+    });
+}
+
+
+// 子要素のクリア
+// ──────────────────────
+// itemList = {
+//     'all'    : { 'id' : 'element' },
+//     'notId'  : { 'id' : 'element' }
+// }
+// …………………………………………………………
+function common_clear_children(itemList) {
+    let item = '';
+
+    Object.keys(itemList).forEach(function(target) {
+        Object.keys(itemList[target]).forEach(function(id) {
+            item = itemList[target][id];
+
+            switch (target) {
+                case 'all':
+                    Array.from(document.getElementById(id).querySelectorAll(item)).forEach(function(e) {
+                        e.remove();
+                    });
+                    
+                    break;
+            
+                case 'notId':
+                    Array.from(document.getElementById(id).querySelectorAll(item)).forEach(function(e) {
+                        if (!e.id) {
+                            e.remove();
+                        }
+                    });                    
+                    break
+            }
+        });
+    });
+}

@@ -5,6 +5,14 @@ body, div, p, img {
   padding   : 0;
 }
 
+a:visited,
+a:focus,
+a:active {
+  color             : inherit;
+  text-decoration   : none;
+  outline           : none;
+}
+
 select,
 button {
   color: #000;

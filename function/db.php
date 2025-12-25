@@ -76,6 +76,10 @@
                 update_staff_list_shift($dbh, $_POST);
                 break;
 
+            case 'update_staff_list_info' :
+                update_staff_list_info($dbh, $_POST);
+                break;                
+
             case 'delete_staff_list' :
                 delete_staff_list($dbh, $_POST);
                 break;
@@ -837,6 +841,32 @@
             'event'             => $param['event'],
             'updateNum'         => $param['updateNum'],
             'shiftUpdatedDt'    => $param['shiftUpdatedDt']
+        ]);
+
+        echo $count;
+    }
+
+    // ────スタッフリスト：登録情報更新─────────────────────────────
+    function update_staff_list_info($dbh, $param) {
+
+        $query = "
+            UPDATE
+                staff_list
+            SET
+                station         = :station,
+                transportation  = :transportation,
+                bank            = :bank
+            WHERE
+                    event = :event
+                AND name = :name
+        ";
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $count = $sth->execute([
+            'event'             => $param['event'],
+            'name'              => $param['name'],
+            'station'           => $param['station'],
+            'transportation'    => $param['transportation'],
+            'bank'              => $param['bank']
         ]);
 
         echo $count;

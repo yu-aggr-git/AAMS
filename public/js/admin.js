@@ -162,8 +162,8 @@ function adminLogin() {
     document.body.style.overflow = 'hidden';
 
     document.getElementById("sendAdminUser").onclick = function() {
-        var inputAdminUser = document.getElementById("adminUser").value;
-        var inputAdminUserPass = document.getElementById("adminUserPass").value;
+        var inputAdminUser = document.getElementById("adminUser").value.trim();
+        var inputAdminUserPass = document.getElementById("adminUserPass").value.trim();
 
         if (!inputAdminUser || !inputAdminUserPass) {
             document.getElementById("adminMsg").innerText = 'すべての項目に入力が必要です。';
@@ -1488,7 +1488,8 @@ function opDB(op, paramDB) {
                             // 銀行口座
                             var bank = document.createElement("td");
                             if (data[key].bank) {
-                                bank.innerHTML = data[key].bank.replaceAll("_", "<br>");   
+                                var bankA =  data[key].bank.split(/_/);
+                                bank.innerHTML = bankA[0] + ' ' + bankA [1] + '<br>' + bankA[2] + ' ' + bankA[3];   
                             }
                             bank.className = 'w30 textLeft';                            
 
