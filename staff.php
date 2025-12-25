@@ -52,7 +52,7 @@
 
                     <div class="modalBody">
                         <div id="newsList">
-                            <dl></dl>
+                            <dl id="newsListDl"></dl>
                         </div>
                     </div>
 
@@ -60,14 +60,14 @@
                 </div>
             </div>
 
-            
+
             <!-- メニュー -->
             <div id="menuBar">
                 <div id="menuButton">
                     <button type="button" id="openNews">お知らせ</button>
                     <a id="game" href="nomonomo.php" target="_blank">ゲームで遊ぶ！</a>
                     <button type="button" id="staffLogout">ログアウト</button>
-                </div>                
+                </div>
             </div>
 
 
@@ -187,22 +187,22 @@
                                 <th id="sticky2" class="sticky">出勤</th>
                             </tr>
                             <tr id="break1sRow">
-                                <th id="sticky3" class="sticky">休憩1：開始</th>
+                                <th id="sticky3" class="sticky borderBottom">休憩1：開始</th>
                             </tr>
                             <tr id="break1eRow">
-                                <th id="sticky4" class="sticky">休憩1：終了</th>
+                                <th id="sticky4" class="sticky borderTopNone">休憩1：終了</th>
                             </tr>
                             <tr id="break2sRow">
-                                <th id="sticky5" class="sticky">休憩2：開始</th>
+                                <th id="sticky5" class="sticky borderBottom">休憩2：開始</th>
                             </tr>
                             <tr id="break2eRow">
-                                <th id="sticky6" class="sticky">休憩2：終了</th>
+                                <th id="sticky6" class="sticky borderTopNone">休憩2：終了</th>
                             </tr>
                             <tr id="break3sRow">
-                                <th id="sticky7" class="sticky">休憩3：開始</th>
+                                <th id="sticky7" class="sticky borderBottom">休憩3：開始</th>
                             </tr>
                             <tr id="break3eRow">
-                                <th id="sticky8" class="sticky">休憩3：終了</th>
+                                <th id="sticky8" class="sticky borderTopNone">休憩3：終了</th>
                             </tr>
                             <tr id="endRow">
                                 <th id="sticky9" class="sticky">退勤</th>

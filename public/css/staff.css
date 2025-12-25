@@ -412,6 +412,12 @@ html::-webkit-scrollbar {
         top             : 0;
         left            : 0;
     }
+    #staffWorkReportInfoArea .borderBottom {
+        border-bottom : 0.1vmin dotted #666;
+    }
+    #staffWorkReportInfoArea .borderTopNone {
+        border-top : none;
+    }
 
 
 

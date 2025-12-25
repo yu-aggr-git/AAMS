@@ -72,7 +72,7 @@ function common_ceil(data) {
     var min  = Math.ceil(dataA[1] / 15) * 15;
     var hour = Number(dataA[0]) + Number((min == 60 ? 1 : 0));
     dataClac = hour + ':' + (min == 60 ? '00' : min.toString().padStart(2, '0'));
-    
+
     return dataClac;
 }
 
@@ -84,13 +84,13 @@ function common_floor(start, end) {
     var min  = Math.floor(endA[1] / 15) * 15;
     var hour = Number(endA[0]);
 
-    if (start) {
+    if (start && common_validation_time(start)) {
         var startA = start.split(/:/);
         hour = hour + (Number(startA[0]) > hour ? 24 : 0);
     }
 
     dataClac = hour + ':' + min.toString().padStart(2, '0');
-    
+
     return dataClac;
 }
 
@@ -186,7 +186,46 @@ function common_validation_time(time) {
 
 
 
+// 勤怠修正情報のステータス背景色
+function common_workReportEditStatus_color(status) {
+    let color = '';
 
+    switch (status) {
+        case '申請中':
+            color = '#87bd9eff'
+            break;
+
+        case '訂正中':
+            color = '#cbcd88ff'
+            break;
+
+        case '訂正済':
+        case '承認済':
+        case '却下済':
+            color = '#a5a5a5ff'
+            break;
+    } 
+
+    return color;
+}
+
+
+// modalの表示／非表示
+function common_op_modal(id, op) {
+    switch (op) {
+        case 'open':
+            document.getElementById("modal").style.display  = 'flex';
+            document.getElementById(id).style.display       = 'flex';
+            document.body.style.overflow                    = 'hidden';
+            break;
+
+        case 'close':
+            document.getElementById("modal").style.display  = 'none';
+            document.getElementById(id).style.display       = 'none';
+            document.body.style.overflow                    = 'visible';
+            break;
+    }
+}
 
 
 // 表示／非表示の操作
@@ -234,7 +273,7 @@ function common_text_entry(itemList) {
                 case 'innerHTML':
                     document.getElementById(id).innerHTML = item;
                     break;
-            
+
                 case 'value':
                     document.getElementById(id).value = item;
                     break;
@@ -242,7 +281,7 @@ function common_text_entry(itemList) {
                 case 'href':
                     document.getElementById(id).href = item;
                     break;
-            }            
+            }
         });
     });
 }
@@ -267,17 +306,90 @@ function common_clear_children(itemList) {
                     Array.from(document.getElementById(id).querySelectorAll(item)).forEach(function(e) {
                         e.remove();
                     });
-                    
                     break;
-            
+
                 case 'notId':
                     Array.from(document.getElementById(id).querySelectorAll(item)).forEach(function(e) {
                         if (!e.id) {
                             e.remove();
                         }
-                    });                    
+                    });
                     break
             }
         });
+    });
+}
+
+
+// 要素の設定
+// ──────────────────────
+// itemList = {
+//     'element'        : e,
+//     'textContent'    : v,
+// }
+// …………………………………………………………
+function common_set_element(item) {
+    let e = item['element'];
+
+    Object.keys(item).forEach(function(op) {
+        var value = item[op];
+
+        switch (op) {
+            case 'id':
+                e.id = value;
+                break
+
+            case 'className':
+                e.className = value;
+                break
+
+            case 'textContent':
+                e.textContent = value;
+                break;
+
+            case 'innerText':
+                e.innerText = value;
+                break;
+
+            case 'innerHTML':
+                e.innerHTML = value;
+                break;
+
+            case 'text':
+                e.text = value;
+                break;
+
+            case 'value':
+                e.value = value;
+                break;
+
+            case 'href':
+                e.href = value;
+                break;
+
+            case 'target':
+                e.target = value;
+                break;
+
+            case 'colSpan':
+                e.colSpan = value;
+                break;
+
+            case 'rowSpan':
+                e.rowSpan = value;
+                break;
+
+            case 'color':
+                e.style.color = value;
+                break;
+
+            case 'background':
+                e.style.background = value;
+                break;
+
+            case 'display':
+                e.style.display = value;
+                break;
+        }
     });
 }
