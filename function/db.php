@@ -17,7 +17,7 @@
             case 'get_work_report_day' :
                 get_work_report_day($dbh, $_POST);
                 break;
-            
+
             case 'get_work_report_day_all' :
                 get_work_report_day_all($dbh, $_POST);
                 break;
@@ -196,12 +196,12 @@
             case 'check_shift_change_list' :
                 check_shift_change_list($dbh, $_POST);
                 break;
-            
+
             case 'register_shift_change_list' :
                 register_shift_change_list($dbh, $_POST);
                 break;
-                
-                
+
+
             // 日報
             case 'register_day_report' :
                 register_day_report($dbh, $_POST);
@@ -289,7 +289,21 @@
 
     // ────勤怠情報：取得（1日）───────────────────────
     function get_work_report_day($dbh, $param) {
-        $query = "
+        $employeeData  = array(
+            'start'         => '',
+            'end'           => '',
+            'break1s'       => '',
+            'break1e'       => '',
+            'break2s'       => '',
+            'break2e'       => '',
+            'break3s'       => '',
+            'break3e'       => '',
+            'start_shift'   => '',
+            'end_shift'     => ''
+        );
+
+        // 打刻
+        $query1 = "
             SELECT *
             FROM work_report
             WHERE
@@ -297,16 +311,55 @@
                 AND name = :name
                 AND day = :day
         ";
-
-        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $sth->execute([
+        $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth1->execute([
             'event' => $param['event'],
             'name'  => $param['name'],
             'day'   => $param['day']
         ]);
-        
-        $result = $sth->fetch(PDO::FETCH_ASSOC);
-        echo $result ? json_encode($result) : '';
+        while ($row = $sth1->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData['start']      = $row['start'];
+            $employeeData['end']        = $row['end'];
+            $employeeData['break1s']    = $row['break1s'];
+            $employeeData['break1e']    = $row['break1e'];
+            $employeeData['break2s']    = $row['break2s'];
+            $employeeData['break2e']    = $row['break2e'];
+            $employeeData['break3s']    = $row['break3s'];
+            $employeeData['break3e']    = $row['break3e'];
+        }
+
+        // シフト
+        $query2 = "
+            SELECT shift
+            FROM staff_list
+            WHERE
+                    event = :event
+                AND name = :name
+        ";
+        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth2->execute([
+            'event' => $param['event'],
+            'name'  => $param['name']
+        ]);
+        while ($row = $sth2->fetch(PDO::FETCH_ASSOC)) {
+            if ($row['shift']) {
+                foreach (explode(",", $row['shift']) as $data) {
+                    if ($data) {
+                        $dataArray  = explode("_", $data);
+                        $shiftDay   = $dataArray[0];
+                        $shiftStart = $dataArray[1];
+                        $shifEndd   = $dataArray[2];
+
+                        if ($shiftDay == $param['day']) {
+                            $employeeData['start_shift'] = $shiftStart;
+                            $employeeData['end_shift']   = $shifEndd;
+                        }
+                    }
+                }
+            }
+        }
+
+        echo $employeeData ? json_encode($employeeData) : '';
     }
 
     // ────勤怠情報：取得（1日全員）───────────────────────
@@ -324,7 +377,6 @@
         $sth1->execute([
             'event' => $param['event']
         ]);
-        $sth1->execute();
         while ($row = $sth1->fetch(PDO::FETCH_ASSOC)) {
             $name   = $row['name'];
             $shift  = $row['shift'];
@@ -366,7 +418,6 @@
             'event' => $param['event'],
             'day'   => $param['day']
         ]);
-        $sth2->execute();
         while ($row = $sth2->fetch(PDO::FETCH_ASSOC)) {
             $name   = $row['name'];
 
@@ -398,7 +449,6 @@
             'event' => $param['event'],
             'day'   => $param['day']
         ]);
-        $sth3->execute();
         while ($row = $sth3->fetch(PDO::FETCH_ASSOC)) {
             $name   = $row['name'];
 
@@ -434,7 +484,6 @@
             'event' => $param['event'],
             'day'   => $param['day']
         ]);
-        $sth4->execute();
         while ($row = $sth4->fetch(PDO::FETCH_ASSOC)) {
             $employeeData['event'] = array(
                 'first_day' => $row['first_day'],
@@ -442,7 +491,7 @@
                 'report'    => $row['report']
             );
         }
-        
+
         $json = json_encode($employeeData);
         echo $json;
     }
@@ -659,7 +708,7 @@
         $json = json_encode($result);
         echo $json;
     }
-    
+
     // ────スタッフリスト：取得（パス）──────────────────────
     function check_staff_list_pass($dbh, $param) {
         $query = "
@@ -1113,7 +1162,7 @@
         $json = json_encode($employeeData);
         echo $json;
     }
-    
+
     // ────イベント：登録─────────────────────────────
     function register_event($dbh, $param) {
         global $config;
@@ -1283,7 +1332,7 @@
     }
 
 
-    
+
     // ────勤怠修正情報：登録─────────────────────────────
     function register_work_report_edit($dbh, $param) {
         $query = "
@@ -1344,7 +1393,7 @@
 
         echo $json;
     }
-    
+
     // ────勤怠修正情報：取得（名前）──────────────────────────
     function get_work_report_edit($dbh, $param) {
         $query = "
@@ -1870,9 +1919,9 @@
 
         echo $count;
     }
-    
 
-    
+
+
     // ────シフト変更希望：取得─────────────────────────────
     function get_shift_change_list($dbh, $param) {
         $query = "

@@ -59,9 +59,10 @@ html::-webkit-scrollbar {
    ……………………………………………………………………………………………………………………………………… */
 
 #modal > #adminLogin {
+    display : none;
     width   : 80vmin;
     height  : 60vmin;
-    display : flex;
+    /* display : flex; */
 }
 #modal > #adminLogin > .modalBody {
     justify-content : space-around;
@@ -580,10 +581,10 @@ html::-webkit-scrollbar {
         border-radius   : 0 100vh 100vh 0;
         font-size       : 2vmin;
         white-space     : nowrap;
-        color           : #000;    
+        color           : #000;
     }
     #stampInfoArea > #stampInfoEditMenu {
-        width           : 70vmin;
+        width           : 80vmin;
         display         : flex;
         justify-content : space-between;
         align-items     : center;
@@ -609,7 +610,7 @@ html::-webkit-scrollbar {
         color           : #fff;
     }
     #stampInfoArea > p {
-        width       : 70vmin;
+        width       : 80vmin;
         margin-top  : 3vmin;
         padding     : 0;
         font-size   : 1.5vmin;
@@ -619,7 +620,7 @@ html::-webkit-scrollbar {
         font-size       : 2vmin;
     }
     #stampInfoArea > table {
-        width                       : 70vmin;
+        width                       : 80vmin;
         margin-top                  : 2vmin;
         border-collapse             : separate;
         border-spacing              : 0;
@@ -678,11 +679,20 @@ html::-webkit-scrollbar {
         padding         : 0 5vmin;
         white-space     : normal;
     }
-
     #stampInfoArea > table .sepTh {
         background  : transparent;
         height      : 1vmin;
         border      : none;
+    }
+    #stampInfoArea > table #breakShift {
+        background-image : linear-gradient(
+            to left top,
+            transparent calc(50% - 0.05vmin),
+            #666 50%,
+            #666 calc(50% + 0.05vmin),
+            transparent calc(50% + 0.1vmin)
+            )
+        ;
     }
 
 
@@ -762,6 +772,7 @@ html::-webkit-scrollbar {
         text-align      : center;
         border          : 0.1vmin solid #666;
         border-collapse : collapse;
+        overflow-wrap   : anywhere;
     }
     #workReportInfoEditArea th {
         background : #ececec;
@@ -1192,6 +1203,9 @@ html::-webkit-scrollbar {
         width           : 100%;
         margin-top      : 2vmin;
         overflow-x      : auto;
+    }
+    #newsArea > #newsList::-webkit-scrollbar {
+        display: none;
     }
     #newsArea > #newsList > table {
         width           : 100%;

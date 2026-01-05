@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            
+
             <!-- メニュー -->
             <div id="menuBar">
                 <button type="button" id="adminLogout">ログアウト</button>
@@ -224,7 +224,7 @@
 
                     <dt>シフトURL</dt>
                     <dd>
-                        <p hidden id="shiftUrl"><a href="" target="_blank"></a></p>
+                        <p hidden id="shiftUrl"><a id="aShiftUrl" href="" target="_blank"></a></p>
                         <input type="text" id="inputShiftUrl" placeholder="*外部参照の場合は入力">
                     </dd>
 
@@ -302,7 +302,7 @@
                 <p>　※ 退勤分のみ、15分単位での切り捨てです。（打刻時間「23:05:00」 → 勤怠時間「23:00」）</p>
                 <p>● 「＊」で表示されている箇所は、打刻漏れ申請、または時間計算に情報が足りていない（出勤中など）状態です。</p>
                 <div>
-                    <table>
+                    <table id="workReportInfoTable">
                         <tbody>
                             <tr id="workReportInfoHeader"></tr>
                             <tr id="workReportInfoHeader2"></tr>
@@ -310,7 +310,6 @@
                         </tbody>
                     </table>
                 </div>
-                
             </div>
 
 
@@ -343,21 +342,22 @@
                     <tbody>
                         <tr>
                             <th colspan="2">イベント名</th>
-                            <td colspan="5" id="stampInfoEvent"></td>
+                            <td colspan="6" id="stampInfoEvent"></td>
                         </tr>
                         <tr>
                             <th colspan="2">スタッフ名</th>
-                            <td colspan="5" id="stampInfoStaff"></td>
+                            <td colspan="6" id="stampInfoStaff"></td>
                         </tr>
                         <tr>
                             <th colspan="2">日付</th>
-                            <td colspan="5" id="stampInfoDay"></td>
+                            <td colspan="6" id="stampInfoDay"></td>
                         </tr>
                         <tr>
-                            <th colspan="7" class="sepTh"></th>
+                            <th colspan="8" class="sepTh"></th>
                         </tr>
                         <tr>
                             <th>項目</th>
+                            <th>シフト</th>
                             <th colspan="2">打刻</th>
                             <th colspan="2">勤怠</th>
                             <th colspan="2">訂正</th>
@@ -365,6 +365,7 @@
 
                         <tr>
                             <th>出勤</th>
+                            <td id="startShift"></td>
                             <td colspan="2" id="startStamp"></td>
                             <td colspan="2" id="startWork"></td>
                             <td colspan="2">
@@ -383,6 +384,7 @@
 
                         <tr>
                             <th>休憩1</th>
+                            <td rowspan="3" id="breakShift"></td>
                             <td id="break1sStamp"></td>
                             <td id="break1eStamp"></td>
                             <td id="break1sWork"></td>
@@ -478,6 +480,7 @@
 
                         <tr>
                             <th>退勤</th>
+                            <td id="endShift"></td>
                             <td colspan="2" id="endStamp"></td>
                             <td colspan="2" id="endWork"></td>
                             <td colspan="2">
@@ -496,13 +499,12 @@
 
                         <tr id="stampInfoReason">
                             <th>訂正理由</th>
-                            <td colspan="6">
+                            <td colspan="7">
                                 <input type="text" id="editStampInfoReason">
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                
             </div>
 
 

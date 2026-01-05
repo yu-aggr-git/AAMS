@@ -164,10 +164,12 @@ function common_report_time(day, start, break1s, break1e, break2s, break2e, brea
     var workTime = '＊';
     if (common_validation_time(start) && common_validation_time(end) && common_validation_time(breakTime)) {
         // 拘束時間
-        const sumTime   = common_clac(day, start, end, 'diff');
+        const sumTime = common_clac(day, start, end, 'diff');
 
-        // 実働時間
-        workTime = common_clac(day, breakTime, sumTime, 'diff');
+        if (!sumTime.includes('-')) {
+            // 実働時間
+            workTime = common_clac(day, breakTime, sumTime, 'diff');
+        }
     }
 
     return {
@@ -208,6 +210,43 @@ function common_workReportEditStatus_color(status) {
 
     return color;
 }
+
+
+// 応募リストのステータス背景色
+function common_applicationStatus_color(status) {
+    let color = '';
+
+    switch (status) {
+        case '保留':
+                color = "#dbebc4";
+            break;
+
+        case '不採用':
+                color = "#8da0b6";
+            break;
+
+        case '採用':
+                color = "#debecc";
+            break;
+
+        case '採用通知済み':
+                color = "#e3d7a3";
+            break;
+
+        case '追加済み':
+                color = "#ef857d";
+            break;
+
+        case '辞退':
+        case '不通':
+        case '無断蒸発':
+                color = "#e1e1e1";
+            break;
+    } 
+
+    return color;
+}
+
 
 
 // modalの表示／非表示
@@ -280,6 +319,10 @@ function common_text_entry(itemList) {
 
                 case 'href':
                     document.getElementById(id).href = item;
+                    break;
+
+                case 'placeholder':
+                    document.getElementById(id).placeholder = item;
                     break;
             }
         });
@@ -379,12 +422,32 @@ function common_set_element(item) {
                 e.rowSpan = value;
                 break;
 
+            case 'type':
+                e.type = value;
+                break;
+
+            case 'checked':
+                e.checked = value;
+                break;
+
+            case 'name':
+                e.name = value;
+                break;
+
             case 'color':
                 e.style.color = value;
                 break;
 
+            case 'fontWeight':
+                e.style.fontWeight = value;
+                break;
+
             case 'background':
                 e.style.background = value;
+                break;
+
+            case 'hidden':
+                e.style.hidden = value;
                 break;
 
             case 'display':
