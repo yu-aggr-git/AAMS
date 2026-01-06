@@ -22,17 +22,23 @@ function offline() {
     console.log('インターネットから切断されました');
 
     // 表示切替
-    document.getElementById("networkStatus").textContent = 'off-line';
-    document.getElementById("networkStatus").style.background = '#41438bff';
+    common_set_element({
+        'element'       : document.getElementById("networkStatus"),
+        'textContent'   : 'off-line',
+        'background'   : '#41438bff',
+    });
 }
 
 
 function online() {
     console.log('インターネットに接続中です');
-    
+
     // 表示切替
-    document.getElementById("networkStatus").textContent = 'on-line';
-    document.getElementById("networkStatus").style.background = '#dc4618ff';
+    common_set_element({
+        'element'       : document.getElementById("networkStatus"),
+        'textContent'   : 'on-line',
+        'background'   : '#dc4618ff',
+    });
 
 
     // 画面遷移：スタッフ
@@ -59,5 +65,4 @@ function online() {
     document.getElementById("redirectAdmin").onclick = function() {
         location.assign('admin.php');
     }
-
 }
