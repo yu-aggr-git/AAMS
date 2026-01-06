@@ -22,32 +22,37 @@ window.onload = () => {
     document.getElementById("editApplicationInfo").onclick = function() {
         editApplication();
     }
-    
-    
 }
 
-// イベント選択
+
+// ──────────────────────────────────────────────────────
+//  イベント選択
+// ………………………………………………………………………………………………………………………………………………
 function eventSelect() {
-    document.getElementById("eventSelectMsg").innerText = '';
+    common_text_entry({'innerText' : {'eventSelectMsg' : ''}});
 
     var selectEventName = document.getElementById("selectEventName").value;
-    var inputMail = document.getElementById("inputMail").value;
+    var inputMail       = document.getElementById("inputMail").value;
 
     if (!selectEventName || !inputMail) {
         document.getElementById("eventSelectMsg").innerText = 'すべての項目に入力が必要です。';
     } else {
-        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-
-        if (!emailRegex.test(inputMail)) {
+        if (!common_validation_mail(inputMail)) {
             // メールバリデーション
-            document.getElementById("eventSelectMsg").innerText = 'メールアドレスは半角かつ正しい形式で入力してください。';
+            common_text_entry({'innerText' : {'eventSelectMsg' : 'メールアドレスは半角かつ正しい形式で入力してください。'}});
         } else {
             // 表示切替
-            document.getElementById("applicationInfoInputArea").style.display   = 'flex';
-            document.getElementById("eventSelectArea").style.display            = 'none';
-            document.getElementById("eventName").innerText                      = selectEventName;
-            document.getElementById("mail").innerText                           = inputMail.trim();
-            
+            common_op_view({
+                'flex'  : ['applicationInfoInputArea'],
+                'none'  : ['eventSelectArea']
+            });
+            common_text_entry({
+                'innerText' : {
+                    'eventName' : selectEventName,
+                    'mail'      : inputMail.trim(),
+                }
+            });
+
             // イベント情報の取得
             var paramDB = {
                 'event' : selectEventName,
@@ -59,9 +64,11 @@ function eventSelect() {
 }
 
 
-// 応募登録
+// ──────────────────────────────────────────────────────
+//  応募登録
+// ………………………………………………………………………………………………………………………………………………
 function registerApplication() {
-    document.getElementById("applicationInfotMsg").innerText = '';
+    common_text_entry({'innerText' : {'applicationInfotMsg' : ''}});
 
     const eventName             = document.getElementById("eventName").textContent;
     const mail                  = document.getElementById("mail").textContent.trim();
@@ -101,7 +108,7 @@ function registerApplication() {
         !available ||
         !inputPlatform
     ) {
-        document.getElementById("applicationInfotMsg").innerText = '備考以外のすべての項目に入力が必要です。';
+        common_text_entry({'innerText' : {'applicationInfotMsg' : '備考以外のすべての項目に入力が必要です。'}});
     } else {
         var paramDB = {
             'event'             : eventName,
@@ -114,14 +121,16 @@ function registerApplication() {
             'available'         : available,
             'memo'              : inputMemo,
             'platform'          : inputPlatform,
-            'applicationDt'     : date().yyyymmddhhmmss
+            'applicationDt'     : common_date().yyyymmddhhmmss
         };
         opDB('registerApplication', paramDB);
     }
 }
 
 
-// 応募編集
+// ──────────────────────────────────────────────────────
+//  応募編集
+// ………………………………………………………………………………………………………………………………………………
 function editApplication() {
     const name              = document.getElementById("name").textContent;
     const birthday          = document.getElementById("birthday").textContent;
@@ -133,38 +142,42 @@ function editApplication() {
     const platform          = document.getElementById("platform").textContent;
 
     // 入力欄の表示
-    document.getElementById("inputName").value              = name;
-    document.getElementById("inputBirthdayYear").value      = birthday.slice(0, 4);
-    document.getElementById("inputBirthdayMonth").value     = birthday.slice(4, 6);
-    document.getElementById("inputBirthdayDay").value       = birthday.slice(6, 8);
-    document.getElementById("inputJob").value               = job;
-    document.getElementById("inputTell").value              = tell;
-    document.getElementById("inputClosestStation").value    = closestStation;
-    const availableA        = available.split(/\n/);
+    common_text_entry({
+        'innerText' : {
+            'inputText' : '下記、必要項目を入力してください。',
+        },
+        'value' : {
+            'inputName'             : name,
+            'inputBirthdayYear'     : birthday.slice(0, 4),
+            'inputBirthdayMonth'    : birthday.slice(4, 6),
+            'inputBirthdayDay'      : birthday.slice(6, 8),
+            'inputJob'              : job,
+            'inputTell'             : tell,
+            'inputClosestStation'   : closestStation,
+            'inputMemo'             : memo,
+            'inputPlatform'         : platform,
+        }
+    });
+    const availableA = available.split(/\n/);
     let i = 0;
     Array.from(document.getElementById("availableInputArea").querySelectorAll("div")).forEach(function(e) {
-        var times = availableA[i].slice(10).split(/～/)
-        var select = e.querySelectorAll("select");
-
-        select[0].value = times[0].trim();
-        select[1].value = times[1].trim();
+        if (availableA[i]) {
+            var times   = availableA[i].slice(10).split(/～/)
+            var select  = e.querySelectorAll("select");
+            select[0].value = times[0].trim();
+            select[1].value = times[1].trim();
+        }
 
         i++;
     });
-    document.getElementById("inputMemo").value              = memo;
-    document.getElementById("inputPlatform").value          = platform;
-    document.getElementById("inputText").innerText          = '下記、必要項目を入力してください。';
 
     dispInput();
 }
 
 
-
-
 // ──────────────────────────────────────────────────────
 //  DBの操作
 // ………………………………………………………………………………………………………………………………………………
-
 function opDB(op, paramDB) {
     var strUrl      = "function/db.php";
     const xmlhttp   = new XMLHttpRequest();
@@ -173,11 +186,13 @@ function opDB(op, paramDB) {
         case 'getEventListRecruit':
             var param   = "function=" + "get_event_list_recruit";
             xmlhttp.onreadystatechange = function() {
-                const select = document.getElementById("selectEventName");
-
-                Array.from(select.querySelectorAll("option")).forEach(function(e) {
-                    e.remove();
+                // 初期値
+                common_clear_children({
+                    'all'   : {
+                        'selectEventName' : 'option',
+                    }
                 });
+
 
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
@@ -185,15 +200,21 @@ function opDB(op, paramDB) {
                     if (data) {
                         Object.keys(data).forEach(function(key) {
                             var option = document.createElement("option");
-                            option.text = data[key];
-                            option.value = data[key];
-                            select.appendChild(option);
+                            common_set_element({
+                                'element'   : option,
+                                'text'      : data[key],
+                                'value'     : data[key]
+                            });
+                            document.getElementById("selectEventName").appendChild(option);
                         });
                     } else {
-                        document.getElementById("sendEventSelect").setAttribute("disabled", true);
-                        document.getElementById("sendEventSelect").style.background     = '#ececec';
-                        document.getElementById("sendEventSelect").style.borderColor    = '#ececec';
-                        document.getElementById("eventSelectMsg").innerText = '※現在、募集中のイベントはございません。';
+                        common_set_element({
+                            'element'       : document.getElementById("sendEventSelect"),
+                            'disabled'      : true,
+                            'background'    : '#ececec',
+                            'borderColor'   : '#ececec',
+                        });
+                        common_text_entry({'innerText' : {'eventSelectMsg' : '※現在、募集中のイベントはございません。'}});
                     }
                 }
             }
@@ -208,7 +229,6 @@ function opDB(op, paramDB) {
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
 
-                    const availableInputArea = document.getElementById("availableInputArea");
                     const firstDay  = data.first_day.split(/-/);
                     const endDay    = data.end_day.split(/-/);
                     const startTime = data.start_time.split(/:/);
@@ -220,27 +240,43 @@ function opDB(op, paramDB) {
                         date.setDate(date.getDate() + 1)
                     ){
                         var div = document.createElement("div");
+                        common_set_element({
+                            'element'   : div,
+                            'display'   : 'none',
+                        });
 
                         // 日付
                         var p = document.createElement("p");
-                        p.innerText = date.toLocaleDateString('sv-SE');
+                        common_set_element({
+                            'element'   : p,
+                            'innerText' : date.toLocaleDateString('sv-SE'),
+                        });
 
-                        // 開始時間                        
+                        // 開始時間
                         var select1 = document.createElement("select");
                         var option1 = document.createElement("option");
-                        option1.text = '×';
-                        option1.value = '×';
+                        common_set_element({
+                            'element'   : option1,
+                            'text'      : '×',
+                            'value'     : '×',
+                        });
                         select1.appendChild(option1);
 
                         // 区切り
                         var span = document.createElement("span");
-                        span.innerText = '～';
+                        common_set_element({
+                            'element'   : span,
+                            'innerText' : '～',
+                        });
 
                         // 終了時間
                         var select2 = document.createElement("select");
                         var option2 = document.createElement("option");
-                        option2.text = '×';
-                        option2.value = '×';
+                        common_set_element({
+                            'element'   : option2,
+                            'text'      : '×',
+                            'value'     : '×',
+                        });
                         select2.appendChild(option2);
 
 
@@ -256,34 +292,42 @@ function opDB(op, paramDB) {
                             // 開始
                             for (let m = s; m <= e; m += 15) {
                                 option1 = document.createElement("option");
-                                option1.text = h + ':' + m.toString().padStart(2, '0');
-                                option1.value = h + ':' + m.toString().padStart(2, '0');
-                                if (h == startTime[0] && m == startTime[1]) {
-                                    option1.selected = 'ture';
-                                }
+                                common_set_element({
+                                    'element'   : option1,
+                                    'text'      : h + ':' + m.toString().padStart(2, '0'),
+                                    'value'     : h + ':' + m.toString().padStart(2, '0'),
+                                    'selected'  : (h == startTime[0] && m == startTime[1] ? 'ture' : ''),
+                                });
                                 select1.appendChild(option1);
                             }
 
                             // 終了
                             for (let m = s; m <= e; m += 15) {
                                 option2 = document.createElement("option");
-                                option2.text = h + ':' + m.toString().padStart(2, '0');
-                                option2.value = h + ':' + m.toString().padStart(2, '0');
-                                if (h == endTime[0] && m == endTime[1]) {
-                                    option2.selected = 'ture';
-                                }
+                                common_set_element({
+                                    'element'   : option2,
+                                    'text'      : h + ':' + m.toString().padStart(2, '0'),
+                                    'value'     : h + ':' + m.toString().padStart(2, '0'),
+                                    'selected'  : (h == endTime[0] && m == endTime[1] ? 'ture': ''),
+                                });
                                 select2.appendChild(option2);
                             }
                         }
 
                         // 時間選択肢
                         option1 = document.createElement("option");
-                        option1.text = '×';
-                        option1.value = '×';
-                        select1.appendChild(option1);                        
+                        common_set_element({
+                            'element'   : option1,
+                            'text'      : '×',
+                            'value'     : '×',
+                        });
                         option2 = document.createElement("option");
-                        option2.text = '×';
-                        option2.value = '×';
+                        common_set_element({
+                            'element'   : option2,
+                            'text'      : '×',
+                            'value'     : '×',
+                        });
+                        select1.appendChild(option1);
                         select2.appendChild(option2);
 
                         // 追加
@@ -291,8 +335,7 @@ function opDB(op, paramDB) {
                         div.appendChild(select1);
                         div.appendChild(span);
                         div.appendChild(select2);
-                        div.style.display = "none";
-                        availableInputArea.appendChild(div);
+                        document.getElementById("availableInputArea").appendChild(div);
                     }
 
                     // 応募情報の取得
@@ -316,15 +359,19 @@ function opDB(op, paramDB) {
                     const data = JSON.parse(this.response);
 
                     // 写真フォーム
-                    const form_url = data.form['url'] 
-                        + '&' + data.form['event']  + '=' + encodeURI(paramDB['event'])
-                        + '&' + data.form['mail']   + '=' + encodeURI(paramDB['mail'])
-                    ;
-                    document.getElementById("photoUrl").href            = form_url;
+                    common_text_entry({'href' : {
+                        'photoUrl' : (
+                            data.form['url'] 
+                            + '&' + data.form['event']  + '=' + encodeURI(paramDB['event'])
+                            + '&' + data.form['mail']   + '=' + encodeURI(paramDB['mail'])
+                        )
+                    }});
 
                     const application = data.application;
                     if (application) {
                         // 応募済み
+
+                        // 出勤可能日
                         const availableA = application.available.split(/,/);
                         let availableText = '';
                         availableA.forEach(function(d) {
@@ -332,36 +379,51 @@ function opDB(op, paramDB) {
                             availableText = availableText + (availablD[0] + ' ' + availablD[1] + '～' + availablD[2] + '<br>');
                         });
 
-                        document.getElementById("name").innerText           = application.name;
-                        document.getElementById("birthday").innerText       = application.birthday;
-                        document.getElementById("job").innerText            = application.job;
-                        document.getElementById("tell").innerText           = application.tell;
-                        document.getElementById("closestStation").innerText = application.closest_station;                        
-                        document.getElementById("available").innerHTML      = availableText;
-                        document.getElementById("memo").innerText           = application.memo;
-                        document.getElementById("platform").innerText       = application.platform;
-                        document.getElementById("applicationDt").innerText  = application.updated_dt;
-                        document.getElementById("inputText").innerText      = "下記の内容で応募登録されています。";
+                        common_text_entry({
+                            'innerText' : {
+                                'inputText'         : '下記の内容で応募登録されています。',
+                                'name'              : application.name,
+                                'birthday'          : application.birthday,
+                                'job'               : application.job,
+                                'tell'              : application.tell,
+                                'closestStation'    : application.closest_station,
+                                'memo'              : application.memo,
+                                'platform'          : application.platform,
+                                'applicationDt'     : application.updated_dt,
+                            },
+                            'innerHTML' : {
+                                'available' : availableText,
+                            }
+                        });
 
                         dispConfirm();
 
                         // 編集ボタンの制限
                         var statusOption = ['採用', '採用通知済み', '辞退', '不通', '追加済み', '無断蒸発'];
                         if (statusOption.includes(application.status)) {
-                            document.getElementById("editApplicationInfo").style.display  = 'none';
+                            common_op_view({
+                                'none'  : ['editApplicationInfo']
+                            });
                         }
                     } else {
                         dispInput();
 
                         // 応募フォーム
-                        const url = new URL(window.location.href);
+                        const url    = new URL(window.location.href);
                         const params = url.searchParams;
                         if (params.get('platform')) {
-                            document.getElementById("platform").innerText       = params.get('platform');                            
-                            document.getElementById("platform").style.display   = 'block';
-
-                            document.getElementById("inputPlatform").value          = params.get('platform');
-                            document.getElementById("inputPlatform").style.display  = 'none';
+                            common_text_entry({
+                                'innerText' : {
+                                    'platform' : params.get('platform'),
+                                },
+                                'value' : {
+                                    'inputPlatform' : params.get('platform'),
+                                }
+                            });
+                            common_op_view({
+                                'block' : ['platform'],
+                                'none'  : ['inputPlatform']
+                            });
                         }
                     }
                 }
@@ -385,40 +447,44 @@ function opDB(op, paramDB) {
 
             xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("applicationInfotMsg").innerText = '';
+                    common_text_entry({'innerText' : {'applicationInfotMsg' : ''}});
 
                     // 登録完了
                     if (this.response == 1) {
                         // console.log(this.response, '登録');
 
+                        // 出勤可能日
                         const availableA = paramDB['available'].split(/,/);
                         let availableText = '';
                         availableA.forEach(function(d) {
                             var availablD = d.split(/_/);
                             availableText = availableText + (availablD[0] + ' ' + availablD[1] + '～' + availablD[2] + '<br>');
                         });
-                        
-                        document.getElementById("name").innerText           = paramDB['name'];
-                        document.getElementById("birthday").innerText       = paramDB['birthday'];
-                        document.getElementById("job").innerText            = paramDB['job'];
-                        document.getElementById("tell").innerText           = paramDB['tell'];
-                        document.getElementById("closestStation").innerText = paramDB['closestStation'];
-                        document.getElementById("available").innerHTML      = availableText;
-                        document.getElementById("memo").innerText           = paramDB['memo'];
-                        document.getElementById("platform").innerText       = paramDB['platform'];
-                        document.getElementById("applicationDt").innerText  = paramDB['applicationDt'];
-                        document.getElementById("inputText").innerText      = "下記の内容で応募登録されています。";
-                        
-                        dispConfirm();                        
+
+                        common_text_entry({
+                            'innerText' : {
+                                'inputText'         : '下記の内容で応募登録されています。',
+                                'name'              : paramDB['name'],
+                                'birthday'          : paramDB['birthday'],
+                                'job'               : paramDB['job'],
+                                'tell'              : paramDB['tell'],
+                                'closestStation'    : paramDB['closestStation'],
+                                'memo'              : paramDB['memo'],
+                                'platform'          : paramDB['platform'],
+                                'applicationDt'     : paramDB['applicationDt'],
+                            },
+                            'innerHTML' : {
+                                'available' : availableText,
+                            }
+                        });
+
+                        dispConfirm();
                     } else {
-                        document.getElementById("applicationInfotMsg").innerText = '応募内容の登録ができませんでした。';
+                        common_text_entry({'innerText' : {'applicationInfotMsg' : '応募内容の登録ができませんでした。'}});
                     }
                 }
             }
             break;
-
-
-
     }
 
     xmlhttp.open("POST", strUrl, true);
@@ -427,75 +493,32 @@ function opDB(op, paramDB) {
 }
 
 
-// 現在日時
-function date() {
-    const d = new Date();
-    d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
-    const yyyymmdd = d.toISOString().replace('T', ' ').substring(0, 10);
-    const hhmmss = d.toISOString().replace('T', ' ').substring(11, 19);
-
-    return {
-        "yyyymmdd"  : yyyymmdd,
-        "hhmmss"    : hhmmss,
-        "yyyymmddhhmmss"  : yyyymmdd + ' ' + hhmmss,
-    }
-}
-
-
-// 入力欄の表示
+// ──────────────────────────────────────────────────────
+//  入力欄の表示
+// ………………………………………………………………………………………………………………………………………………
 function dispInput() {
-    // 表示
-    document.getElementById("inputName").style.display              = 'block';
-    document.getElementById("inputBirthdayArea").style.display      = 'flex';
-    document.getElementById("inputJob").style.display               = 'block';
-    document.getElementById("inputTell").style.display              = 'block';
-    document.getElementById("inputClosestStation").style.display    = 'block';
+    // 表示／非表示
+    common_op_view({
+        'block' : ['inputName', 'inputJob', 'inputTell', 'inputClosestStation', 'inputMemo', 'inputPlatform', 'sendApplicationInfo', 'cancelApplicationInfo'],
+        'flex'  : ['inputBirthdayArea'],
+        'none'  : ['name', 'birthday', 'job', 'tell', 'closestStation', 'available', 'memo', 'platform', 'editApplicationInfo']
+    });
     Array.from(document.getElementById("availableInputArea").querySelectorAll("div")).forEach(function(e) {
         e.style.display = 'flex';
-   });
-    document.getElementById("inputMemo").style.display              = 'block';
-    document.getElementById("inputPlatform").style.display          = 'block';
-    document.getElementById("sendApplicationInfo").style.display    = 'block';
-    document.getElementById("cancelApplicationInfo").style.display  = 'block';   
-
-    
-    // 非表示
-    document.getElementById("name").style.display           = 'none';
-    document.getElementById("birthday").style.display       = 'none';
-    document.getElementById("job").style.display            = 'none';
-    document.getElementById("tell").style.display           = 'none';
-    document.getElementById("closestStation").style.display = 'none';
-    document.getElementById("available").style.display      = 'none';
-    document.getElementById("memo").style.display           = 'none';
-    document.getElementById("platform").style.display       = 'none';
-    document.getElementById("editApplicationInfo").style.display  = 'none';
+    });
 }
 
 
-// 確認欄の表示
+// ──────────────────────────────────────────────────────
+//  確認欄の表示
+// ………………………………………………………………………………………………………………………………………………
 function dispConfirm() {
-    // 表示
-    document.getElementById("name").style.display           = 'block';
-    document.getElementById("birthday").style.display       = 'block';
-    document.getElementById("job").style.display            = 'block';
-    document.getElementById("tell").style.display           = 'block';
-    document.getElementById("closestStation").style.display = 'block';
-    document.getElementById("available").style.display      = 'block';
-    document.getElementById("memo").style.display           = 'block';
-    document.getElementById("platform").style.display       = 'block';
-    document.getElementById("editApplicationInfo").style.display  = 'block';
-
-    // 非表示
-    document.getElementById("inputName").style.display              = 'none';
-    document.getElementById("inputBirthdayArea").style.display      = 'none';
-    document.getElementById("inputJob").style.display               = 'none';
-    document.getElementById("inputTell").style.display              = 'none';
-    document.getElementById("inputClosestStation").style.display    = 'none';
+    // 表示／非表示
+    common_op_view({
+        'block' : ['name', 'birthday', 'job', 'tell', 'closestStation', 'available', 'memo', 'platform', 'editApplicationInfo'],
+        'none'  : ['inputName', 'inputBirthdayArea', 'inputJob', 'inputTell', 'inputClosestStation', 'inputMemo', 'inputPlatform', 'sendApplicationInfo', 'cancelApplicationInfo']
+    });
     Array.from(document.getElementById("availableInputArea").querySelectorAll("div")).forEach(function(e) {
         e.style.display = 'none';
     });
-    document.getElementById("inputMemo").style.display              = 'none';
-    document.getElementById("inputPlatform").style.display          = 'none';
-    document.getElementById("sendApplicationInfo").style.display    = 'none';
-    document.getElementById("cancelApplicationInfo").style.display  = 'none';
 }

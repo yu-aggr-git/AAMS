@@ -2520,7 +2520,7 @@ function opDB(op, paramDB) {
 
             xmlhttp.onreadystatechange = function() {
                 common_text_entry({'innerText' : {'dayReport' : ''}});
-                
+
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
 

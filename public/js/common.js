@@ -181,9 +181,18 @@ function common_report_time(day, start, break1s, break1e, break2s, break2e, brea
 
 // バリデーション＿h:mm または h:mm:ss
 function common_validation_time(time) {
-    const timeRegex = /^[0-9]{1,2}:[0-9]{2}$|^[0-9]{1,2}:[0-9]{2}:[0-9]{2}$/;
+    const regex = /^[0-9]{1,2}:[0-9]{2}$|^[0-9]{1,2}:[0-9]{2}:[0-9]{2}$/;
 
-    return timeRegex.test(time);
+    return regex.test(time);
+}
+
+
+
+// バリデーション＿メールアドレス
+function common_validation_mail(mail) {
+    const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+    return regex.test(mail);
 }
 
 
@@ -434,6 +443,14 @@ function common_set_element(item) {
                 e.name = value;
                 break;
 
+            case 'disabled':
+                e.disabled = value;
+                break;
+
+            case 'selected':
+                e.selected = value;
+                break;
+
             case 'color':
                 e.style.color = value;
                 break;
@@ -444,6 +461,10 @@ function common_set_element(item) {
 
             case 'background':
                 e.style.background = value;
+                break;
+
+            case 'borderColor':
+                e.style.borderColor = value;
                 break;
 
             case 'hidden':
