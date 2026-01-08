@@ -12,6 +12,53 @@ function common_date() {
     }
 }
 
+// 曜日
+function common_getDOW(day) {
+    const dayA = day.split(/-/);
+    const yearStr   = dayA[0];
+    const monthStr  = dayA[1];
+    const dayStr    = dayA[2];
+
+    // Dateオブジェクトには実際の月ー１の値を指定するため
+    var jsMonth = monthStr - 1 ;
+
+    // Dateオブジェクトは曜日情報を0から6の数値で保持しているため、翻訳する
+    var dayOfWeekStrJP = [ "日", "月", "火", "水", "木", "金", "土" ] ;
+    var className       = [ "sun", "", "", "", "", "", "sat" ] ;
+
+    // 指定日付で初期化したDateオブジェクトのインスタンスを生成する
+    var date = new Date( yearStr, jsMonth , dayStr );
+
+    // 木曜日は数値の4として保持されているため、dayOfWeekStrJP[4]の値が出力される
+    return {
+        "dow"       : '(' + dayOfWeekStrJP[date.getDay()] + ')',
+        "dowClass"  : className[date.getDay()]
+    }
+}
+
+
+// 年齢
+function common_getAge(birthday){
+    const y = birthday.slice(0, 4);
+    const m = birthday.slice(4, 6);
+    const d = birthday.slice(6, 8);
+
+    //今日
+    var today = new Date();
+ 
+    //今年の誕生日
+    var thisYearsBirthday = new Date(today.getFullYear(), m - 1, d);
+ 
+    //年齢
+    var age = today.getFullYear() - y;
+
+    if(today < thisYearsBirthday){
+        //今年まだ誕生日が来ていない
+        age--;
+    }
+
+    return age;
+}
 
 // 項目名
 function common_itemName(item) {
@@ -30,6 +77,36 @@ function common_itemName(item) {
 }
 
 
+// modalの表示／非表示
+function common_op_modal(id, op) {
+    switch (op) {
+        case 'open':
+            document.getElementById("modal").style.display  = 'flex';
+            document.getElementById(id).style.display       = 'flex';
+            document.body.style.overflow                    = 'hidden';
+            break;
+
+        case 'close':
+            document.getElementById("modal").style.display  = 'none';
+            document.getElementById(id).style.display       = 'none';
+            document.body.style.overflow                    = 'visible';
+            break;
+    }
+}
+
+
+// 半角変換
+function common_replaceStr(str) {
+    return str.replace(/[０-９：]/g, function (s) {
+        return String.fromCharCode(s.charCodeAt(0) - 65248);
+    }).replace(/[^\d:]/g, '');
+}
+
+
+
+// ──────────────────────────────────────────────────────
+//  計算
+// ………………………………………………………………………………………………………………………………………………
 // 時間計算
 function common_clac(day, bt, at, method) {
     const dayA = day.split(/-/);
@@ -49,7 +126,7 @@ function common_clac(day, bt, at, method) {
             min = Math.ceil(min / 15) * 15;
             hour = Number(hour) + Number((min == 60 ? 1 : 0)); 
             break;
-    
+
         case 'sum':
             var totalMinutes = Number(btA[1]) + Number(atA[1]);
             var carryHours = Math.floor(totalMinutes / 60);
@@ -60,10 +137,9 @@ function common_clac(day, bt, at, method) {
             min = (Math.ceil(min / 15) * 15);
             break;
     }
-    
+
     return hour + ':' +  (min == 60 ? '00' : min.toString().padStart(2, '0'));
 }
-
 
 // 切り上げ（開始、休憩）
 function common_ceil(data) {
@@ -75,7 +151,6 @@ function common_ceil(data) {
 
     return dataClac;
 }
-
 
 // 切り捨て（退勤）
 function common_floor(start, end) {
@@ -93,7 +168,6 @@ function common_floor(start, end) {
 
     return dataClac;
 }
-
 
 // シフト時間の算出
 function common_shift_time(day, start, end) {
@@ -118,7 +192,6 @@ function common_shift_time(day, start, end) {
         "workTime"  : workTime
     }
 }
-
 
 // 勤怠時間の算出
 function common_report_time(day, start, break1s, break1e, break2s, break2e, break3s, break3e, end) {
@@ -179,25 +252,44 @@ function common_report_time(day, start, break1s, break1e, break2s, break2e, brea
 }
 
 
-// バリデーション＿h:mm または h:mm:ss
-function common_validation_time(time) {
+
+// ──────────────────────────────────────────────────────
+//  バリデーション
+// ………………………………………………………………………………………………………………………………………………
+// 15分単位
+function common_validation_minutes(value) {
+    const regex = ['00', '15', '30', '45'];
+
+    return regex.includes(value);
+}
+
+// h:mm
+function common_validation_hhmm(value) {
+    const regex = /\d{1,2}:\d{2}/;
+
+    return regex.test(value);
+}
+
+// h:mm または h:mm:ss
+function common_validation_time(value) {
     const regex = /^[0-9]{1,2}:[0-9]{2}$|^[0-9]{1,2}:[0-9]{2}:[0-9]{2}$/;
 
-    return regex.test(time);
+    return regex.test(value);
 }
 
-
-
-// バリデーション＿メールアドレス
-function common_validation_mail(mail) {
+// メールアドレス
+function common_validation_mail(value) {
     const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
-    return regex.test(mail);
+    return regex.test(value);
 }
 
 
 
-// 勤怠修正情報のステータス背景色
+// ──────────────────────────────────────────────────────
+//  背景色の判定
+// ………………………………………………………………………………………………………………………………………………
+// 勤怠修正情報のステータス
 function common_workReportEditStatus_color(status) {
     let color = '';
 
@@ -220,8 +312,7 @@ function common_workReportEditStatus_color(status) {
     return color;
 }
 
-
-// 応募リストのステータス背景色
+// 応募リストのステータス
 function common_applicationStatus_color(status) {
     let color = '';
 
@@ -256,24 +347,26 @@ function common_applicationStatus_color(status) {
     return color;
 }
 
+// シフト変更希望のステータス
+function common_shiftChangeStatus_color(status) {
+    let color = '';
 
-
-// modalの表示／非表示
-function common_op_modal(id, op) {
-    switch (op) {
-        case 'open':
-            document.getElementById("modal").style.display  = 'flex';
-            document.getElementById(id).style.display       = 'flex';
-            document.body.style.overflow                    = 'hidden';
+    switch (status) {
+        case '申請中':
+                color = "#87bd9eff";
             break;
 
-        case 'close':
-            document.getElementById("modal").style.display  = 'none';
-            document.getElementById(id).style.display       = 'none';
-            document.body.style.overflow                    = 'visible';
+        case '却下済':
+        case '承認済':
+        case '可能日変更':
+                color = "#a5a5a5ff";
             break;
-    }
+    } 
+
+    return color;
 }
+
+
 
 
 // 表示／非表示の操作
@@ -449,6 +542,10 @@ function common_set_element(item) {
 
             case 'selected':
                 e.selected = value;
+                break;
+
+            case 'maxLength':
+                e.maxLength = value;
                 break;
 
             case 'color':
