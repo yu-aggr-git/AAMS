@@ -45,6 +45,7 @@
                 </div>
             </div>
 
+
             <!-- 情報入力 -->
             <div id="applicationInfoInputArea">
                 <div class="text">
@@ -182,6 +183,28 @@
                     <button hidden id="sendApplicationInfo" type="button">送信</button>
                     <button hidden id="editApplicationInfo" type="button">編集</button>
                 </div>
+            </div>
+
+
+            <!-- LINEグループ -->
+            <div id="lineGroupArea">
+                <p id="newEventNotice">新着イベントのお知らせ</p>
+
+                <p>
+                    弊社は定期的にイベント求人をしております。
+                    <br>
+                    <br>募集開始のお知らせを受け取りたい方は、
+                    <br>QRコードまたは招待URLからLINEグループにご参加ください。
+                </p>
+
+                <img src="public/img/LINE-GROUP-8665.jpg" alt="">
+
+                <a href="https://line.me/R/ti/g/h9KSDTaq7T">https://line.me/R/ti/g/h9KSDTaq7T</a>
+
+                <p>
+                    ※求人の配信のみに使用するLINEグループです。
+                    <br>お問い合わせ等は、baito-staff@aggr.jpまでご連絡ください。
+                </p>
             </div>
 
         </div>

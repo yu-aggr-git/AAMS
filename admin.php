@@ -542,7 +542,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
             </div>
 
 
@@ -577,7 +577,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 <div id="deleteStaff">
                     <p>
                         ・スタッフの削除：
@@ -685,10 +685,8 @@
                         </tbody>
                     </table>
                 </div>
-                
-            </div>
 
-            
+            </div>
 
         </div>
 
