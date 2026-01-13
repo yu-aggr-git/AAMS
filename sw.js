@@ -6,6 +6,7 @@ const urlsToCache = [
     'public/css/common.css',
     'public/css/index.css',
     'public/css/stamp.css',
+    'public/js/common.js',
     'public/js/index.js',
     'public/js/stamp.js',
     'include/head.php',
@@ -49,26 +50,26 @@ self.addEventListener('fetch', (event) => {
             if (response) {
                 return response;
             }
-        
+
             // 重要：リクエストを clone する。リクエストは Stream なので
             // 一度しか処理できない。ここではキャッシュ用、fetch 用と2回
             // 必要なので、リクエストは clone しないといけない
             let fetchRequest = event.request.clone();
-    
+
             return fetch(fetchRequest).then((response) => {
                 if (!response || response.status !== 200 || response.type !== 'basic') {
                     return response;
                 }
-        
+
                 // 重要：レスポンスを clone する。レスポンスは Stream で
                 // ブラウザ用とキャッシュ用の2回必要。なので clone して
                 // 2つの Stream があるようにする
                 let responseToCache = response.clone();
-        
+
                 caches.open(CACHE_NAME).then((cache) => {
                     cache.put(event.request, responseToCache);
                 });
-        
+
                 return response;
             });
         })

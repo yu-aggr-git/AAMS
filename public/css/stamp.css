@@ -347,7 +347,7 @@
 #modal > #edit > .modalBody > #editList {
     display         : none;
     width           : 90%;
-    padding-bottom  : 10vmin;
+    padding-bottom  : 20vmin;
     /* display         : flex; */
     justify-content : start;
 }

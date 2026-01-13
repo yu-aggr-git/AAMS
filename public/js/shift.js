@@ -1210,10 +1210,10 @@ function opDB(op, paramDB) {
                                 'element'   : numB,
                                 'id'        : day + '_inputNum',
                                 'className' : 'numEdit shiftEdit',
-                                'value'     : requiredNumÅ[day],
+                                'value'     : (day in requiredNumÅ ? requiredNumÅ[day] : 0),
                                 'maxLength' : 5,
                                 'display'   : 'none',
-                            });;
+                            });
 
                             shiftInfoTh.appendChild(shiftInfoB);
                             shiftInfoTh.appendChild(numB);

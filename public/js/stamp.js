@@ -1,78 +1,61 @@
 window.onload = () => {
     let paramIndexedDB = {};
 
-    // ───日時の表示─────────────────────────────────────────────────────────────────
-    document.getElementById("realday").innerHTML = date().yyyymmdd;
+    // 日時の表示
+    document.getElementById("realday").innerHTML = common_date().yyyymmdd;
     setInterval(
         function() {
-            document.getElementById("realtime").innerHTML = date().hhmmss;
+            document.getElementById("realtime").innerHTML = common_date().hhmmss;
         }, 1000
     );
 
 
-    // ───イベントの取得──────────────────────────────────────────────────────────────
+    // イベントの取得
     let event = window.localStorage.getItem("event");
-    document.getElementById("eventName").innerHTML = event ?? '　';
+    common_text_entry({'innerHTML' : {'eventName' : (event ?? '　')}});
 
 
-    // ───出勤状態────────────────────────────────────────────────────────────────────────
+    // IndexedDBの接続
+    paramIndexedDB = { 'event': event };
+    opIndexedDB('open', paramIndexedDB);
+
+
+    // オンライン／オフライン処理分岐
+    var isOnline = navigator.onLine;
+    isOnline
+        ? online(event)
+        : offline()
+    ;
+    window.addEventListener("online", function(){
+        window.location.reload();
+    }, false);
+    window.addEventListener("offline", function() {
+        window.location.reload();
+    }, false);
+
+
+    // 出勤状態
     if (event) {
         paramIndexedDB = {
             'event' : event,
-            'day'   : date().yyyymmdd
+            'day'   : common_date().yyyymmdd
         };
         opIndexedDB('getWorkStatus', paramIndexedDB);
     }
 
 
-    // ───IndexedDBの接続────────────────────────────────────────────────────────────
-    paramIndexedDB = { 'event': event };
-    opIndexedDB('open', paramIndexedDB);
-
-
-    // ───打刻────────────────────────────────────────────────────────────────────────
+    // 打刻
     document.getElementById("stampButton").onclick = function() {
-        stamp(event);
+        stamp(event, isOnline);
     }
-
-
-    // ───オンラインかオフラインかで処理を分ける────────────────────────────────────────
-    var isOnline = navigator.onLine;
-    isOnline ? online(event) : offline();
-
-    window.addEventListener("online", function(){
-        window.location.reload();
-    }, false);
-
-    window.addEventListener("offline", function() {
-        window.location.reload();
-    }, false)
 }
 
 
 // ──────────────────────────────────────────────────────
-//  共通
+//  打刻
 // ………………………………………………………………………………………………………………………………………………
-
-// 現在日時
-function date() {
-    const d = new Date();
-    d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
-    const yyyymmdd = d.toISOString().replace('T', ' ').substring(0, 10);
-    const hhmmss = d.toISOString().replace('T', ' ').substring(11, 19);
-
-    return {
-        "yyyymmdd"  : yyyymmdd,
-        "hhmmss"    : hhmmss,
-        "yyyymmddhhmmss"  : yyyymmdd + ' ' + hhmmss,
-    }
-}
-
-
-// 打刻
-function stamp(event) {
-    document.getElementById("modal").style.display = 'flex';
-    document.getElementById("stamp").style.display = 'flex';
+function stamp(event, isOnline) {
+    common_op_modal('stamp', 'open');
 
     let paramIndexedDB = {};
 
@@ -84,38 +67,42 @@ function stamp(event) {
     opIndexedDB('getStaffList', paramIndexedDB);
 
     // 打刻スタッフの表示
-    document.getElementById("stampSelectStaff").onchange = function() {       
-        document.getElementById("selectEdit").style.display = 'none';
+    document.getElementById("stampSelectStaff").onchange = function() {
+        common_op_view({
+            'none'  : ['selectEdit']
+        });
 
         const selectStaff = document.getElementById("stampSelectStaff").value;
         if (selectStaff) {
             paramIndexedDB = {
                 'event' : event,
-                'day'   : date().yyyymmdd,
+                'day'   : common_date().yyyymmdd,
                 'name'  : selectStaff
             };
             opIndexedDB('getWorkReport', paramIndexedDB);
 
-            document.getElementById("stampAreaButton").style.display = 'flex';
-            document.getElementById("stampAreaEdit").style.display = 'flex';
-            document.getElementById("stampAreaInfo").style.display = 'flex';
+            common_op_view({
+                'flex'  : ['stampAreaButton', 'stampAreaEdit', 'stampAreaInfo']
+            });
         }
     }
 
     // 打刻漏れ
     document.getElementById("stampEdit").onclick = function() {
-        document.getElementById("selectEdit").style.display = 'flex';
+        common_op_view({
+            'flex'  : ['selectEdit']
+        });
 
         document.getElementById("sendStampEdit").onclick = function() {
 
-            const day           = date().yyyymmdd;
+            const day           = common_date().yyyymmdd;
             const selectStaff   = document.getElementById("stampSelectStaff").value;
             const item          = document.getElementById("editItem").value;
             const inputHour     = document.getElementById("editHour").value;
             const inputMinutes  = document.getElementById("editMinutes").value;
 
             paramIndexedDB = {
-                'requestDt'  : date().yyyymmddhhmmss,
+                'requestDt'  : common_date().yyyymmddhhmmss,
                 'event'      : event,
                 'day'        : day,
                 'name'       : selectStaff,
@@ -147,16 +134,16 @@ function stamp(event) {
 
         paramIndexedDB = {
             'event' : event,
-            'day'   : date().yyyymmdd,
+            'day'   : common_date().yyyymmdd,
             'name'  : selectStaff,
             'item'  : item,
-            'value' : date().hhmmss
+            'value' : common_date().hhmmss
         };
 
         var result = window.confirm(
                 '【イベント】  '    + event     + '\n' 
             +   '【  名前  】  '    + selectStaff      + '\n' 
-            +   '【  日付  】  '    + date().yyyymmdd  + '\n' 
+            +   '【  日付  】  '    + common_date().yyyymmdd  + '\n' 
             +   '【  項目  】  '    + common_itemName(item) + '\n' 
             +   '\n以上の内容で、打刻をしてよろしいですか？'
         );
@@ -176,60 +163,75 @@ function stamp(event) {
     document.getElementById("stampWorkE").onclick = function(e) {
         putWorkReport(e);
     }
-    
+
     // 閉じる
     document.getElementById("closeStamp").onclick = function() {
-        document.getElementById("modal").style.display = 'none';
-        document.getElementById("stamp").style.display = 'none';
-        document.getElementById("stampSelectStaff").options[0].selected = true;
-        document.getElementById("stampAreaButton").style.display = 'none';
-        document.getElementById("stampAreaEdit").style.display = 'none';
-        document.getElementById("stampAreaInfo").style.display = 'none';
-        document.getElementById("selectEdit").style.display = 'none';
+        common_op_modal('stamp', 'close');
+        common_op_view({
+            'none'  : ['stampAreaButton', 'stampAreaEdit', 'stampAreaInfo', 'selectEdit']
+        });
+
+        // ローカルデータの反映
+        if (isOnline) {
+            registerData(event);
+        }
 
         paramIndexedDB = {
             'event' : event,
-            'day'   : date().yyyymmdd
+            'day'   : common_date().yyyymmdd
         };
         opIndexedDB('getWorkStatus', paramIndexedDB);
     }
 }
 
 
-
 // ──────────────────────────────────────────────────────
 //  オフライン
 // ………………………………………………………………………………………………………………………………………………
-
 function offline() {
     console.log('インターネットから切断されました');
 
     // 表示切替
-    document.getElementById("modal").style.display = 'none';
-    document.getElementById("networkStatus").textContent = 'off-line';
-    document.getElementById("networkStatus").style.background = '#41438bff';
+    common_op_view({
+        'none'  : ['modal']
+    });
+    common_set_element({
+        'element'       : document.getElementById("networkStatus"),
+        'textContent'   : 'off-line',
+        'background'    : '#41438bff',
+    });
     Array.from(document.getElementById("workStatus").querySelectorAll("th")).forEach(function(e) {
-        e.style.color = '#41438bff';
+        common_set_element({
+            'element'   : e,
+            'color'     : '#41438bff',
+        });
     });
 }
-
 
 
 // ──────────────────────────────────────────────────────
 //  オンライン
 // ………………………………………………………………………………………………………………………………………………
-
 function online(event) {
     console.log('インターネットに接続中です');
-    
+
     // 表示切替
-    document.getElementById("networkStatus").textContent = 'on-line';
-    document.getElementById("networkStatus").style.background = '#dc4618ff';
+    common_op_view({
+        'block'  : ['menuOpen']
+    });
+    common_set_element({
+        'element'       : document.getElementById("networkStatus"),
+        'textContent'   : 'on-line',
+        'background'    : '#dc4618ff',
+    });
     Array.from(document.getElementById("workStatus").querySelectorAll("th")).forEach(function(e) {
-        e.style.color = '#dc4618ff';
+        common_set_element({
+            'element'   : e,
+            'color'     : '#dc4618ff',
+        });
     });
 
-    let paramDB = {};
+
     if (event == null) {
         // ログイン
         checkLoginEvent(); 
@@ -237,12 +239,20 @@ function online(event) {
         // Service Worker 登録スクリプト
         navigator.serviceWorker.register('./sw.js').catch(console.error.bind(console));
 
+
         // スタッフリストの取得
-        paramDB = { 'event': event, };
+        var paramDB = { 'event': event, };
         opDB('getStaffList', paramDB);
 
+
         // メニューの表示
-        dispMenu();
+        document.getElementById("menuOpen").onclick = function() {
+            common_op_modal('menu', 'open');
+        }
+        document.getElementById("closeMenu").onclick = function() {
+            common_op_modal('menu', 'close');
+        }
+
 
         // イベントの切換え
         document.getElementById("changeEvent").onclick = function() {
@@ -252,18 +262,12 @@ function online(event) {
             window.location.reload();
         }
 
-        // ローカルデータをDBに反映（5分毎）
-        registerData(event);
-        setInterval(
-            function() {
-                registerData(event);
-            }, 300000
-        );
 
         // 勤怠修正
         document.getElementById("openEdit").onclick = function() {
             editData(event);
         }
+
 
         // 日報選択
         document.getElementById("openDayReport").onclick = function() {
@@ -271,22 +275,38 @@ function online(event) {
         }
         document.getElementById("dayReportList").addEventListener('click', (e) => {
             if (e.target.tagName  === 'BUTTON') {
-                // 日報記入
-                const inputDayReport = document.getElementById("inputDayReport");
-                var report = inputDayReport.value;
-
-                var value = '・' + e.target.value + ' → 00:00(*理由)' + '\n';
-                inputDayReport.value = report + value;
+                // 訂正内容に反映
+                var value = 
+                    document.getElementById("inputDayReport").value
+                    + '・' 
+                    + e.target.value 
+                    + ' → 00:00(*理由)' 
+                    + '\n'
+                ;
+                common_text_entry({'value' : {'inputDayReport' : value}});
             }
         })
+
+
+        // ローカルデータをDBに反映（5分毎）
+        registerData(event);
+        setInterval(
+            function() {
+                registerData(event);
+            }, 300000
+        );
     }
 }
 
 
-// イベントログイン
+// ──────────────────────────────────────────────────────
+//  イベントログイン
+// ………………………………………………………………………………………………………………………………………………
 function checkLoginEvent() {
-    document.getElementById("modal").style.display = 'flex';
-    document.getElementById("eventLogin").style.display = 'flex';
+    common_op_modal('eventLogin', 'open');
+    common_op_view({
+        'none'  : ['stampButton', 'menuOpen']
+    });
 
     // イベントリストの取得
     opDB('getEventList', null);
@@ -297,7 +317,7 @@ function checkLoginEvent() {
         const inputPass   = document.getElementById("loginEventPass").value.trim();
 
         if (!inputEvent || !inputPass) {
-            document.getElementById("loginMsg").innerHTML = 'すべての項目に入力が必要です。';
+            common_text_entry({'innerText' : {'loginMsg' : 'すべての項目に入力が必要です。'}});
         } else {
             let paramDB = {
                 'inputEvent' : inputEvent,
@@ -309,29 +329,16 @@ function checkLoginEvent() {
 }
 
 
-// メニューの表示
-function dispMenu() {
-    document.getElementById("menuOpen").style.display = 'block';
-
-    document.getElementById("menuOpen").onclick = function() {
-        document.getElementById("modal").style.display = 'flex';
-        document.getElementById("menu").style.display = 'flex';
-    }
-
-    document.getElementById("closeMenu").onclick = function() {
-        document.getElementById("modal").style.display = 'none';
-        document.getElementById("menu").style.display = 'none';
-    }
-}
-
-
-// 勤怠修正
+// ──────────────────────────────────────────────────────
+//  勤怠修正
+// ………………………………………………………………………………………………………………………………………………
 function editData(event) {
-    document.getElementById("menu").style.display = 'none';
-    document.getElementById("edit").style.display = 'block';
+    common_op_modal('menu', 'close');
+    common_op_modal('edit', 'open');
 
     let paramIndexedDB = {};
     let paramDB = {};
+    let msg = '';
 
     // スタッフリストの表示
     paramIndexedDB = {
@@ -340,29 +347,31 @@ function editData(event) {
     };
     opIndexedDB('getStaffList', paramIndexedDB);
 
+
     // 勤怠修正スタッフの表示
-    document.getElementById("editSelectStaff").onchange = function() {      
+    document.getElementById("editSelectStaff").onchange = function() {
         const selectStaff = document.getElementById("editSelectStaff").value;
 
         if (selectStaff) {
-            document.getElementById("editInput").style.display = 'flex';
-            document.getElementById("editInfo").style.display = 'block';
-            document.getElementById("editList").style.display = 'flex';
-            document.getElementById("editMsg").innerHTML = '';
+            common_op_view({
+                'block' : ['editInfo'],
+                'flex'  : ['editInput', 'editList']
+            });
+            common_text_entry({'innerText' : {'editMsg' : ''}});
 
             paramDB = {
                 'event' : event,
                 'name'  : selectStaff
             };
 
-            // 修正対象日リストの作成            
+            // 修正対象日リストの作成
             opDB('getWorkReport', paramDB);
-
 
             // 勤怠修正情報の取得
             opDB('getWorkReportEdit', paramDB);
         }
     }
+
 
     // 勤怠修正の登録
     document.getElementById("sendEdit").onclick = function() {
@@ -374,34 +383,37 @@ function editData(event) {
         const inputReason  = document.getElementById("editWorkReportReason").value;
 
         if (!inputReason || !inputDay) {
-            document.getElementById("editMsg").innerHTML = 'すべての項目に入力が必要です。';
-        } else if (
-            (inputHour == '×' && inputMinutes != '×') || 
-            (inputHour != '×' && inputMinutes == '×')
-        ) {
-            document.getElementById("editMsg").innerHTML = '打刻データ取消し申請は「×：×」と入力してください。';
+            msg = 'すべての項目に入力が必要です。';
+        } else if ((inputHour == '×' && inputMinutes != '×') || (inputHour != '×' && inputMinutes == '×')) {
+            msg = '打刻データ取消し申請は「×：×」と入力してください。';
+        } else {
+            msg = '';
+        }
+
+        if (msg) {
+            common_text_entry({'innerText' : {'editMsg' : msg}});
         } else {
             const regDay     = new RegExp("day" + "\\[(.*?)\\]" + "day");
             const regItem    = new RegExp(inputItem + "\\[(.*?)\\]" + inputItem);
             const selectDay  = inputDay.match(regDay)[1];
             const dataBefore = inputDay.match(regItem)[1] == 'null' ? '-' : inputDay.match(regItem)[1];
-            const dataAfter = inputHour + ':' + inputMinutes;
+            const dataAfter  = inputHour + ':' + inputMinutes;
 
             var result = window.confirm(
-                    '【イベント】  '    + event     + '\n' 
-                +   '【  名前  】  '    + selectStaff      + '\n' 
-                +   '【  日付  】  '    + selectDay  + '\n' 
-                +   '【  項目  】  '    + common_itemName(inputItem) + '\n' 
-                +   '【  修正  】  '    + (dataBefore != '' ? dataBefore : '-') + '　→　' + dataAfter + '\n' 
-                +   '【  理由  】  '    + inputReason + '\n' 
+                    '【イベント】  '    + event + '\n' 
+                +   '【  名前  】  '    + selectStaff   + '\n' 
+                +   '【  日付  】  '    + selectDay + '\n' 
+                +   '【  項目  】  '    + common_itemName(inputItem)    + '\n' 
+                +   '【  修正  】  '    + (dataBefore != '' ? dataBefore : '-') + '　→　' + dataAfter   + '\n'
+                +   '【  理由  】  '    + inputReason   + '\n' 
                 +   '\n以上の内容で、打刻修正の申請をしてよろしいですか？'
             );
-
             if (result) {
+                // 勤怠修正の登録
                 paramDB = {
                     'localClear' : 'false',
                     'data' : {
-                        'requestDt'  : date().yyyymmddhhmmss,
+                        'requestDt'  : common_date().yyyymmddhhmmss,
                         'event'      : event,
                         'name'       : selectStaff,
                         'day'        : selectDay, 
@@ -413,6 +425,7 @@ function editData(event) {
                 };
                 opDB('registerWorkReportEdit', paramDB);
 
+                // 勤怠修正の表示
                 paramDB = {
                     'event' : event,
                     'name'  : selectStaff
@@ -422,27 +435,36 @@ function editData(event) {
         }
     }
 
+
     // 閉じる
     document.getElementById("closeEdit").onclick = function() {
-        document.getElementById("modal").style.display = 'none';
-        document.getElementById("edit").style.display = 'none';
-        document.getElementById("editSelectStaff").options[0].selected = true;
-        document.getElementById("editInput").style.display = 'none';
-        document.getElementById("editInfo").style.display = 'none';
-        document.getElementById("editList").style.display = 'none';
-        document.getElementById("editWorkReportReason").value = '';
+        common_op_modal('edit', 'close');
+        common_op_view({
+            'none'  : ['editInput', 'editInfo', 'editList']
+        });
+        common_text_entry({'value' : {'editWorkReportReason' : ''}});
+
+        // ローカルデータの反映
+        registerData(event);
     }
 }
 
 
-// 日報報告
+// ──────────────────────────────────────────────────────
+//  日報報告
+// ………………………………………………………………………………………………………………………………………………
 function sendDayReport(event) {
-    document.getElementById("dayReportMsg").innerText   =  '';
-    document.getElementById("inputDayReport").value     =  '';
-    document.getElementById("inputEventPass").value     =  '';
-
-    document.getElementById("menu").style.display       = 'none';
-    document.getElementById("dayReport").style.display  = 'block';
+    common_text_entry({
+        'innerText' : {
+            'dayReportMsg' : ''
+        },
+        'value' : {
+            'inputDayReport' : '',
+            'inputEventPass' : '',
+        },
+    });
+    common_op_modal('menu', 'close');
+    common_op_modal('dayReport', 'open');
 
     // ローカルデータをDBに反映
     registerData(event);
@@ -450,13 +472,13 @@ function sendDayReport(event) {
     // 日付リストの表示
     paramDB = {
         'event' : event,
-        'day'   : date().yyyymmdd,
+        'day'   : common_date().yyyymmdd,
     };
     opDB('getWorkReportDayAll', paramDB);
 
     // 選択肢切り替え
     let selectDay =  '';
-    document.getElementById("dayReportSelect").onchange = function() {      
+    document.getElementById("dayReportSelect").onchange = function() {
         selectDay = document.getElementById("dayReportSelect").value;
 
         paramDB['day'] = selectDay;
@@ -470,7 +492,7 @@ function sendDayReport(event) {
         var eventPass = document.getElementById("inputEventPass").value;
 
         if (!selectDay || !inputDayReport.value || !eventPass) {
-            document.getElementById("dayReportMsg").innerText = 'すべての項目に入力が必要です。';
+            common_text_entry({'innerText' : {'dayReportMsg' : 'すべての項目に入力が必要です。'}});
         } else {
             let dayReportEditList = [];
             for(let status of document.getElementById("dayReportEditList").querySelectorAll("input[type=radio]")) {
@@ -487,41 +509,44 @@ function sendDayReport(event) {
             if (result) {
                 paramDB['dayReport']    = inputDayReport.value;
                 paramDB['updateList']   = dayReportEditList;
-                paramDB['approvalD']    = date().yyyymmdd;
+                paramDB['approvalD']    = common_date().yyyymmdd;
                 paramDB['eventPass']    = eventPass;
                 opDB('registerDayReport', paramDB);
             }
         }
     }
 
-
     // 閉じる
     document.getElementById("closeDayReport").onclick = function() {
-        document.getElementById("modal").style.display      = 'none';
-        document.getElementById("dayReport").style.display  = 'none';
-        document.getElementById("dayReportMsg").innerText   =  '';
-        document.getElementById("inputDayReport").value     =  '';
-        document.getElementById("inputEventPass").value     =  '';
+        common_op_modal('dayReport', 'close');
+
+        common_text_entry({
+            'innerText' : {
+                'dayReportMsg' : ''
+            },
+            'value' : {
+                'inputDayReport' : '',
+                'inputEventPass' : '',
+            },
+        });
     }
 }
 
 
-
-// ローカルデータをDBに反映
+// ──────────────────────────────────────────────────────
+//  ローカルデータをDBに反映
+// ………………………………………………………………………………………………………………………………………………
 function registerData(event) {
     let paramIndexedDB = {'event' : event};
 
     opIndexedDB('registerWorkReport', paramIndexedDB);
-
     opIndexedDB('registerWorkReportEdit', paramIndexedDB);
 }
-
 
 
 // ──────────────────────────────────────────────────────
 //  IndexedDBの操作
 // ………………………………………………………………………………………………………………………………………………
-
 function opIndexedDB(op, paramIndexedDB) {
     const dbName         = 'aamsIndexedDB';
     const staffList      = 'localStaffList';
@@ -544,7 +569,7 @@ function opIndexedDB(op, paramIndexedDB) {
                         { keyPath:  ['event', 'name'] }
                     );
                     storeStaffList.createIndex('eventIndex', 'event');
-                }                
+                }
 
                 // 勤怠情報
                 if (!db.objectStoreNames.contains(workReport)) {
@@ -563,9 +588,9 @@ function opIndexedDB(op, paramIndexedDB) {
                         { keyPath:  ['event', 'day', 'name', 'item'] }
                     );
                     storeworkReportEdit.createIndex('eventIndex', ['event']);
-                }                
+                }
             }
-            
+
             openReq.onsuccess = function(event) {
                 // console.log('db open success');
                 var db = event.target.result;
@@ -596,7 +621,7 @@ function opIndexedDB(op, paramIndexedDB) {
                 }
             }
             break;
-        
+
         case 'getStaffList':
             openReq.onsuccess = function(event) {
                 var db    = event.target.result;
@@ -604,7 +629,7 @@ function opIndexedDB(op, paramIndexedDB) {
                 var store = trans.objectStore(staffList);
                 var index = store.index('eventIndex');
 
-                var putReq  = index.getAll(paramIndexedDB['event']);
+                var putReq = index.getAll(paramIndexedDB['event']);
 
                 putReq.onsuccess = function(event) {
                     // console.log('put data success');
@@ -615,16 +640,22 @@ function opIndexedDB(op, paramIndexedDB) {
                         select.removeChild(select.firstChild);
                     }
 
-                    var option = document.createElement("option"); 
-                    option.text = '選択してください';
-                    option.value = '';
-                    option.hidden = true;
+                    var option = document.createElement("option");
+                    common_set_element({
+                        'element'   : option,
+                        'text'      : '選択してください',
+                        'value'     : '',
+                        'hidden'   : true,
+                    });
                     select.appendChild(option);
 
-                    Object.keys(data).forEach(function(key) {     
-                        var option = document.createElement("option"); 
-                        option.text = data[key].name;
-                        option.value = data[key].name;
+                    Object.keys(data).forEach(function(key) {
+                        var option = document.createElement("option");
+                        common_set_element({
+                            'element'   : option,
+                            'text'      : data[key].name,
+                            'value'     : data[key].name,
+                        });
                         select.appendChild(option);
                     });
                 }
@@ -641,7 +672,7 @@ function opIndexedDB(op, paramIndexedDB) {
                 var store = trans.objectStore(staffList);
                 var index = store.index('eventIndex');
 
-                var putReq  = index.getAll(paramIndexedDB['event']);
+                var putReq = index.getAll(paramIndexedDB['event']);
 
                 putReq.onsuccess = function(event) {
                     // console.log('put data success');
@@ -667,7 +698,7 @@ function opIndexedDB(op, paramIndexedDB) {
                 var store = trans.objectStore(workReport);
                 var index = store.index('eventDayIndex');
 
-                var putReq  = index.getAll([
+                var putReq = index.getAll([
                     paramIndexedDB['event'],
                     paramIndexedDB['day']
                 ]);
@@ -675,10 +706,10 @@ function opIndexedDB(op, paramIndexedDB) {
                 putReq.onsuccess = function(event) {
                     // console.log('put data success');
                     var data = event.target.result;
-                    
-                    let startList = ''
-                    let breakList = ''
-                    let endList = ''
+
+                    let startList   = '';
+                    let breakList   = '';
+                    let endList     = '';
                     Object.keys(data).forEach(function(key) {
                         if (data[key].start) {
                             if (data[key].end) {
@@ -696,15 +727,20 @@ function opIndexedDB(op, paramIndexedDB) {
                             }
                         }
                     });
-                    document.getElementById("startList").innerText = startList;
-                    document.getElementById("breakList").innerText = breakList;
-                    document.getElementById("endList").innerText = endList;
+
+                    common_text_entry({
+                        'innerText' : {
+                            'startList' : startList,
+                            'breakList' : breakList,
+                            'endList'   : endList,
+                        }
+                    });
                 }
                 trans.oncomplete = function() {
                     // console.log('transaction complete');
                 }
             }
-            break;   
+            break;
 
         case 'getWorkReport':
             var data = [
@@ -718,7 +754,7 @@ function opIndexedDB(op, paramIndexedDB) {
                 var trans = db.transaction(workReport, 'readonly');
                 var store = trans.objectStore(workReport);
 
-                var putReq  = store.get(data);
+                var putReq = store.get(data);
 
                 putReq.onsuccess = function(event) {
                     // console.log('put data success');
@@ -738,24 +774,32 @@ function opIndexedDB(op, paramIndexedDB) {
                     }
 
                     // 初期表示
-                    document.getElementById("stampAreaDay").innerText     = paramIndexedDB['day'];
-                    document.getElementById("stampAreaStart").innerText   = '';
-                    document.getElementById("stampAreaBreak1s").innerText = '';
-                    document.getElementById("stampAreaBreak1e").innerText = '';
-                    document.getElementById("stampAreaBreak2s").innerText = '';
-                    document.getElementById("stampAreaBreak2e").innerText = '';
-                    document.getElementById("stampAreaBreak3s").innerText = '';
-                    document.getElementById("stampAreaBreak3e").innerText = '';
-                    document.getElementById("stampAreaEnd").innerText     = '';
+                    common_text_entry({
+                        'innerText' : {
+                            'stampAreaDay'      : paramIndexedDB['day'],
+                            'stampAreaStart'    : '',
+                            'stampAreaBreak1s'  : '',
+                            'stampAreaBreak1e'  : '',
+                            'stampAreaBreak2s'  : '',
+                            'stampAreaBreak2e'  : '',
+                            'stampAreaBreak3s'  : '',
+                            'stampAreaBreak3e'  : '',
+                            'stampAreaEnd'      : '',
+                        }
+                    });
                     if (data) {
-                        document.getElementById("stampAreaStart").innerText   = data.start ?? '';
-                        document.getElementById("stampAreaBreak1s").innerText = data.break1s ?? '';
-                        document.getElementById("stampAreaBreak1e").innerText = data.break1e ?? '';
-                        document.getElementById("stampAreaBreak2s").innerText = data.break2s ?? '';
-                        document.getElementById("stampAreaBreak2e").innerText = data.break2e ?? '';
-                        document.getElementById("stampAreaBreak3s").innerText = data.break3s ?? '';
-                        document.getElementById("stampAreaBreak3e").innerText = data.break3e ?? '';
-                        document.getElementById("stampAreaEnd").innerText     = data.end ?? '';
+                        common_text_entry({
+                            'innerText' : {
+                                'stampAreaStart'    : data.start ?? '',
+                                'stampAreaBreak1s'  : data.break1s ?? '',
+                                'stampAreaBreak1e'  : data.break1e ?? '',
+                                'stampAreaBreak2s'  : data.break2s ?? '',
+                                'stampAreaBreak2e'  : data.break2e ?? '',
+                                'stampAreaBreak3s'  : data.break3s ?? '',
+                                'stampAreaBreak3e'  : data.break3e ?? '',
+                                'stampAreaEnd'      : data.end ?? '',
+                            }
+                        });
                     }
 
                     // 出勤
@@ -765,19 +809,28 @@ function opIndexedDB(op, paramIndexedDB) {
                     );
                     animeStampAreaStart.cancel();
                     if (!data || !data.start) {
-                        stampWorkS.disabled = false;
-                        stampWorkS.style.background = '#000';
+                        common_set_element({
+                            'element'       : stampWorkS,
+                            'disabled'      : false,
+                            'background'    : '#000',
+                        });
                         animeStampAreaStart.play();
 
                         var startOp = document.createElement("option");
-                        startOp.text  = '出勤';
-                        startOp.value = 'start';
-                        startOp.id    = 'startOp';
+                        common_set_element({
+                            'element'   : startOp,
+                            'id'        : 'startOp',
+                            'text'      : '出勤',
+                            'value'     : 'start',
+                        });
                         editItemSelect.appendChild(startOp);
                     } else {
                         animeStampAreaStart.currentTime = 0;
-                        stampWorkS.disabled = true;
-                        stampWorkS.style.background = '#919191';
+                        common_set_element({
+                            'element'       : stampWorkS,
+                            'disabled'      : true,
+                            'background'    : '#919191',
+                        });
                     }
 
                     // 休憩
@@ -787,26 +840,50 @@ function opIndexedDB(op, paramIndexedDB) {
                             (data.break2s && !data.break2e) ||
                             (data.break3s && !data.break3e)
                         ) {
-                            stampBreakS.disabled = true;
-                            stampBreakS.style.background = '#919191';
-                            stampBreakE.disabled = false;
-                            stampBreakE.style.background = '#97d769';                        
+                            common_set_element({
+                                'element'       : stampBreakS,
+                                'disabled'      : true,
+                                'background'    : '#919191',
+                            });
+                            common_set_element({
+                                'element'       : stampBreakE,
+                                'disabled'      : false,
+                                'background'    : '#97d769',
+                            });
                         } else if (data.break3e) {
-                            stampBreakS.disabled = true;
-                            stampBreakS.style.background = '#919191';
-                            stampBreakE.disabled = true;
-                            stampBreakE.style.background = '#919191';
+                            common_set_element({
+                                'element'       : stampBreakS,
+                                'disabled'      : true,
+                                'background'    : '#919191',
+                            });
+                            common_set_element({
+                                'element'       : stampBreakE,
+                                'disabled'      : true,
+                                'background'    : '#919191',
+                            });
                         } else {
-                            stampBreakS.disabled = false;
-                            stampBreakS.style.background = '#97d769';
-                            stampBreakE.disabled = true;
-                            stampBreakE.style.background = '#919191';
+                            common_set_element({
+                                'element'       : stampBreakS,
+                                'disabled'      : false,
+                                'background'    : '#97d769',
+                            });
+                            common_set_element({
+                                'element'       : stampBreakE,
+                                'disabled'      : true,
+                                'background'    : '#919191',
+                            });
                         }
                     } else {
-                        stampBreakS.disabled = true;
-                        stampBreakS.style.background = '#919191';
-                        stampBreakE.disabled = true;
-                        stampBreakE.style.background = '#919191';
+                        common_set_element({
+                            'element'       : stampBreakS,
+                            'disabled'      : true,
+                            'background'    : '#919191',
+                        });
+                        common_set_element({
+                            'element'       : stampBreakE,
+                            'disabled'      : true,
+                            'background'    : '#919191',
+                        });
                     }
 
                     // 休憩1開始
@@ -816,13 +893,19 @@ function opIndexedDB(op, paramIndexedDB) {
                     );
                     animeStampAreaBreak1s.cancel();
                     if (data && data.start && !data.end && !data.break1s) {
-                        stampBreakS.value = 'break1s';
+                        common_set_element({
+                            'element'   : stampBreakS,
+                            'value'     : 'break1s',
+                        });
                         animeStampAreaBreak1s.play();
 
                         var break1sOp = document.createElement("option");
-                        break1sOp.text  = '休憩1：開始';
-                        break1sOp.value = 'break1s';
-                        break1sOp.id    = 'break1sOp';
+                        common_set_element({
+                            'element'   : break1sOp,
+                            'id'        : 'break1sOp',
+                            'text'      : '休憩1：開始',
+                            'value'     : 'break1s',
+                        });
                         editItemSelect.appendChild(break1sOp);
                     } else {
                         animeStampAreaBreak1s.currentTime = 0;
@@ -835,13 +918,19 @@ function opIndexedDB(op, paramIndexedDB) {
                     );
                     animeStampAreaBreak1e.cancel();
                     if (data && data.break1s && !data.end && !data.break1e) {
-                        stampBreakE.value = 'break1e';
+                        common_set_element({
+                            'element'   : stampBreakE,
+                            'value'     : 'break1e',
+                        });
                         animeStampAreaBreak1e.play();
 
                         var break1eOp = document.createElement("option");
-                        break1eOp.text  = '休憩1：終了';
-                        break1eOp.value = 'break1e';
-                        break1eOp.id    = 'break1eOp';
+                        common_set_element({
+                            'element'   : break1eOp,
+                            'id'        : 'break1eOp',
+                            'text'      : '休憩1：終了',
+                            'value'     : 'break1e',
+                        });
                         editItemSelect.appendChild(break1eOp);
                     } else {
                         animeStampAreaBreak1e.currentTime = 0;
@@ -854,13 +943,19 @@ function opIndexedDB(op, paramIndexedDB) {
                     );
                     animeStampAreaBreak2s.cancel();
                     if (data && data.break1e && !data.end && !data.break2s) {
-                        stampBreakS.value = 'break2s';
+                        common_set_element({
+                            'element'   : stampBreakS,
+                            'value'     : 'break2s',
+                        });
                         animeStampAreaBreak2s.play();
 
                         var break2sOp = document.createElement("option");
-                        break2sOp.text  = '休憩2：開始';
-                        break2sOp.value = 'break2s';
-                        break2sOp.id    = 'break2sOp';
+                        common_set_element({
+                            'element'   : break2sOp,
+                            'id'        : 'break2sOp',
+                            'text'      : '休憩2：開始',
+                            'value'     : 'break2s',
+                        });
                         editItemSelect.appendChild(break2sOp);
                     } else {
                         animeStampAreaBreak2s.currentTime = 0;
@@ -873,13 +968,19 @@ function opIndexedDB(op, paramIndexedDB) {
                     );
                     animeStampAreaBreak2e.cancel();
                     if (data && data.break2s && !data.end && !data.break2e) {
-                        stampBreakE.value = 'break2e';
+                        common_set_element({
+                            'element'   : stampBreakE,
+                            'value'     : 'break2e',
+                        });
                         animeStampAreaBreak2e.play();
 
                         var break2eOp = document.createElement("option");
-                        break2eOp.text  = '休憩2：終了';
-                        break2eOp.value = 'break2e';
-                        break2eOp.id    = 'break2eOp';
+                        common_set_element({
+                            'element'   : break2eOp,
+                            'id'        : 'break2eOp',
+                            'text'      : '休憩2：終了',
+                            'value'     : 'break2e',
+                        });
                         editItemSelect.appendChild(break2eOp);
                     } else {
                         animeStampAreaBreak2e.currentTime = 0;
@@ -892,13 +993,19 @@ function opIndexedDB(op, paramIndexedDB) {
                     );
                     animeStampAreaBreak3s.cancel();
                     if (data && data.break2e && !data.end && !data.break3s) {
-                        stampBreakS.value = 'break3s';
+                        common_set_element({
+                            'element'   : stampBreakS,
+                            'value'     : 'break3s',
+                        });
                         animeStampAreaBreak3s.play();
 
                         var break3sOp = document.createElement("option");
-                        break3sOp.text  = '休憩3：開始';
-                        break3sOp.value = 'break3s';
-                        break3sOp.id    = 'break3sOp';
+                        common_set_element({
+                            'element'   : break3sOp,
+                            'id'        : 'break3sOp',
+                            'text'      : '休憩3：開始',
+                            'value'     : 'break3s',
+                        });
                         editItemSelect.appendChild(break3sOp);
                     } else {
                         animeStampAreaBreak3s.currentTime = 0;
@@ -911,17 +1018,23 @@ function opIndexedDB(op, paramIndexedDB) {
                     );
                     animeStampAreaBreak3e.cancel();
                     if (data && data.break3s && !data.end && !data.break3e) {
-                        stampBreakE.value = 'break3e';
+                        common_set_element({
+                            'element'   : stampBreakE,
+                            'value'     : 'break3e',
+                        });
                         animeStampAreaBreak3e.play();
 
                         var break3eOp = document.createElement("option");
-                        break3eOp.text  = '休憩3：終了';
-                        break3eOp.value = 'break3e';
-                        break3eOp.id    = 'break3eOp';
+                        common_set_element({
+                            'element'   : break3eOp,
+                            'id'        : 'break3eOp',
+                            'text'      : '休憩3：終了',
+                            'value'     : 'break3e',
+                        });
                         editItemSelect.appendChild(break3eOp);
                     } else {
                         animeStampAreaBreak3e.currentTime = 0;
-                    }                    
+                    }
 
                     // 終了
                     let animeStampAreaEnd= document.getElementById("stampAreaEnd").animate(
@@ -930,63 +1043,90 @@ function opIndexedDB(op, paramIndexedDB) {
                     );
                     animeStampAreaEnd.cancel();
                     if (data && data.start && !data.end) {
-                        stampWorkE.disabled = false;
-                        stampWorkE.style.background = '#000';
+                        common_set_element({
+                            'element'       : stampWorkE,
+                            'disabled'      : false,
+                            'background'    : '#000',
+                        });
                         animeStampAreaEnd.play();
 
                         var endOp = document.createElement("option");
-                        endOp.text  = '退勤';
-                        endOp.value = 'end';
-                        endOp.id    = 'endOp';
+                        common_set_element({
+                            'element'   : endOp,
+                            'id'        : 'endOp',
+                            'text'      : '退勤',
+                            'value'     : 'end',
+                        });
                         editItemSelect.appendChild(endOp);
                     } else {
                         animeStampAreaEnd.currentTime = 0;
-                        stampWorkE.disabled = true;
-                        stampWorkE.style.background = '#919191';
+                        common_set_element({
+                            'element'       : stampWorkE,
+                            'disabled'      : true,
+                            'background'    : '#919191',
+                        });
                     }
 
                     // 退勤打刻後
                     if (data && data.end) {
                         if (!data.break1s) {
                             var break1sOp = document.createElement("option");
-                            break1sOp.text  = '休憩1：開始';
-                            break1sOp.value = 'break1s';
-                            break1sOp.id    = 'break1sOp';
+                            common_set_element({
+                                'element'   : break1sOp,
+                                'id'        : 'break1sOp',
+                                'text'      : '休憩1：開始',
+                                'value'     : 'break1s',
+                            });
                             editItemSelect.appendChild(break1sOp);
                         }
                         if (!data.break1e) {
                             var break1eOp = document.createElement("option");
-                            break1eOp.text  = '休憩1：終了';
-                            break1eOp.value = 'break1e';
-                            break1eOp.id    = 'break1eOp';
+                            common_set_element({
+                                'element'   : break1eOp,
+                                'id'        : 'break1eOp',
+                                'text'      : '休憩1：終了',
+                                'value'     : 'break1e',
+                            });
                             editItemSelect.appendChild(break1eOp);
                         }
                         if (!data.break2s) {
                             var break2sOp = document.createElement("option");
-                            break2sOp.text  = '休憩2：開始';
-                            break2sOp.value = 'break2s';
-                            break2sOp.id    = 'break2sOp';
+                            common_set_element({
+                                'element'   : break2sOp,
+                                'id'        : 'break2sOp',
+                                'text'      : '休憩2：開始',
+                                'value'     : 'break2s',
+                            });
                             editItemSelect.appendChild(break2sOp);
                         }
                         if (!data.break2e) {
                             var break2eOp = document.createElement("option");
-                            break2eOp.text  = '休憩2：終了';
-                            break2eOp.value = 'break2e';
-                            break2eOp.id    = 'break2eOp';
+                            common_set_element({
+                                'element'   : break2eOp,
+                                'id'        : 'break2eOp',
+                                'text'      : '休憩2：終了',
+                                'value'     : 'break2e',
+                            });
                             editItemSelect.appendChild(break2eOp);
                         }
                         if (!data.break3s) {
                             var break3sOp = document.createElement("option");
-                            break3sOp.text  = '休憩3：開始';
-                            break3sOp.value = 'break3s';
-                            break3sOp.id    = 'break3sOp';
+                            common_set_element({
+                                'element'   : break3sOp,
+                                'id'        : 'break3sOp',
+                                'text'      : '休憩3：開始',
+                                'value'     : 'break3s',
+                            });
                             editItemSelect.appendChild(break3sOp);
                         }
                         if (!data.break3e) {
                             var break3eOp = document.createElement("option");
-                            break3eOp.text  = '休憩3：終了';
-                            break3eOp.value = 'break3e';
-                            break3eOp.id    = 'break3eOp';
+                            common_set_element({
+                                'element'   : break3eOp,
+                                'id'        : 'break3eOp',
+                                'text'      : '休憩3：終了',
+                                'value'     : 'break3e',
+                            });
                             editItemSelect.appendChild(break3eOp);
                         }
                     }
@@ -1058,7 +1198,7 @@ function opIndexedDB(op, paramIndexedDB) {
                 var store = trans.objectStore(workReport);
                 var index = store.index('eventIndex');
 
-                var putReq  = index.getAll([paramIndexedDB['event']]);
+                var putReq = index.getAll([paramIndexedDB['event']]);
 
                 putReq.onsuccess = function(event) {
                     // console.log('put data success');
@@ -1140,7 +1280,7 @@ function opIndexedDB(op, paramIndexedDB) {
                 var store = trans.objectStore(workReportEdit);
                 var index = store.index('eventIndex');
 
-                var putReq  = index.getAll([paramIndexedDB['event']]);
+                var putReq = index.getAll([paramIndexedDB['event']]);
 
                 putReq.onsuccess = function(event) {
                     // console.log('put data success');
@@ -1159,12 +1299,6 @@ function opIndexedDB(op, paramIndexedDB) {
                 }
             }
             break;
-
-
-
-
-
-
     }
 }
 
@@ -1187,8 +1321,11 @@ function opDB(op, paramDB) {
 
                     Object.keys(data).forEach(function(key) {
                         var option = document.createElement("option");
-                        option.text = data[key];
-                        option.value = data[key];
+                        common_set_element({
+                            'element'   : option,
+                            'text'      : data[key],
+                            'value'     : data[key],
+                        });
                         select.appendChild(option);
                     });
                 }
@@ -1201,18 +1338,19 @@ function opDB(op, paramDB) {
                 + "&pass=" + encodeURIComponent(paramDB['inputPass']) 
             ;
             xmlhttp.onreadystatechange = function() {
+                // 初期値
+                common_text_entry({'innerText' : {'loginMsg' : ''}});
+
                 if (this.readyState == 4 && this.status == 200) {
                     const result = this.responseText;
-                    
-                    let msg = '';
+
                     if (result == 'true') {
                         localStorage.setItem("event", paramDB['inputEvent']);
 
                         window.location.reload();
                     } else {
-                        msg = 'パスワードが誤っています。';
+                        common_text_entry({'innerText' : {'loginMsg' : 'パスワードが誤っています。'}});
                     }
-                    document.getElementById("loginMsg").innerHTML = msg;
                 }
             }
             break;
@@ -1264,10 +1402,13 @@ function opDB(op, paramDB) {
                                 +       "break3s["  + data[key].break3s +  "]break3s_"
                                 +       "break3e["  + data[key].break3e +  "]break3e_"
                             ;
-                            
+
                             var option = document.createElement("option");
-                            option.text = data[key].day;
-                            option.value = value;
+                            common_set_element({
+                                'element'   : option,
+                                'text'      : data[key].day,
+                                'value'     : value,
+                            });
                             select.appendChild(option);
                         });
                     }
@@ -1282,26 +1423,26 @@ function opDB(op, paramDB) {
             ;
 
             xmlhttp.onreadystatechange = function() {
-                document.getElementById("dayReportMsg").innerText   =  '';
-                document.getElementById("inputDayReport").value     =  '';
-                document.getElementById("inputEventPass").value     =  '';
-
-                const dayReportSelect = document.getElementById("dayReportSelect");
-                Array.from(dayReportSelect.querySelectorAll("option")).forEach(function(e) {
-                    e.remove();
+                // 初期値
+                common_text_entry({
+                    'innerText' : {
+                        'dayReportMsg' : ''
+                    },
+                    'value' : {
+                        'inputDayReport' : '',
+                        'inputEventPass' : '',
+                    },
+                });
+                common_clear_children({
+                    'all'   : {
+                        'dayReportSelect'   : 'option',
+                        'dayReportList'     : 'td',
+                    },
+                    'notId' : {
+                        'dayReportEditList' : 'tr',
+                    }
                 });
 
-                const dayReportEditList = document.getElementById("dayReportEditList").querySelector("tbody");
-                Array.from(dayReportEditList.querySelectorAll("tr")).forEach(function(e) {
-                    if (!e.id) {
-                        e.remove();
-                    }               
-                });
-
-                const dayReportList = document.getElementById("dayReportList");
-                Array.from(dayReportList.querySelectorAll("td")).forEach(function(e) {
-                    e.remove();                  
-                });
 
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
@@ -1317,23 +1458,37 @@ function opDB(op, paramDB) {
                             date.setDate(date.getDate() + 1)
                         ){
                             var option = document.createElement("option");
-                            option.text = date.toLocaleDateString('sv-SE');
-                            option.value = date.toLocaleDateString('sv-SE');
-                            dayReportSelect.appendChild(option);
+                            common_set_element({
+                                'element'   : option,
+                                'text'      : date.toLocaleDateString('sv-SE'),
+                                'value'     : date.toLocaleDateString('sv-SE'),
+                            });
+                            document.getElementById("dayReportSelect").appendChild(option);
                         }
-                        dayReportSelect.value = paramDB['day'];
+                        common_set_element({
+                            'element'   : document.getElementById("dayReportSelect"),
+                            'value'     : paramDB['day'],
+                        });
+
 
                         if (data.event.report) {
-                            document.getElementById("dayReportDispArea").style.display = 'flex';
-                            document.getElementById("dayReportEditArea").style.display = 'none';
-
-                            document.getElementById("dayReportDispList").querySelector('p').innerHTML = data.event.report.replaceAll("\n", "<br>");
+                            // 登録済み日報
+                            common_op_view({
+                                'flex'  : ['dayReportDispArea'],
+                                'none'  : ['dayReportEditArea']
+                            });
+                            common_set_element({
+                                'element'   : document.getElementById("dayReportDispList").querySelector('p'),
+                                'innerHTML' : data.event.report.replaceAll("\n", "<br>"),
+                            });
                         } else  {
-                            document.getElementById("dayReportDispArea").style.display = 'none';
-                            document.getElementById("dayReportEditArea").style.display = 'flex';
+                            common_op_view({
+                                'none'  : ['dayReportDispArea'],
+                                'flex'  : ['dayReportEditArea']
+                            });
 
                             // 名前
-                            const dayReportListA = dayReportList.querySelectorAll("tr");
+                            const dayReportListA = document.getElementById("dayReportList").querySelectorAll("tr");
                             Object.keys(data.staffList).forEach(function(keyName) {
                                 var namaData = data.staffList[keyName];
 
@@ -1345,80 +1500,101 @@ function opDB(op, paramDB) {
                                         var workReportEditTr = document.createElement("tr");
 
                                         // ステータス
-                                        var status       = document.createElement("td");
-                                        status.className = 'sticky1';
-                                        var statusI1    = document.createElement("input");
-                                        statusI1.type   = 'radio';
-                                        statusI1.name   = 'status' + keyEdit;
-                                        statusI1.value  = 
-                                            '承認済'
-                                            + '|' + editData.request_dt
-                                            + '|' + keyName
-                                            + '|' + editData.day
-                                            + '|' + editData.item
-                                            + '|' + editData.data_after
-                                        ;
-                                        statusI1.id     = 'approve' + keyEdit;
-                                        var statusL1        = document.createElement("label");
-                                        statusL1.htmlFor    = 'approve' + keyEdit;
-                                        statusL1.innerText  = '承認';
-                                        var statusI2    = document.createElement("input");
-                                        statusI2.type   = 'radio';
-                                        statusI2.name   = 'status' + keyEdit;
-                                        statusI2.value  = 
-                                            '却下済'
-                                            + '|' + editData.request_dt
-                                            + '|' + keyName
-                                            + '|' + editData.day
-                                            + '|' + editData.item
-                                            + '|' + editData.data_before
-                                        ;
-                                        statusI2.id     = 'reject' + keyEdit;
-                                        var statusL2        = document.createElement("label");
-                                        statusL2.htmlFor    = 'reject' + keyEdit;
-                                        statusL2.innerText  = '却下';
+                                        var status = document.createElement("td");
+                                        common_set_element({
+                                            'element'   : status,
+                                            'className' : 'sticky1',
+                                        });
+                                        var statusI1 = document.createElement("input");
+                                        common_set_element({
+                                            'element'   : statusI1,
+                                            'id'        : 'approve' + keyEdit,
+                                            'value'     :
+                                                '承認済'
+                                                + '|' + editData.request_dt
+                                                + '|' + keyName
+                                                + '|' + editData.day
+                                                + '|' + editData.item
+                                                + '|' + editData.data_after
+                                            ,
+                                            'name'      : 'status' + keyEdit,
+                                            'type'      : 'radio',
+                                        });
+                                        var statusL1 = document.createElement("label");
+                                        common_set_element({
+                                            'element'   : statusL1,
+                                            'innerText' : '承認',
+                                            'htmlFor'   : 'approve' + keyEdit,
+                                        });
+                                        var statusI2 = document.createElement("input");
+                                        common_set_element({
+                                            'element'   : statusI2,
+                                            'id'        : 'reject' + keyEdit,
+                                            'value'     :
+                                                '却下済'
+                                                + '|' + editData.request_dt
+                                                + '|' + keyName
+                                                + '|' + editData.day
+                                                + '|' + editData.item
+                                                + '|' + editData.data_before
+                                            ,
+                                            'name'      : 'status' + keyEdit,
+                                            'type'      : 'radio',
+                                        });
+                                        var statusL2 = document.createElement("label");
+                                        common_set_element({
+                                            'element'   : statusL2,
+                                            'innerText' : '却下',
+                                            'htmlFor'   : 'reject' + keyEdit,
+                                        });
                                         status.appendChild(statusI1);
                                         status.appendChild(statusL1);
                                         status.appendChild(statusI2);
                                         status.appendChild(statusL2);
                                         workReportEditTr.appendChild(status);
 
-
                                         // 名前
-                                        var reportEditname        = document.createElement("td");
-                                        reportEditname.innerText  = keyName;
+                                        var reportEditname = document.createElement("td");
+                                        common_set_element({
+                                            'element'   : reportEditname,
+                                            'innerText' : keyName,
+                                        });
                                         workReportEditTr.appendChild(reportEditname);
 
                                         // 項目
-                                        var item        = document.createElement("td");
-                                        item.innerText  = common_itemName(editData.item);
+                                        var item = document.createElement("td");
+                                        common_set_element({
+                                            'element'   : item,
+                                            'innerText' : common_itemName(editData.item),
+                                        });
                                         workReportEditTr.appendChild(item);
 
                                         // 修正前
-                                        var before        = document.createElement("td");
-                                        before.innerHTML  = 
-                                            editData.day 
-                                            + '<br>' 
-                                            + editData.data_before
-                                        ;
+                                        var before = document.createElement("td");
+                                        common_set_element({
+                                            'element'   : before,
+                                            'innerHTML' : editData.day + '<br>' + editData.data_before,
+                                        });
                                         workReportEditTr.appendChild(before);
 
                                         // 修正後
-                                        var after        = document.createElement("td");
-                                        after.innerHTML  = 
-                                            editData.day 
-                                            + '<br>' 
-                                            + editData.data_after
-                                        ;
+                                        var after = document.createElement("td");
+                                        common_set_element({
+                                            'element'   : after,
+                                            'innerHTML' : editData.day + '<br>' + editData.data_after,
+                                        });
                                         workReportEditTr.appendChild(after);
 
                                         // 理由
-                                        var reason        = document.createElement("td");
-                                        reason.innerText  = editData.reason;
-                                        reason.className = 'w25';
+                                        var reason = document.createElement("td");
+                                        common_set_element({
+                                            'element'   : reason,
+                                            'className' : 'w25',
+                                            'innerText' : editData.reason,
+                                        });
                                         workReportEditTr.appendChild(reason);
 
-                                        dayReportEditList.appendChild(workReportEditTr);
+                                        document.getElementById("dayReportEditList").querySelector("tbody").appendChild(workReportEditTr);
                                     });
                                 }
 
@@ -1439,171 +1615,240 @@ function opDB(op, paramDB) {
                                     var dataWB3s = 'break3s' in namaData.workReport ? namaData.workReport.break3s : '';
                                     var dataWB3e = 'break3e' in namaData.workReport ? namaData.workReport.break3e : '';
                                     var dataWE   = 'end' in namaData.workReport ? namaData.workReport.end : '';
-                                    
+
                                     // 名前
-                                    var name        = document.createElement("td");
-                                    name.colSpan    = '3';
-                                    name.innerText  = keyName;
-                                    name.className  = 'ececec bold';
+                                    var name = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : name,
+                                        'className' : 'ececec bold',
+                                        'innerText' : keyName,
+                                        'colSpan'   : '3',
+                                    });
                                     dayReportListA[0].appendChild(name);
 
                                     // 項目
-                                    var item1               = document.createElement("td");
-                                    item1.innerText         = 'シフト';
-                                    item1.className         = 'ececec bold borderRight';
-                                    var item2               = document.createElement("td");
-                                    item2.innerText         = '打刻';
-                                    item2.className         = 'ececec bold borderRight borderLeftNone';
-                                    var item3               = document.createElement("td");                                
-                                    item3.innerText         = '勤怠';
-                                    item3.className         = 'ececec bold borderLeftNone';
+                                    var item1 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : item1,
+                                        'className' : 'ececec bold borderRight',
+                                        'innerText' : 'シフト',
+                                    });
+                                    var item2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : item2,
+                                        'className' : 'ececec bold borderRight borderLeftNone',
+                                        'innerText' : '打刻',
+                                    });
+                                    var item3 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : item3,
+                                        'className' : 'ececec bold borderLeftNone',
+                                        'innerText' : '勤怠',
+                                    });
                                     dayReportListA[1].appendChild(item1);
                                     dayReportListA[1].appendChild(item2);
                                     dayReportListA[1].appendChild(item3);
-                                    
+
                                     // 出勤
-                                    var start1       = document.createElement("td");
-                                    start1.innerText = dataSS;
-                                    start1.className = 'borderRight';
-                                    var start2       = document.createElement("td");
-                                    start2.innerText = dataWS;
-                                    start2.className = 'borderRight borderLeftNone';
-                                    var start3       = document.createElement("td");
-                                    start3.className = 'borderLeftNone';
-                                    var start3B      = document.createElement("button");
-                                    var ceilWS       = common_validation_time(dataWS)
-                                        ? common_ceil(dataWS)
-                                        : '-'
-                                    ;
-                                    start3B.innerText = ceilWS;
-                                    start3B.value = keyName + '[出勤]' + ceilWS;
+                                    var ceilWS = common_validation_time(dataWS) ? common_ceil(dataWS) : '-';
+                                    var start1 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : start1,
+                                        'className' : 'borderRight',
+                                        'innerText' : dataSS,
+                                    });
+                                    var start2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : start2,
+                                        'className' : 'borderRight borderLeftNone',
+                                        'innerText' : dataWS,
+                                    });
+                                    var start3 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : start3,
+                                        'className' : 'borderLeftNone',
+                                    });
+                                    var start3B = document.createElement("button");
+                                    common_set_element({
+                                        'element'   : start3B,
+                                        'innerText' : ceilWS,
+                                        'value'     : keyName + '[出勤]' + ceilWS,
+                                    });
                                     start3.appendChild(start3B);
                                     dayReportListA[2].appendChild(start1);
                                     dayReportListA[2].appendChild(start2);
                                     dayReportListA[2].appendChild(start3);
 
                                     // 休憩1：開始
-                                    var break1s1        = document.createElement("td");
-                                    break1s1.rowSpan    = '6';
-                                    break1s1.className  = 'borderTopNone borderRight diagonalLine';
-                                    var break1s2        = document.createElement("td");
-                                    break1s2.innerText  = dataWB1s;
-                                    break1s2.className  = 'borderBottom borderTopNone borderRight borderLeftNone';
-                                    var break1s3        = document.createElement("td");
-                                    break1s3.className  = 'borderBottom borderTopNone borderLeftNone';
-                                    var break1sB        = document.createElement("button");
-                                    var ceilWB1s        = common_validation_time(dataWB1s)
-                                        ? common_ceil(dataWB1s)
-                                        : '-'
-                                    ;
-                                    break1sB.innerText = ceilWB1s;
-                                    break1sB.value = keyName + '[休憩1：開始]' + ceilWB1s;
+                                    var ceilWB1s = common_validation_time(dataWB1s) ? common_ceil(dataWB1s) : '-';
+                                    var break1s1 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break1s1,
+                                        'className' : 'borderTopNone borderRight diagonalLine',
+                                        'rowSpan'   : '6',
+                                    });
+                                    var break1s2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break1s2,
+                                        'className' : 'borderBottom borderTopNone borderRight borderLeftNone',
+                                        'innerText' : dataWB1s,
+                                    });
+                                    var break1s3 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break1s3,
+                                        'className' : 'borderBottom borderTopNone borderLeftNone',
+                                    });
+                                    var break1sB = document.createElement("button");
+                                    common_set_element({
+                                        'element'   : break1sB,
+                                        'innerText' : ceilWB1s,
+                                        'value'     : keyName + '[休憩1：開始]' + ceilWB1s,
+                                    });
                                     break1s3.appendChild(break1sB);
                                     dayReportListA[3].appendChild(break1s1);
                                     dayReportListA[3].appendChild(break1s2);
                                     dayReportListA[3].appendChild(break1s3);
 
                                     // 休憩1：終了
-                                    var break1e2        = document.createElement("td");
-                                    break1e2.innerText  = dataWB1e;
-                                    break1e2.className  = 'borderTopNone borderRight borderLeftNone';
-                                    var break1e3        = document.createElement("td");
-                                    break1e3.className  = 'borderTopNone borderLeftNone';
-                                    var break1eB        = document.createElement("button");
-                                    var ceilWB1e        = common_validation_time(dataWB1e)
-                                        ? common_ceil(dataWB1e)
-                                        : '-'
-                                    ;
-                                    break1eB.innerText = ceilWB1e;
-                                    break1eB.value = keyName + '[休憩1：終了]' + ceilWB1e;
+                                    var ceilWB1e = common_validation_time(dataWB1e) ? common_ceil(dataWB1e) : '-';
+                                    var break1e2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break1e2,
+                                        'className' : 'borderTopNone borderRight borderLeftNone',
+                                        'innerText' : dataWB1e,
+                                    });
+                                    var break1e3 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break1e3,
+                                        'className' : 'borderTopNone borderLeftNone',
+                                    });
+                                    var break1eB = document.createElement("button");
+                                    common_set_element({
+                                        'element'   : break1eB,
+                                        'innerText' : ceilWB1e,
+                                        'value'     : keyName + '[休憩1：終了]' + ceilWB1e,
+                                    });
                                     break1e3.appendChild(break1eB);
                                     dayReportListA[4].appendChild(break1e2);
                                     dayReportListA[4].appendChild(break1e3);
 
                                     // 休憩2：開始
-                                    var break2s2        = document.createElement("td");
-                                    break2s2.innerText  = dataWB2s;
-                                    break2s2.className  = 'borderBottom borderTopNone borderRight borderLeftNone';
-                                    var break2s3        = document.createElement("td");
-                                    break2s3.className  = 'borderBottom borderTopNone borderLeftNone';
-                                    var break2sB        = document.createElement("button");
-                                    var ceilWB2s        = common_validation_time(dataWB2s)
-                                        ? common_ceil(dataWB2s)
-                                        : '-'
-                                    ;
-                                    break2sB.innerText = ceilWB2s;
-                                    break2sB.value = keyName + '[休憩2：開始]' + ceilWB2s;
+                                    var ceilWB2s = common_validation_time(dataWB2s) ? common_ceil(dataWB2s) : '-';
+                                    var break2s2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break2s2,
+                                        'className' : 'borderBottom borderTopNone borderRight borderLeftNone',
+                                        'innerText' : dataWB2s,
+                                    });
+                                    var break2s3 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break2s3,
+                                        'className' : 'borderBottom borderTopNone borderLeftNone',
+                                    });
+                                    var break2sB = document.createElement("button");
+                                    common_set_element({
+                                        'element'   : break2sB,
+                                        'innerText' : ceilWB2s,
+                                        'value'     : keyName + '[休憩2：開始]' + ceilWB2s,
+                                    });
                                     break2s3.appendChild(break2sB);
                                     dayReportListA[5].appendChild(break2s2);
                                     dayReportListA[5].appendChild(break2s3);
 
                                     // 休憩2：終了
-                                    var break2e2        = document.createElement("td");
-                                    break2e2.innerText  = dataWB2e;
-                                    break2e2.className  = 'borderTopNone borderRight borderLeftNone';
-                                    var break2e3        = document.createElement("td");
-                                    break2e3.className  = 'borderTopNone borderLeftNone';
-                                    var break2eB        = document.createElement("button");
-                                    var ceilWB2e =      common_validation_time(dataWB2e)
-                                        ? common_ceil(dataWB2e)
-                                        : '-'
-                                    ;
-                                    break2eB.innerText = ceilWB2e;
-                                    break2eB.value = keyName + '[休憩2：終了]' + ceilWB2e;
+                                    var ceilWB2e = common_validation_time(dataWB2e) ? common_ceil(dataWB2e) : '-';
+                                    var break2e2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break2e2,
+                                        'className' : 'borderTopNone borderRight borderLeftNone',
+                                        'innerText' : dataWB2e,
+                                    });
+                                    var break2e3 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break2e3,
+                                        'className' : 'borderTopNone borderLeftNone',
+                                    });
+                                    var break2eB = document.createElement("button");
+                                    common_set_element({
+                                        'element'   : break2eB,
+                                        'innerText' : ceilWB2e,
+                                        'value'     : keyName + '[休憩2：終了]' + ceilWB2e,
+                                    });
                                     break2e3.appendChild(break2eB);
                                     dayReportListA[6].appendChild(break2e2);
                                     dayReportListA[6].appendChild(break2e3);
 
                                     // 休憩3：開始
-                                    var break3s2        = document.createElement("td");
-                                    break3s2.innerText  = dataWB3s;
-                                    break3s2.className  = 'borderBottom borderTopNone borderRight borderLeftNone';
-                                    var break3s3        = document.createElement("td");
-                                    break3s3.className  = 'borderBottom borderTopNone borderLeftNone';
-                                    var break3sB        = document.createElement("button");
-                                    var ceilWB3s        = common_validation_time(dataWB3s)
-                                        ? common_ceil(dataWB3s)
-                                        : '-'
-                                    ;
-                                    break3sB.innerText = ceilWB3s;
-                                    break3sB.value = keyName + '[休憩3：開始]' + ceilWB3s;
+                                    var ceilWB3s = common_validation_time(dataWB3s) ? common_ceil(dataWB3s) : '-';
+                                    var break3s2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break3s2,
+                                        'className' : 'borderBottom borderTopNone borderRight borderLeftNone',
+                                        'innerText' : dataWB3s,
+                                    });
+                                    var break3s3 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break3s3,
+                                        'className' : 'borderBottom borderTopNone borderLeftNone',
+                                    });
+                                    var break3sB = document.createElement("button");
+                                    common_set_element({
+                                        'element'   : break3sB,
+                                        'innerText' : ceilWB3s,
+                                        'value'     : keyName + '[休憩3：開始]' + ceilWB3s,
+                                    });
                                     break3s3.appendChild(break3sB);
                                     dayReportListA[7].appendChild(break3s2);
                                     dayReportListA[7].appendChild(break3s3);
 
                                     // 休憩3：終了
-                                    var break3e2        = document.createElement("td");
-                                    break3e2.innerText  = dataWB3e;
-                                    break3e2.className  = 'borderTopNone borderRight borderLeftNone';
-                                    var break3e3        = document.createElement("td");
-                                    break3e3.className  = 'borderTopNone borderLeftNone';
-                                    var break3eB        = document.createElement("button");
-                                    var ceilWB3e        = common_validation_time(dataWB3e)
-                                        ? common_ceil(dataWB3e)
-                                        : '-'
-                                    ;
-                                    break3eB.innerText = ceilWB3e;
-                                    break3eB.value = keyName + '[休憩3：終了]' + ceilWB3e;
+                                    var ceilWB3e = common_validation_time(dataWB3e) ? common_ceil(dataWB3e) : '-';
+                                    var break3e2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break3e2,
+                                        'className' : 'borderTopNone borderRight borderLeftNone',
+                                        'innerText' : dataWB3e,
+                                    });
+                                    var break3e3 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : break3e3,
+                                        'className' : 'borderTopNone borderLeftNone',
+                                    });
+                                    var break3eB = document.createElement("button");
+                                    common_set_element({
+                                        'element'   : break3eB,
+                                        'innerText' : ceilWB3e,
+                                        'value'     : keyName + '[休憩3：終了]' + ceilWB3e,
+                                    });
                                     break3e3.appendChild(break3eB);
                                     dayReportListA[8].appendChild(break3e2);
                                     dayReportListA[8].appendChild(break3e3);
 
                                     // 退勤
-                                    var end1       = document.createElement("td");
-                                    end1.innerText = dataSE;
-                                    end1.className = 'borderTopNone borderRight';
-                                    var end2       = document.createElement("td");
-                                    end2.innerText = dataWE;
-                                    end2.className = 'borderTopNone borderRight borderLeftNone';
-                                    var end3       = document.createElement("td");
-                                    end3.className = 'borderTopNone borderLeftNone';
-                                    var end3B      = document.createElement("button");
-                                    var ceilWE     = common_validation_time(dataWE)
-                                        ? common_floor(ceilWS, dataWE)
-                                        : '-'
-                                    ;
-                                    end3B.innerText = ceilWE;
-                                    end3B.value = keyName + '[退勤]' + ceilWE;
+                                    var ceilWE = common_validation_time(dataWE) ? common_floor(ceilWS, dataWE) : '-';
+                                    var end1 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : end1,
+                                        'className' : 'borderTopNone borderRight',
+                                        'innerText' : dataSE,
+                                    });
+                                    var end2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : end2,
+                                        'className' : 'borderTopNone borderRight borderLeftNone',
+                                        'innerText' : dataWE,
+                                    });
+                                    var end3 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : end3,
+                                        'className' : 'borderTopNone borderLeftNone',
+                                    });
+                                    var end3B = document.createElement("button");
+                                    common_set_element({
+                                        'element'   : end3B,
+                                        'innerText' : ceilWE,
+                                        'value'     : keyName + '[退勤]' + ceilWE,
+                                    });
                                     end3.appendChild(end3B);
                                     dayReportListA[9].appendChild(end1);
                                     dayReportListA[9].appendChild(end2);
@@ -1633,31 +1878,42 @@ function opDB(op, paramDB) {
                                     var reportTimeW  = reportTime.workTime;
 
                                     // 休憩時間
-                                    var sumBreak1       = document.createElement("td");
-                                    sumBreak1.innerText = shiftTimeB;
-                                    sumBreak1.className = 'bold borderRight';
-                                    var sumBreak2       = document.createElement("td");
-                                    sumBreak2.colSpan   = '2';
-                                    sumBreak2.innerText = reportTimeB;
-                                    sumBreak2.className = 'bold borderLeftNone';
+                                    var sumBreak1 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : sumBreak1,
+                                        'className' : 'bold borderRight',
+                                        'innerText' : shiftTimeB,
+                                    });
+                                    var sumBreak2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : sumBreak2,
+                                        'className' : 'bold borderLeftNone',
+                                        'innerText' : reportTimeB,
+                                        'colSpan'   : '2',
+                                    });
                                     dayReportListA[10].appendChild(sumBreak1);
                                     dayReportListA[10].appendChild(sumBreak2);
 
                                     // 実働時間
-                                    var sumWork1       = document.createElement("td");
-                                    sumWork1.innerText = shiftTimeW;
-                                    sumWork1.className = 'bold borderRight';
-                                    var sumWork2       = document.createElement("td");
-                                    sumWork2.colSpan   = '2';
-                                    sumWork2.innerText = reportTimeW;
-                                    sumWork2.className = 'bold borderLeftNone';
+                                    var sumWork1 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : sumWork1,
+                                        'className' : 'bold borderRight',
+                                        'innerText' : shiftTimeW,
+                                    });
+                                    var sumWork2 = document.createElement("td");
+                                    common_set_element({
+                                        'element'   : sumWork2,
+                                        'className' : 'bold borderLeftNone',
+                                        'innerText' : reportTimeW,
+                                        'colSpan'   : '2',
+                                    });
                                     dayReportListA[11].appendChild(sumWork1);
                                     dayReportListA[11].appendChild(sumWork2);
                                 }
                             });
                         }
                     }
-
                 }
             }
             break;
@@ -1685,7 +1941,7 @@ function opDB(op, paramDB) {
                         // console.log(this.response, '登録');
 
                         // 前日以前のローカルデータをクリア
-                        if (paramDB['data'].day < date().yyyymmdd) {
+                        if (paramDB['data'].day < common_date().yyyymmdd) {
                             var paramIndexedDB = {
                                 event   : paramDB['data'].event,
                                 day     : paramDB['data'].day,
@@ -1694,7 +1950,7 @@ function opDB(op, paramDB) {
                             opIndexedDB('deleteWorkReport', paramIndexedDB);
                         }
 
-                        document.getElementById("reflevted").textContent = '最終反映：' + date().yyyymmddhhmmss;
+                        common_text_entry({'textContent' : {'reflevted' : '最終反映：' + common_date().yyyymmddhhmmss}});
                     }
                 }
             }
@@ -1706,13 +1962,17 @@ function opDB(op, paramDB) {
                 + "&name=" + encodeURIComponent(paramDB['name'])
             ;
             xmlhttp.onreadystatechange = function() {
+                // 初期値
+                common_clear_children({
+                    'all'   : {
+                        'editList'   : 'td',
+                    },
+                });
+
+
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
-
-                    Array.from(document.getElementById("editList").querySelectorAll("td")).forEach(function(e) {
-                        e.remove();
-                    });
-                    
+ 
                     if (data) {
                         const orderList = ['start', 'break1s', 'break1e', 'break2s', 'break2e', 'break3s', 'break3e', 'end'];
                         const tbl = document.getElementById("editList").querySelector("tbody");
@@ -1725,7 +1985,7 @@ function opDB(op, paramDB) {
                             dayNum[dayKey] = 0;
                             var dataDay = data[dayKey];
                             var day = document.createElement("td");
-                            
+
                             Object.keys(orderList).forEach(function(orderName) {
                                 var itemKey = orderList[orderName];
 
@@ -1733,80 +1993,109 @@ function opDB(op, paramDB) {
                                     itemNum[itemKey] = 0;
                                     var dataItem = dataDay[itemKey];
                                     var item = document.createElement("td");
-                                    
+
                                     Object.keys(dataItem).forEach(function(key) {
                                         dayNum[dayKey]      = dayNum[dayKey] + 1;
                                         itemNum[itemKey]    = itemNum[itemKey] + 1;
                                         var tr = document.createElement("tr");
 
-                                        day.rowSpan = dayNum[dayKey];
+                                        // 対象日
                                         if (dayNum[dayKey] == 1) {
-                                            day.innerText = dayKey;
-                                            day.style.background = (i % 2 == 0) ? '#f5f5f5ff' : '#fff';
-                                            day.className = 'sticky1';
+                                            common_set_element({
+                                                'element'       : day,
+                                                'className'     : 'sticky1',
+                                                'innerText'     : dayKey,
+                                                'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                'rowSpan'       : dayNum[dayKey],
+                                            });
                                             tr.appendChild(day);
                                         } else {
-                                            day.className = 'sticky1 valueTop';
+                                            common_set_element({
+                                                'element'       : day,
+                                                'className'     : 'sticky1 valueTop',
+                                                'rowSpan'       : dayNum[dayKey],
+                                            });
                                         }
 
-                                        item.rowSpan = itemNum[itemKey];
+                                        // 項目
                                         if (itemNum[itemKey] == 1) {
-                                            item.innerText = common_itemName(itemKey);
-                                            item.style.background = (i % 2 == 0) ? '#f5f5f5ff' : '#fff';
-                                            item.className = 'sticky2';
+                                            common_set_element({
+                                                'element'       : item,
+                                                'className'     : 'sticky2',
+                                                'innerText'     : common_itemName(itemKey),
+                                                'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                'rowSpan'       : itemNum[itemKey],
+                                            });
                                             tr.appendChild(item);
                                         } else {
-                                            item.className = 'sticky2 valueTop';
+                                            common_set_element({
+                                                'element'       : item,
+                                                'className'     : 'sticky2 valueTop',
+                                                'rowSpan'       : itemNum[itemKey],
+                                            });
                                         }
 
+                                        // 状態
                                         var status = document.createElement("td");
+                                        common_set_element({
+                                            'element'       : status,
+                                            'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                        });
                                         var statusB = document.createElement("p");
-                                        statusB.innerText = dataItem[key].status;
-                                        statusB.className = 'statusB';
-                                        switch (dataItem[key].status) {
-                                            case '申請中':
-                                                statusB.style.background = '#87bd9eff'
-                                                break;
-                                        
-                                            case '訂正中':
-                                                statusB.style.background = '#cbcd88ff'
-                                                break;
-
-                                            case '訂正済':
-                                            case '承認済':
-                                            case '却下済':
-                                                statusB.style.background = '#a5a5a5ff'
-                                                break;
-                                        }                           
-                                        status.style.background = (i % 2 == 0) ? '#f5f5f5ff' : '#fff';             
+                                        common_set_element({
+                                            'element'       : statusB,
+                                            'className'     : 'statusB',
+                                            'innerText'     : dataItem[key].status,
+                                            'background'    : common_workReportEditStatus_color(dataItem[key].status),
+                                            });
                                         status.appendChild(statusB);
                                         tr.appendChild(status);
 
+                                        // 修正前
                                         var data_before = document.createElement("td");
-                                        data_before.innerText = dataItem[key].data_before;
-                                        data_before.style.background = (i % 2 == 0) ? '#f5f5f5ff' : '#fff';
+                                        common_set_element({
+                                            'element'       : data_before,
+                                            'innerText'     : dataItem[key].data_before,
+                                            'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                        });
                                         tr.appendChild(data_before);
 
+                                        // 修正後
                                         var data_after = document.createElement("td");
-                                        data_after.innerText = dataItem[key].data_after;
-                                        data_after.style.background = (i % 2 == 0) ? '#f5f5f5ff' : '#fff';
+                                        common_set_element({
+                                            'element'       : data_after,
+                                            'innerText'     : dataItem[key].data_after,
+                                            'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                        });
                                         tr.appendChild(data_after);
 
+                                        // 理由
                                         var reason = document.createElement("td");
-                                        reason.innerText = dataItem[key].reason;
-                                        reason.style.background = (i % 2 == 0) ? '#f5f5f5ff' : '#fff';
-                                        reason.className = 'reason textStart w25';
+                                        common_set_element({
+                                            'element'       : reason,
+                                            'className'     : 'reason textStart w25',
+                                            'innerText'     : dataItem[key].reason,
+                                            'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                        });
                                         tr.appendChild(reason);
 
+                                        // 申請日
                                         var request_dt = document.createElement("td");
-                                        request_dt.innerText = dataItem[key].request_dt;
-                                        request_dt.style.background = (i % 2 == 0) ? '#f5f5f5ff' : '#fff';
-                                        request_dt.className = 'requestDt w25';
+                                        common_set_element({
+                                            'element'       : request_dt,
+                                            'className'     : 'requestDt w25',
+                                            'innerText'     : dataItem[key].request_dt,
+                                            'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                        });
                                         tr.appendChild(request_dt);
 
+                                        // 承認日
                                         var approval_d = document.createElement("td");
-                                        approval_d.innerText = dataItem[key].approval_d;
-                                        approval_d.style.background = (i % 2 == 0) ? '#f5f5f5ff' : '#fff';
+                                        common_set_element({
+                                            'element'       : approval_d,
+                                            'innerText'     : dataItem[key].approval_d,
+                                            'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                        });
                                         tr.appendChild(approval_d);
 
                                         tbl.appendChild(tr);
@@ -1842,7 +2131,7 @@ function opDB(op, paramDB) {
 
                         // 前日以前のローカルデータをクリア
                         if (paramDB['localClear'] == 'true') {
-                            if (paramDB['data'].requestDt.substr(0, 8) < date().yyyymmdd) {
+                            if (paramDB['data'].requestDt.substr(0, 8) < common_date().yyyymmdd) {
                                 var paramIndexedDB = {
                                     event   : paramDB['data'].event,
                                     day     : paramDB['data'].day,
@@ -1851,7 +2140,7 @@ function opDB(op, paramDB) {
                                 };
                                 opIndexedDB('deleteWorkReportEdit', paramIndexedDB);
 
-                                document.getElementById("reflevted").textContent = '最終反映：' + date().yyyymmddhhmmss;
+                                common_text_entry({'textContent' : {'reflevted' : '最終反映：' + common_date().yyyymmddhhmmss}});
                             }
                         } else {
                             var nextParamDB = {
@@ -1861,10 +2150,16 @@ function opDB(op, paramDB) {
                             opDB('getWorkReportEdit', nextParamDB);
                         }
 
-                        document.getElementById("editWorkReportReason").value = '';
-                        document.getElementById("editMsg").innerHTML = '';
+                        common_text_entry({
+                            'innerText' : {
+                                'editMsg' : ''
+                            },
+                            'value' : {
+                                'editWorkReportReason' : ''
+                            },
+                        });
                     } else {
-                        document.getElementById("editMsg").innerHTML = '申請登録できませんでした。';
+                        common_text_entry({'innerText' : {'editMsg' : '申請登録できませんでした。'}});
                     }
                 }
             }
@@ -1893,15 +2188,13 @@ function opDB(op, paramDB) {
                         };
                         opDB('getWorkReportDayAll', nextParamDB);
                     } else if (this.response == 'false') {
-                        document.getElementById("dayReportMsg").innerHTML = 'パスワードが誤っています。';
+                        common_text_entry({'innerText' : {'dayReportMsg' : 'パスワードが誤っています。'}});
                     }else {
-                        document.getElementById("dayReportMsg").innerHTML = '日報の登録ができませんでした。';
+                        common_text_entry({'innerText' : {'dayReportMsg' : '日報の登録ができませんでした。'}});
                     }
                 }
             }
             break;
-
-
     }
 
     xmlhttp.open("POST", strUrl, true);

@@ -2424,7 +2424,7 @@ function opDB(op, paramDB) {
                         });
                         common_op_view({
                             'block'  : ['inputTitle', 'registerNews'],
-                            'none'  : ['newsTitle', 'deleteNews', 'updateNews'],                            
+                            'none'  : ['newsTitle', 'deleteNews', 'updateNews'],
                         });
                     } else {
                         common_text_entry({'innerText' : {'newsMsg' : 'お知らせの登録ができませんでした。'}});

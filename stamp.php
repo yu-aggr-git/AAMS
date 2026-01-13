@@ -41,7 +41,7 @@
                 <p id="realtime"></p>
                 <button id="stampButton" type="button" value="">打刻</button>
             </div>
-            
+
             <!-- 出勤状態 -->
             <div id="workStatus">
                 <table>

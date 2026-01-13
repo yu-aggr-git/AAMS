@@ -415,6 +415,10 @@ function common_text_entry(itemList) {
                     document.getElementById(id).innerHTML = item;
                     break;
 
+                case 'textContent':
+                    document.getElementById(id).textContent = item;
+                    break;
+
                 case 'value':
                     document.getElementById(id).value = item;
                     break;
@@ -526,6 +530,10 @@ function common_set_element(item) {
 
             case 'type':
                 e.type = value;
+                break;
+
+            case 'htmlFor':
+                e.htmlFor = value;
                 break;
 
             case 'checked':

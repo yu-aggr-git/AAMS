@@ -57,7 +57,7 @@
                 <div>
                     <button value="start" id="stampWorkS" type="button" disabled>出勤</button>
                 </div>
-                
+
                 <div>
                     <button id="stampBreakS" type="button" disabled>休憩開始</button>
                     <button id="stampBreakE" type="button" disabled>休憩終了</button>
@@ -119,7 +119,7 @@
                             <th>休憩3</th>
                             <td id="stampAreaBreak3s"></td>
                             <td id="stampAreaBreak3e"></td>
-                        </tr>                        
+                        </tr>
                         <tr>
                             <th>退勤</th>
                             <td colspan="2" id="stampAreaEnd"></td>
@@ -132,7 +132,7 @@
         <button type="button" id="closeStamp" class="closeModal">閉じる</button>
     </div>
 
-    
+
     <!-- 打刻修正 -->
     <div id="edit">
         <div class="modalTitle">
@@ -153,13 +153,13 @@
                     <p>修正項目</p>
                     <select id="editWorkReportItem">
                         <option value="start" id="startOp">出勤</option>
-                        <option value="end" id="endOp">退勤</option>
                         <option value="break1s" id="break1sOp">休憩1：開始</option>
                         <option value="break1e" id="break1eOp">休憩1：終了</option>
                         <option value="break2s" id="break2sOp">休憩2：開始</option>
                         <option value="break2e" id="break2eOp">休憩2：終了</option>
                         <option value="break3s" id="break3sOp">休憩3：開始</option>
                         <option value="break3e" id="break3eOp">休憩3：終了</option>
+                        <option value="end" id="endOp">退勤</option>
                     </select>
 
                     <p>修正内容</p>
@@ -269,7 +269,7 @@
                                 <tr>
                                     <th class="sticky1">項目</th>
                                 </tr>
-                                
+
                                 <tr>
                                     <th class="sticky1">出勤</th>
                                 </tr>
@@ -334,7 +334,6 @@
 
         <button type="button" id="closeDayReport" class="closeModal">閉じる</button>
     </div>
-    
 
 
 </div>
