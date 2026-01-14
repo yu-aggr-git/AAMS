@@ -8,7 +8,7 @@ body, div, p, img {
 a:visited,
 a:focus,
 a:active {
-  color             : inherit;
+  color             : #0000ee;
   text-decoration   : none;
   outline           : none;
 }

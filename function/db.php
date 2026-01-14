@@ -551,10 +551,10 @@
         ]);
 
         // 結果を返却
-        $result = [];
+        $birthdayList = [];
         $resultPass = '';
         while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-            $result[$row['event']] = $row;
+            $birthdayList[] = $row['birthday'];
 
             if ($row['pass']) {
                 $resultPass = $row['pass'];
@@ -564,7 +564,7 @@
         if ($resultPass) {
             $check = password_verify($param['inputStaffPass'], $resultPass);
         } else {
-            $check = $param['inputStaffPass'] == $result[$param['inputStaffEventName']]['birthday'] ? true : false;
+            $check = in_array($param['inputStaffPass'], $birthdayList) ? true : false;
         }
 
         // ログイン日時の更新
@@ -727,7 +727,7 @@
         $resultPass = '';
         while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             if ($row['pass']) {
-                $resultPass = $row['pass'];                
+                $resultPass = $row['pass'];
             }
         }
 
@@ -773,36 +773,53 @@
 
     // ────スタッフリスト：登録追加─────────────────────────────
     function register_staff_list_add($dbh, $param) {
-        $query = "
-            INSERT INTO
-                staff_list(event, no, name, mail, birthday)
-            SELECT
-                :event,
-                CASE
-                    WHEN EXISTS (SELECT 1 FROM staff_list sl1 WHERE sl1.event = :event) 
-                    THEN (
-                        SELECT sl2.no 
-                        FROM staff_list sl2 
-                        WHERE sl2.event = :event
-                        ORDER BY sl2.no DESC 
-                        LIMIT 1
-                    ) + 1 
-
-                    ELSE 1
-                END AS newNo,
-                :name,
-                :mail,
-                :birthday
-        ;";
-        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $count = $sth->execute([
-            'event'         => $param['event'],
-            'name'          => $param['name'],
-            'mail'          => $param['mail'],
-            'birthday'      => $param['birthday'],
+        $query1 = "
+            SELECT *
+            FROM staff_list
+            WHERE 
+                    event = :event
+                AND mail = :mail
+        ";
+        $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth1->execute([
+            'event' => $param['event'],
+            'mail'  => $param['mail']
         ]);
 
-        echo $count;
+        if ($sth1->rowCount() != 0) {
+            echo 'false';
+        } else {
+            $query2 = "
+                INSERT INTO
+                    staff_list(event, no, name, mail, birthday)
+                SELECT
+                    :event,
+                    CASE
+                        WHEN EXISTS (SELECT 1 FROM staff_list sl1 WHERE sl1.event = :event) 
+                        THEN (
+                            SELECT sl2.no 
+                            FROM staff_list sl2 
+                            WHERE sl2.event = :event
+                            ORDER BY sl2.no DESC 
+                            LIMIT 1
+                        ) + 1 
+
+                        ELSE 1
+                    END AS newNo,
+                    :name,
+                    :mail,
+                    :birthday
+            ;";
+            $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+            $count = $sth2->execute([
+                'event'         => $param['event'],
+                'name'          => $param['name'],
+                'mail'          => $param['mail'],
+                'birthday'      => $param['birthday'],
+            ]);
+
+            echo $count;
+        }
     }
 
     // ────スタッフリスト：更新（給与明細）─────────────────────────────
@@ -1362,13 +1379,20 @@
     // ────勤怠修正情報：取得─────────────────────────────
     function get_work_report_edit_all($dbh, $param) {
         $query = "
-            SELECT *
-            FROM work_report_edit
+            SELECT
+                sl.no,
+                wre.*
+            FROM
+                work_report_edit wre
+            LEFT JOIN
+                staff_list sl
+                ON  sl.event = wre.event
+                and sl.name  = wre.name
             WHERE
-                    event = :event
+                    wre.event = :event
             ORDER BY 
-                name asc, 
-                day asc
+                sl.no asc, 
+                wre.day asc
         ";
 
         $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
@@ -1378,7 +1402,8 @@
 
         // 結果を配列で取得
         while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-            $employeeData[$row['name']][$row['day']][$row['item']][] = array(
+            $employeeData[$row['no']][$row['day']][$row['item']][] = array(
+                'name'          => $row['name'],
                 'status'        => $row['status'],
                 'data_before'   => $row['data_before'],
                 'data_after'    => $row['data_after'],

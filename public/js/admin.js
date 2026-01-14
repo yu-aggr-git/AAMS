@@ -1779,7 +1779,11 @@ function opDB(op, paramDB) {
 
                         getSelectEvent(paramDB.event);
                     } else {
-                        common_text_entry({'innerText' : {'addStaffMsg' : '*スタッフの追加ができませんでした。'}});
+                        if (this.response == 'false') {
+                            common_text_entry({'innerText' : {'addStaffMsg' : '既に登録されているメールアドレスです。'}});
+                        } else {
+                            common_text_entry({'innerText' : {'addStaffMsg' : 'スタッフの追加ができませんでした。'}});
+                        }
                     }
                 }
             }
@@ -2020,10 +2024,10 @@ function opDB(op, paramDB) {
                         let itemNum     = [];
 
                         let i = 0;
-                        Object.keys(data).forEach(function(nameKey) {
+                        Object.keys(data).forEach(function(no) {
                             i++;
-                            nameKeyNum[nameKey] = 0;
-                            var dataName        = data[nameKey];
+                            nameKeyNum[no] = 0;
+                            var dataName        = data[no];
                             var name            = document.createElement("td");
 
                             Object.keys(dataName).forEach(function(dayKey) {
@@ -2040,26 +2044,26 @@ function opDB(op, paramDB) {
                                         var item         = document.createElement("td");
 
                                         Object.keys(dataItem).forEach(function(key) {
-                                            nameKeyNum[nameKey] = nameKeyNum[nameKey] + 1;
+                                            nameKeyNum[no]      = nameKeyNum[no] + 1;
                                             dayNum[dayKey]      = dayNum[dayKey] + 1;
                                             itemNum[itemKey]    = itemNum[itemKey] + 1;
                                             var tr              = document.createElement("tr");
 
                                             // スタッフ名
-                                            if (nameKeyNum[nameKey] == 1) {
+                                            if (nameKeyNum[no] == 1) {
                                                 common_set_element({
                                                     'element'       : name,
                                                     'className'     : 'sticky1',
-                                                    'innerText'     : nameKey,
+                                                    'innerText'     : no + '.' + dataItem[key].name,
                                                     'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
-                                                    'rowSpan'       : nameKeyNum[nameKey],
+                                                    'rowSpan'       : nameKeyNum[no],
                                                 });
                                                 tr.appendChild(name);
                                             } else {
                                                 common_set_element({
                                                     'element'       : name,
                                                     'className'     : 'sticky1 valueTop',
-                                                    'rowSpan'       : nameKeyNum[nameKey],
+                                                    'rowSpan'       : nameKeyNum[no],
                                                 });
                                             }
 
@@ -2112,7 +2116,7 @@ function opDB(op, paramDB) {
                                                 'innerText'     : dataItem[key].status,
                                                 'value'         : (
                                                     dataItem[key].request_dt
-                                                    + '|' + nameKey
+                                                    + '|' + dataItem[key].name
                                                     + '|' + dayKey
                                                     + '|' + itemKey
                                                     + '|' + dataItem[key].data_before

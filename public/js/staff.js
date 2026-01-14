@@ -95,11 +95,7 @@ function staffLogin(staffUser) {
     } else {
         common_op_modal('staffLogin', 'open');
 
-        // イベントリストの取得
-        opDB('getEventList', null);
-
         document.getElementById("sendStaffLogin").onclick = function() {
-            var inputStaffEventName = document.getElementById("staffEventName").value;
             var inputStaffMail      = document.getElementById("staffMail").value.trim();
             var inputStaffPass      = document.getElementById("staffPass").value.trim();
 
@@ -107,7 +103,6 @@ function staffLogin(staffUser) {
                 common_text_entry({'innerText' : {'staffLoginMsg' : 'すべての項目に入力が必要です。'}});
             } else {
                 var paramDB = {
-                    'inputStaffEventName'   : inputStaffEventName,
                     'inputStaffMail'        : inputStaffMail,
                     'inputStaffPass'        : inputStaffPass
                 };
@@ -182,7 +177,9 @@ function dispNews() {
 function getSelectEvent(selectEvent, staffUser) {
     let paramDB = {};
 
-    paramDB = { 'event': selectEvent };
+    paramDB = {
+        'event' : selectEvent,
+    };
     opDB('getEvent', paramDB);
 
     paramDB = {
@@ -451,7 +448,6 @@ function opDB(op, paramDB) {
     switch (op) {
         case 'staffLogin':
             var param   = "function=" + "check_staff_list"
-                + "&inputStaffEventName="   + encodeURIComponent(paramDB['inputStaffEventName']) 
                 + "&inputStaffMail="        + encodeURIComponent(paramDB['inputStaffMail']) 
                 + "&inputStaffPass="        + encodeURIComponent(paramDB['inputStaffPass']) 
                 + "&loginDt="               + encodeURIComponent(common_date().yyyymmddhhmmss) 
@@ -468,12 +464,7 @@ function opDB(op, paramDB) {
                         common_op_modal('staffLogin', 'close');
                         localStorage.setItem("staffUser", paramDB['inputStaffMail']);
 
-                        // イベントリストの取得
-                        var nextParamDB = { 'staffUser': paramDB['inputStaffMail'] };
-                        opDB('getStaffListEvent', nextParamDB);
-
-                        // イベントの選択
-                        getSelectEvent(paramDB['inputStaffEventName'], paramDB['inputStaffMail']);
+                        window.location.reload();
                     } else {
                         common_text_entry({'innerText' : {'staffLoginMsg' : '入力値が誤っています。'}});
                     }
@@ -506,7 +497,7 @@ function opDB(op, paramDB) {
 
         case 'getEvent':
             var param   = "function=" + "get_event"
-                + "&event=" + encodeURIComponent(paramDB['event']) 
+                + "&event=" + encodeURIComponent(paramDB['event'])
             ;
 
             xmlhttp.onreadystatechange = function() {
@@ -738,33 +729,6 @@ function opDB(op, paramDB) {
                         });
                         document.getElementById("editStampDay").appendChild(option);
                     }
-                }
-            }
-            break;
-
-        case 'getEventList':
-            var param   = "function=" + "get_event_list";
-            xmlhttp.onreadystatechange = function() {
-                // 初期値
-                common_clear_children({
-                    'all'   : {
-                        'staffEventName' : 'option'
-                    }
-                });
-
-
-                if (this.readyState == 4 && this.status == 200) {
-                    const data = JSON.parse(this.response);
-
-                    Object.keys(data).forEach(function(key) {
-                        var option = document.createElement("option");
-                        common_set_element({
-                            'element'   : option,
-                            'text'      : data[key],
-                            'value'     : data[key],
-                        });
-                        document.getElementById("staffEventName").appendChild(option);
-                    });
                 }
             }
             break;

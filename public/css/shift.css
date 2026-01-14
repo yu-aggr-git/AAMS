@@ -174,44 +174,6 @@ button {
         cursor          : pointer;
     }
 
-    #modal > #staffLogin {
-        display : none;
-        width   : 80vmin;
-        height  : 70vmin;
-        /* display : flex; */
-    }
-    #modal > #staffLogin > .modalBody {
-        justify-content : space-around;
-    }
-    #modal > #staffLogin > .modalBody > select,
-    #modal > #staffLogin > .modalBody > input {
-        background          : #ececec;
-        margin-bottom       : 2vh;
-        padding             : 0;
-        width               : 80%;
-        height              : 4vh;
-        border              : 0.1vmin solid #666;
-        border-radius       : 100vh;
-        font-size           : 2vmin;
-        text-align          : center;
-        text-align-last     : center;
-        cursor              : pointer;
-        outline             : none;
-        -webkit-appearance  : none;
-        appearance          : none;
-    }
-    #modal > #staffLogin > .modalBody > button {
-        background      : #000;
-        margin-bottom   : 10vmin;
-        padding         : 0 1vw;
-        border          : 0.1vmin solid #666;
-        border-radius   : 100vh;
-        font-size       : 2vmin;
-        text-align      : center;
-        color           : #fff;
-        cursor          : pointer;
-    }
-
     #modal > #adminLogin {
         display : none;
         width   : 80vmin;

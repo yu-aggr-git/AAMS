@@ -14,9 +14,6 @@ window.onload = () => {
     document.getElementById("closeAdminLogin").onclick = function() {
         common_op_modal('adminLogin', 'close');
     }
-    document.getElementById("closeStaffLogin").onclick = function() {
-        common_op_modal('staffLogin', 'close');
-    }
 
 
     // ログアウト
@@ -187,37 +184,12 @@ function checkAdmin() {
 //  ログイン
 // ………………………………………………………………………………………………………………………………………………
 function login(id) {
-    common_text_entry({
-        'innerText' : {
-            'staffLoginMsg' : '',
-            'adminMsg'      : '',
-        }
-    });
+    common_text_entry({'innerText' : {'adminMsg' : ''}});
 
     switch (id) {
         case 'loginStaff':
             // スタッフ
-            common_op_modal('staffLogin', 'open');
-
-            // イベントリストの取得
-            opDB('getEventListShift', null);
-
-            document.getElementById("sendStaffLogin").onclick = function() {
-                var inputStaffEventName = document.getElementById("staffEventName").value;
-                var inputStaffMail      = document.getElementById("staffMail").value.trim();
-                var inputStaffPass      = document.getElementById("staffPass").value.trim();
-
-                if (!inputStaffMail || !inputStaffPass) {
-                    common_text_entry({'innerText' : {'staffLoginMsg' : 'すべての項目に入力が必要です。'}});
-                } else {
-                    var paramDB = {
-                        'inputStaffEventName'   : inputStaffEventName,
-                        'inputStaffMail'        : inputStaffMail,
-                        'inputStaffPass'        : inputStaffPass
-                    };
-                    opDB('staffLogin', paramDB);
-                }
-            }
+            location.assign('staff.php');
             break;
 
         case 'loginAdmin':
@@ -240,7 +212,6 @@ function login(id) {
             }
             break;
     }
-
 }
 
 
@@ -1008,32 +979,6 @@ function opDB(op, paramDB) {
     const xmlhttp   = new XMLHttpRequest();
 
     switch (op) {
-        case 'staffLogin':
-            var param   = "function=" + "check_staff_list"
-                + "&inputStaffEventName="   + encodeURIComponent(paramDB['inputStaffEventName']) 
-                + "&inputStaffMail="        + encodeURIComponent(paramDB['inputStaffMail']) 
-                + "&inputStaffPass="        + encodeURIComponent(paramDB['inputStaffPass']) 
-                + "&loginDt="               + encodeURIComponent(common_date().yyyymmddhhmmss) 
-            ;
-
-            xmlhttp.onreadystatechange = function() {
-                // 初期値
-                common_text_entry({'innerText' : {'staffLoginMsg' : ''}});
-
-                if (this.readyState == 4 && this.status == 200) {
-                    const result = this.responseText;
-
-                    if (result == 'true') {
-                        localStorage.setItem("staffUser", paramDB['inputStaffMail']);
-
-                        location.assign('shift.php?event=' + encodeURI(paramDB['inputStaffEventName']));
-                    } else {
-                        common_text_entry({'innerText' : {'staffLoginMsg' : '入力値が誤っています。'}});
-                    }
-                }
-            }
-            break;
-
         case 'adminLogin':
             var param   = "function=" + "check_admin_login"
                 + "&inputAdminUser="     + encodeURIComponent(paramDB['inputAdminUser']) 
@@ -1096,7 +1041,6 @@ function opDB(op, paramDB) {
                 common_clear_children({
                     'all' : {
                         'selectEvent'       : 'option',
-                        'staffEventName'    : 'option',
                     }
                 });
 
@@ -1113,15 +1057,6 @@ function opDB(op, paramDB) {
                             'value'     : data[key],
                         });
                         document.getElementById("selectEvent").appendChild(option);
-
-                        // スタッフログイン選択
-                        var option2 = document.createElement("option");
-                        common_set_element({
-                            'element'   : option2,
-                            'text'      : data[key],
-                            'value'     : data[key],
-                        });
-                        document.getElementById("staffEventName").appendChild(option2);
                     });
                 }
             }
@@ -2311,7 +2246,11 @@ function opDB(op, paramDB) {
 
                         getItem("shiftInfoOpen", event);
                     } else {
-                        common_text_entry({'innerText' : {'addStaffMsg' : 'スタッフの追加ができませんでした。'}});
+                        if (this.response == 'false') {
+                            common_text_entry({'innerText' : {'addStaffMsg' : '既に登録されているメールアドレスです。'}});
+                        } else {
+                            common_text_entry({'innerText' : {'addStaffMsg' : 'スタッフの追加ができませんでした。'}});
+                        }
                     }
                 }
             }

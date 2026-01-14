@@ -119,33 +119,6 @@
 
                     <button type="button" id="closeAdminLogin" class="closeModal">閉じる</button>
                 </div>
-
-
-                <!-- スタッフログイン -->
-                <div id="staffLogin">
-                    <div class="modalTitle">
-                        <p class="title">スタッフ画面</p>
-                    </div>
-
-                    <div class="modalBody">
-                        <p class="guidance">勤怠情報の確認は、ログインが必要です。</p>
-
-                        <p>EVENT</p>
-                        <select id="staffEventName"></select>
-
-                        <p>MAIL</p>
-                        <input type="text" id="staffMail">
-
-                        <p>PASSWORD</p>
-                        <input type="password" id="staffPass">
-
-                        <p id="staffLoginMsg" class="errorMsg"></p>
-
-                        <button id="sendStaffLogin" type="button" >送信</button>
-                    </div>
-
-                    <button type="button" id="closeStaffLogin" class="closeModal">閉じる</button>
-                </div>
             </div>
 
 

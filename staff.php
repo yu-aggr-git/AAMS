@@ -26,9 +26,6 @@
                     <div class="modalBody">
                         <p class="guidance">勤怠情報の確認は、ログインが必要です。</p>
 
-                        <p>EVENT</p>
-                        <select id="staffEventName"></select>
-
                         <p>MAIL</p>
                         <input type="text" id="staffMail">
 
