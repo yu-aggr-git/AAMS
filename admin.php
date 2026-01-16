@@ -500,7 +500,7 @@
                         <tr id="stampInfoReason">
                             <th>訂正理由</th>
                             <td colspan="7">
-                                <input type="text" id="editStampInfoReason">
+                                <textarea id="editStampInfoReason" maxlength="100"></textarea>
                             </td>
                         </tr>
                     </tbody>

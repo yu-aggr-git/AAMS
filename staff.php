@@ -278,7 +278,7 @@
                     </div>
 
                     <p>修正理由：</p>
-                    <input type="text" id="editStampReason">
+                    <textarea id="editStampReason" maxlength="100"></textarea>
 
                     <p id="staffStampEditMsg" class="errorMsg"></p>
 

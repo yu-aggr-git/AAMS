@@ -542,6 +542,7 @@ html::-webkit-scrollbar {
         font-size       : 2vmin;
         text-align      : end;
     }
+    #staffStampEditArea > div textarea,
     #staffStampEditArea > div select,
     #staffStampEditArea > div input {
         background          : #ececec;
@@ -558,6 +559,14 @@ html::-webkit-scrollbar {
         outline             : none;
         -webkit-appearance  : none;
         appearance          : none;
+    }
+    #staffStampEditArea > div #editStampReason {
+        width               : 68%;
+        height              : 8vmin;
+        padding             : 1%;
+        text-align          : left;
+        text-align-last     : left;
+        border-radius       : 0.5vh;
     }
     #staffStampEditArea > div > div {
         width           : 70%;
@@ -584,4 +593,3 @@ html::-webkit-scrollbar {
         color           : #fff;
         cursor          : pointer;
     }
-    

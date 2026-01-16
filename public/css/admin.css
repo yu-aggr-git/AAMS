@@ -655,6 +655,7 @@ html::-webkit-scrollbar {
         background  : #ececec;
         font-weight : normal;
     }
+    #stampInfoArea > table textarea,
     #stampInfoArea > table select,
     #stampInfoArea > table input {
         background          : #ececec;
@@ -672,8 +673,13 @@ html::-webkit-scrollbar {
         -webkit-appearance  : none;
         appearance          : none;
     }
-    #stampInfoArea > table input {
-        width : 90%;
+    #stampInfoArea > table #editStampInfoReason {
+        width               : 90%;
+        height              : 8vmin;
+        padding             : 1%;
+        text-align          : left;
+        text-align-last     : left;
+        border-radius       : 1vh;
     }
     #stampInfoArea > table #stampInfoEvent {
         padding         : 0 5vmin;

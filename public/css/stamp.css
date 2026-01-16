@@ -297,6 +297,7 @@
 #modal > #edit > .modalBody > #editInput > div > p {
     width: 30%;
 }
+#modal > #edit > .modalBody > #editInput > div > textarea,
 #modal > #edit > .modalBody > #editInput > div > select,
 #modal > #edit > .modalBody > #editInput > div > input {
     background          : #ececec;
@@ -313,7 +314,15 @@
     outline             : none;
     -webkit-appearance  : none;
     appearance          : none;
-    white-space: normal;
+    white-space         : normal;
+}
+#modal > #edit > .modalBody > #editInput > div > textarea {
+    width               : 58%;
+    height              : 10vmin;
+    padding             : 1%;
+    text-align          : left;
+    text-align-last     : left;
+    border-radius       : 0.5vh;
 }
 #modal > #edit > .modalBody > #editInput > div > #editWorkReportHour,
 #modal > #edit > .modalBody > #editInput > div > #editWorkReportMinutes {
