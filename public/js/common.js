@@ -103,6 +103,71 @@ function common_replaceStr(str) {
 }
 
 
+// 印刷
+function common_print(target, noneList) {
+    common_op_view({
+        'none' : noneList
+    });
+
+    // ページ全体の調整
+    common_set_element({
+        'element'   : document.getElementById("main"),
+        'padding'   : '0',
+        'overflowY' : 'visible',
+    });
+
+    // 表示領域の幅
+    const winWidth = window.innerWidth;
+
+    // テーブル幅
+    const eleWidth = document.getElementById(target).querySelector('table').getBoundingClientRect().right
+
+    // テーブルの調整
+    common_set_element({
+        'element'           : document.getElementById(target),
+        'maxHeight'         : '100%',
+        'transformOrigin'   : 'top left',
+        'transform'         : 'scale(' + (winWidth / eleWidth - 0.085) + ')',
+        'overflow'          : 'visible',
+    });
+
+    window.print();
+}
+
+
+// 別タブでテーブルを開く
+function common_open_table(dispArea, noneList, table) {
+    common_op_view({
+        'none'  : noneList,
+        'flex'   : [dispArea]
+    });
+
+    // ページ全体の調整
+    common_set_element({
+        'element'   : document.getElementById("main"),
+        'width'     : '100%',
+        'height'    : '85vh',
+        'margin'    : '5vh 0 10vmin 0',
+        'padding'   : '0',
+        'overflowY' : 'hidden',
+    });
+
+    // 表示エリアの調整
+    common_set_element({
+        'element'   : document.getElementById(dispArea),
+        'padding'   : '0 2vmin',
+    });
+
+    // テーブルの調整
+    common_set_element({
+        'element'           : document.getElementById(table).parentNode,
+        'width'             : '195vw',
+        'maxHeight'         : '140vh',
+        'transformOrigin'   : 'top left',
+        'transform'         : 'scale(0.5)',
+    });
+}
+
 
 // ──────────────────────────────────────────────────────
 //  計算
@@ -556,8 +621,46 @@ function common_set_element(item) {
                 e.maxLength = value;
                 break;
 
+
+            // CSS
             case 'color':
                 e.style.color = value;
+                break;
+
+            case 'width':
+                e.style.width = value;
+                break;
+
+            case 'height':
+                e.style.height = value;
+                break;
+
+            case 'maxHeight':
+                e.style.maxHeight = value;
+                break;
+
+            case 'margin':
+                e.style.margin = value;
+                break;
+
+            case 'padding':
+                e.style.padding = value;
+                break;
+
+            case 'overflow':
+                e.style.overflow = value;
+                break;
+
+            case 'overflowY':
+                e.style.overflowY = value;
+                break;
+
+            case 'transform':
+                e.style.transform = value;
+                break;
+
+            case 'transformOrigin':
+                e.style.transformOrigin = value;
                 break;
 
             case 'fontWeight':

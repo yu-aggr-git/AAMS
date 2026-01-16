@@ -146,6 +146,29 @@ window.onload = () => {
     document.getElementById("sendAddStaff").onclick = function() {
         sendAddStaff();
     }
+
+
+    // 別タブで開く
+    document.getElementById("newTabWorkReportInfo").onclick = function() {
+        window.open(
+            (
+                window.location.href
+                + '?' + 'event=' + encodeURI(document.getElementById("eventName").textContent)
+                + '&' + 'newTab=' + encodeURI('workReportInfoArea')
+            ),
+            '_blank'
+        );
+    }
+    document.getElementById("newTabWorkReportInfoEdit").onclick = function() {
+        window.open(
+            (
+                window.location.href
+                + '?' + 'event=' + encodeURI(document.getElementById("eventName").textContent)
+                + '&' + 'newTab=' + encodeURI('workReportInfoEditArea')
+            ),
+            '_blank'
+        );
+    }
 }
 
 
@@ -154,11 +177,35 @@ window.onload = () => {
 // ………………………………………………………………………………………………………………………………………………
 function adminLogin(adminUser) {
     if (adminUser) {
-        // イベントリストの取得
-        opDB('getEventList', null);
+        const url    = new URL(window.location.href);
+        const params = url.searchParams;
 
-        // イベントお知らせの取得
-        opDB('getEventNotice', null);
+        if (params.get('event') && params.get('newTab')) {
+            // イベントの選択
+            getSelectEvent(params.get('event'));
+
+            // テーブルを拡大して開く
+            var noneList = [];
+            var table = '';
+            switch (params.get('newTab')) {
+                case 'workReportInfoArea':
+                    noneList = ['menuBar', 'selectEventArea', 'eventInfoNoticeArea', 'eventInfoAreaOpen', 'workReportInfoAreaOpen', 'workReportInfoMenu', 'stampInfoAreaOpen', 'workReportInfoEditAreaOpen', 'payslipAreaOpen', 'newsAreaOpen'];
+                    table = 'workReportInfoTable';
+                    break;
+
+                case 'workReportInfoEditArea':
+                    noneList = ['menuBar', 'selectEventArea', 'eventInfoNoticeArea', 'eventInfoAreaOpen', 'workReportInfoAreaOpen', 'stampInfoAreaOpen', 'workReportInfoEditAreaOpen', 'workReportInfoEditMenu', 'payslipAreaOpen', 'newsAreaOpen'];
+                    table = 'workReportInfoEditTable';
+                    break;
+            }
+            common_open_table(params.get('newTab'), noneList, table);
+        } else {
+            // イベントリストの取得
+            opDB('getEventList', null);
+
+            // イベントお知らせの取得
+            opDB('getEventNotice', null);
+        }
     } else {
         common_op_modal('adminLogin', 'open');
 
@@ -277,6 +324,7 @@ function getSelectEvent(selectEvent) {
                 // 勤怠修正情報
                 'approveWorkReportInfo',
                 'rejectWorkReportInfo',
+                'newTabWorkReportInfoEdit',
 
                 // スタッフリスト
                 'editPayslip'
@@ -624,7 +672,7 @@ function workReportInfoEdit(id) {
 
     common_op_view({
         'block' : ['updateWorkReportInfo', 'cancelWorkReportInfo'],
-        'none'  : ['approveWorkReportInfo','rejectWorkReportInfo'],
+        'none'  : ['approveWorkReportInfo','rejectWorkReportInfo', 'newTabWorkReportInfoEdit'],
     });
 
     let updateList = [];
@@ -1101,7 +1149,7 @@ function opDB(op, paramDB) {
                         }
                     });
 
-                    // 勤怠情報・打刻情報                    
+                    // 勤怠情報・打刻情報
                     var th = document.createElement("th");
                     common_set_element({
                         'element'       : th,

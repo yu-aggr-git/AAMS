@@ -407,7 +407,7 @@ button {
         left            : 18.15vmin;
         z-index         : 9;
     }
-    
+
 
 
 
@@ -496,6 +496,7 @@ button {
         white-space     : nowrap;
         border-radius   : 100vh 100vh 100vh 0;
     }
+    #shiftInfoArea > #shiftInfoMenu > #shiftInfoEdit #printShiftInfo,
     #shiftInfoArea > #shiftInfoMenu > #shiftInfoEdit #updateShiftInfo {
         background      : #000;
         color           : #fff;

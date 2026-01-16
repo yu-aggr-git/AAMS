@@ -301,6 +301,9 @@
                 <p>● 打刻時の分数は、15分単位での繰り上げです。（打刻時間「09:46:00」 → 表示時間「10:00」）</p>
                 <p>　※ 退勤分のみ、15分単位での切り捨てです。（打刻時間「23:05:00」 → 勤怠時間「23:00」）</p>
                 <p>● 「＊」で表示されている箇所は、打刻漏れ申請、または時間計算に情報が足りていない（出勤中など）状態です。</p>
+                <div id="workReportInfoMenu">
+                    <button type="button" id="newTabWorkReportInfo">別タブ</button>
+                </div>
                 <div>
                     <table id="workReportInfoTable">
                         <tbody>
@@ -522,6 +525,7 @@
                         <button type="button" id="updateWorkReportInfo" hidden>更新</button>
                         <button type="button" id="approveWorkReportInfo">承認</button>
                         <button type="button" id="rejectWorkReportInfo">却下</button>
+                        <button type="button" id="newTabWorkReportInfoEdit">別タブ</button>
                     </div>
                 </div>
 

@@ -191,6 +191,7 @@
                         <button type="button" id="editShiftInfo">編集</button>
                         <button type="button" id="cancelShiftInfo" hidden>取消</button>
                         <button type="button" id="updateShiftInfo" hidden>完了</button>
+                        <button type="button" id="printShiftInfo">印刷</button>
                     </div>
                 </div>
 
@@ -198,7 +199,7 @@
                     <p>更新日時：<span></span></p>
                 </div>
 
-                <div>
+                <div id="printTarget">
                     <table id="shiftInfoTable">
                         <tbody>
                             <tr id="shiftInfoHeader">

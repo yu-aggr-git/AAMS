@@ -81,7 +81,7 @@ window.onload = () => {
 
         common_text_entry({'innerText' : {'shiftInfoMsg' : ''}});
         common_op_view({
-            'block' : ['editShiftInfo', 'selectBooth'],
+            'block' : ['editShiftInfo', 'selectBooth', 'printShiftInfo'],
             'none'  : ['cancelShiftInfo', 'updateShiftInfo']
         });
 
@@ -138,6 +138,17 @@ window.onload = () => {
     // スタッフ追加
     document.getElementById("sendAddStaff").onclick = function() {
         sendAddStaff();
+    }
+
+
+    // 印刷
+    document.getElementById("printShiftInfo").onclick = function() {
+        common_print(
+            'printTarget',
+            ['header', 'menuBar', 'selectEventArea', 'eventInfoArea', 'selectItemArea', 'shiftInfoMenu', 'addStaff', 'footer']
+        );
+
+        window.location.reload();
     }
 }
 
@@ -487,7 +498,7 @@ function editShift() {
     common_text_entry({'innerText' : {'shiftInfoMsg' : ''}});
     common_op_view({
         'block' : ['cancelShiftInfo', 'updateShiftInfo'],
-        'none'  : ['editShiftInfo', 'selectBooth']
+        'none'  : ['editShiftInfo', 'selectBooth', 'printShiftInfo']
     });
 
     const shiftInfoTable = document.getElementById("shiftInfoTable");
@@ -1412,7 +1423,7 @@ function opDB(op, paramDB) {
                 // 初期値
                 common_text_entry({'innerText' : {'shiftInfoMsg' : ''}});
                 common_op_view({
-                    'block' : ['editShiftInfo', 'selectBooth'],
+                    'block' : ['editShiftInfo', 'selectBooth', 'printShiftInfo'],
                     'none'  : ['cancelShiftInfo', 'updateShiftInfo']
                 });
                 common_clear_children({
@@ -1803,7 +1814,7 @@ function opDB(op, paramDB) {
                         var event = document.getElementById("eventName").innerText;
 
                         common_op_view({
-                            'block' : ['editShiftInfo', 'selectBooth'],
+                            'block' : ['editShiftInfo', 'selectBooth', 'printShiftInfo'],
                             'none'  : ['cancelShiftInfo', 'updateShiftInfo']
                         });
 

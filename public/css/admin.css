@@ -428,7 +428,7 @@ html::-webkit-scrollbar {
         align-items     : center;
     }
 
-    
+
 /* ───────────────────────────────────────────────────
    勤怠情報
    ……………………………………………………………………………………………………………………………………… */
@@ -447,10 +447,25 @@ html::-webkit-scrollbar {
     #workReportInfoArea > p {
         font-size : 1.5vmin;
     }
+    #workReportInfoArea > p:last-of-type {
+        margin-bottom : 2vmin;
+    }
+    #workReportInfoArea > #workReportInfoMenu {
+        height          : 5vmin;
+        display         : flex;
+        justify-content : end;
+        align-items     : center;
+    }
+    #workReportInfoArea > #workReportInfoMenu button{
+        background      : #000;
+        margin-left     : 1vmin;
+        color           : #fff;
+        white-space     : nowrap;
+        border-radius   : 100vh 100vh 100vh 0;
+    }
     #workReportInfoArea > div {
         width           : 100%;
         max-height      : 60vmin;
-        margin-top      : 2vmin;
         overflow-x      : auto;
     }
     #workReportInfoArea > div::-webkit-scrollbar {
@@ -470,7 +485,7 @@ html::-webkit-scrollbar {
     #workReportInfoArea td,
     #workReportInfoArea th {
         background      : #fff;
-        width           : 15vw;
+        width           : 18vmin;
         margin          : 0;
         padding         : 0;
         font-size       : 2vmin;
@@ -516,6 +531,7 @@ html::-webkit-scrollbar {
         z-index         : 1;
     }
     #workReportInfoArea .sticky2 {
+        width           : 20vmin;
         position        : sticky;
         top             : 0;
         left            : 0;
@@ -524,12 +540,13 @@ html::-webkit-scrollbar {
         padding         : 0 1.5vmin;
     }
     #workReportInfoArea .sticky3 {
+        width           : 20vmin;
         position        : sticky;
         top             : 0;
         left            : 0;
         z-index         : 3;
     }
-    
+
 
 
 /* ───────────────────────────────────────────────────
@@ -754,6 +771,7 @@ html::-webkit-scrollbar {
         white-space     : nowrap;
         border-radius   : 100vh 100vh 100vh 0;
     }
+    #workReportInfoEditArea > #workReportInfoEditMenu > #workReportInfoEdit #newTabWorkReportInfoEdit,
     #workReportInfoEditArea > #workReportInfoEditMenu > #workReportInfoEdit #updateWorkReportInfo {
         background      : #000;
         color           : #fff;
