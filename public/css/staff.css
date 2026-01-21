@@ -181,7 +181,7 @@ html::-webkit-scrollbar {
         border-radius   : 0 100vh 100vh 0;
         font-size       : 2vmin;
         white-space     : nowrap;
-        color           : #000;    
+        color           : #000;
     }
 
 
@@ -224,6 +224,7 @@ html::-webkit-scrollbar {
         background  : #ececec;
         font-weight : normal;
     }
+    #staffEventInfoArea > table #shift > a,
     #staffEventInfoArea > table #payslip > a {
         word-break : break-all;
     }
