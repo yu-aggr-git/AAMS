@@ -169,6 +169,7 @@ function common_open_table(dispArea, noneList, table) {
 }
 
 
+
 // ──────────────────────────────────────────────────────
 //  計算
 // ………………………………………………………………………………………………………………………………………………
@@ -300,9 +301,10 @@ function common_report_time(day, start, break1s, break1e, break2s, break2e, brea
     }
 
     var workTime = '＊';
+    let sumTime = '';
     if (common_validation_time(start) && common_validation_time(end) && common_validation_time(breakTime)) {
         // 拘束時間
-        const sumTime = common_clac(day, start, end, 'diff');
+        sumTime = common_clac(day, start, end, 'diff');
 
         if (!sumTime.includes('-')) {
             // 実働時間
@@ -312,8 +314,36 @@ function common_report_time(day, start, break1s, break1e, break2s, break2e, brea
 
     return {
         "breakTime" : breakTime,
-        "workTime"  : workTime
+        "workTime"  : workTime,
+        "sumTime"   : sumTime
     }
+}
+
+// 時間変換
+function common_convert_time(time) {
+    let note = '';
+
+    if (time.startsWith('＊')) {
+        note = '＊';
+        time = time.replaceAll("＊", "")
+    }
+
+    const timeA = time.split(/:/);
+
+    return note + (Number(timeA[0]) + (Number(timeA[1]) / 60));
+}
+
+// 出勤率の算出
+function common_clac_attendance(eventTime, workTime) {
+    if (workTime && workTime.startsWith('＊')) {
+        workTime = workTime.replaceAll("＊", "")
+    }
+
+    return (
+        eventTime > 0
+            ? Math.round((Number(workTime) / Number(eventTime)) * 100) + '%'
+            : '- %'
+    );
 }
 
 
@@ -345,6 +375,13 @@ function common_validation_time(value) {
 // メールアドレス
 function common_validation_mail(value) {
     const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+    return regex.test(value);
+}
+
+// yyyy-mm-dd
+function common_validation_day(value) {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
 
     return regex.test(value);
 }
@@ -681,6 +718,18 @@ function common_set_element(item) {
 
             case 'display':
                 e.style.display = value;
+                break;
+
+            case 'border':
+                e.style.border = value;
+                break;
+
+            case 'border':
+                e.style.border = value;
+                break;
+
+            case 'borderBottom':
+                e.style.borderBottom = value;
                 break;
         }
     });

@@ -61,6 +61,21 @@
                 </dl>
             </div>
 
+            <!-- イベント日報 -->
+            <div id="dayReportArea">
+                <div>
+                    <p>イベント日報：</p>
+                    <select id="dayReportSelect"></select>
+                </div>
+
+                <dl id="dayReportDl">
+                    <dt>内容</dt>
+                    <dd>
+                        <p id="dayReport"></p>
+                    </dd>
+                </dl>
+            </div>
+
             <!-- イベント情報 -->
             <div class="itemName" id="eventInfoAreaOpen">
                 <p>イベント情報</p>
@@ -109,8 +124,12 @@
 
                         <div id="inputFirstDayArea">
                             <select id="inputFirstYear">
-                                <?php for ($i =  date("Y"); $i <= date("Y") + 1; $i++) : ?>
-                                    <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                <?php for ($i =  date("Y", strtotime("-1 year")); $i <= date("Y") + 1; $i++) : ?>
+                                    <?php if ($i ==  date("Y")) : ?>
+                                        <option value="<?php echo $i ?>" selected><?php echo $i ?></option>
+                                    <?php else: ?>
+                                        <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                    <?php endif; ?>
                                 <?php endfor; ?>
                             </select>
 
@@ -140,8 +159,12 @@
 
                         <div id="inputEndDayArea">
                             <select id="inputEndYear">
-                                <?php for ($i =  date("Y"); $i <= date("Y") + 1; $i++) : ?>
-                                    <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                <?php for ($i =  date("Y", strtotime("-1 year")); $i <= date("Y") + 1; $i++) : ?>
+                                    <?php if ($i ==  date("Y")) : ?>
+                                        <option value="<?php echo $i ?>" selected><?php echo $i ?></option>
+                                    <?php else: ?>
+                                        <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                    <?php endif; ?>
                                 <?php endfor; ?>
                             </select>
 
@@ -204,17 +227,17 @@
                         <input type="text" id="inputHourlyWage">
                     </dd>
 
-                    <dt>交通費上限</dt>
+                    <dt>交通費上限(一日)</dt>
                     <dd>
                         <p hidden id="transportationLimit"></p>
                         <input type="text" id="inputTransportationLimit">
                     </dd>
 
-                    <dt>食事手当</dt>
+                    <!-- <dt>食事手当</dt>
                     <dd>
                         <p hidden id="mealAllowance"></p>
                         <input type="text" id="inputMealAllowance">
-                    </dd>
+                    </dd> -->
 
                     <dt>現場責任者</dt>
                     <dd>
@@ -237,7 +260,7 @@
                                 <div>
                                     <select id="inputPayDay<?php echo $num ?>Year">
                                         <option value=""></option>
-                                        <?php for ($i =  date("Y"); $i <= date("Y") + 1; $i++) : ?>
+                                        <?php for ($i =  date("Y", strtotime("-1 year")); $i <= date("Y") + 1; $i++) : ?>
                                             <option value="<?php echo $i ?>"><?php echo $i ?></option>
                                         <?php endfor; ?>
                                     </select>
@@ -272,21 +295,6 @@
                         <textarea id="inputMemo"></textarea>
                     </dd>
                 </dl>
-
-                <!-- イベント日報 -->
-                <div id="dayReportArea">
-                    <div>
-                        <p>・イベント日報：</p>
-                        <select id="dayReportSelect"></select>
-                    </div>
-
-                    <dl>
-                        <dt>内容</dt>
-                        <dd>
-                            <p id="dayReport"></p>
-                        </dd>
-                    </dl>
-                </div>
             </div>
 
 
@@ -308,8 +316,6 @@
                     <table id="workReportInfoTable">
                         <tbody>
                             <tr id="workReportInfoHeader"></tr>
-                            <tr id="workReportInfoHeader2"></tr>
-                            <tr id="workReportInfoHeader3"></tr>
                         </tbody>
                     </table>
                 </div>
@@ -557,6 +563,12 @@
             </div>
             <div id="payslipArea">
                 <p>● 給与明細を複数登録する場合は入力欄で改行して登録してください。</p>
+                <p>● 出勤手当は最終出勤日に付与されます。</p>
+                <p>
+                    ● 出勤率は「 出勤の拘束総時間 ／ (イベント日数 × 営業時間) 」で算出し、小数点以下は四捨五入。
+                    <br>　 「＊」で表示されている箇所は不足している拘束総時間で算出。
+                </p>
+                <p>● 出勤率の「欠」は欠勤日数を示し、前日までのシフトに対し出勤がない日数。</p>
                 <div id="payslipMenu">
                     <p id="payslipMsg" class="errorMsg"></p>
                     <div>
@@ -569,14 +581,19 @@
                     <table id="payslipTable">
                         <tbody>
                             <tr id="payslipTableHeader">
-                                <th class="w15 sticky1">スタッフ名</th>
-                                <th class="w10 sticky2">就業規則</th>
-                                <th class="w10 sticky2">経験者手当</th>
-                                <th class="w15 sticky2">利用駅</th>
+                                <th class="w20 sticky1">スタッフ名</th>
+                                <th class="w30 sticky2">メール</th>
+                                <th class="w10 sticky2 borderRight">生年月日</th>
+                                <th class="w10 sticky2 borderRight borderLeftNone">就業規則</th>
+                                <th class="w10 sticky2 borderLeftNone">経験者手当</th>
+                                <th class="w10 sticky2">出勤手当</th>
+                                <th class="w30 sticky2 borderRight" id="attendanceRate">出勤率</th>
+                                <th class="w15 sticky2 borderLeftNone">利用駅</th>
                                 <th class="w10 sticky2">往復交通費</th>
-                                <th class="w30 sticky2">銀行口座</th>
-                                <th class="w30 sticky2">給与明細URL</th>
-                                <th class="w10 sticky2">Tシャツ</th>
+                                <th class="w30 sticky2 borderRight">銀行口座</th>
+                                <th class="w30 sticky2 borderLeftNone">差引支給額</th>
+                                <th class="w30 sticky2 borderRight">給与明細URL</th>
+                                <th class="w10 sticky2 borderLeftNone">Tシャツ</th>
                             </tr>
                         </tbody>
                     </table>

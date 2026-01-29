@@ -1,0 +1,220 @@
+@charset "UTF-8";
+
+/* 印刷用 */
+@media print {
+    #main {
+        height      : auto !important;
+        overflow    : visible !important;
+    }
+    #workReporArea td,
+    #workReporArea th {
+        border : 0.1vmin solid #666 !important;
+    }
+}
+
+#main {
+    overflow-y  : auto;
+}
+
+.title {
+    width           : 35vw;
+    margin          : 5vmin auto 0 auto;
+    border-bottom   : 0.3vmin solid #000;
+    font-size       : 3vmin;
+    font-weight     : bold;
+    text-align      : center;
+}
+
+textarea,
+select,
+input {
+    width               : 100%;
+    background          : #ececec;
+    margin              : 0;
+    padding             : 0;
+    border              : none;
+    font-size           : 1.5vmin;
+    text-align          : center;
+    text-align-last     : center;
+    cursor              : pointer;
+    outline             : none;
+    -webkit-appearance  : none;
+    appearance          : none;
+}
+
+/* ───────────────────────────────────────────────────
+   メニュー
+   ……………………………………………………………………………………………………………………………………… */
+
+#payslipInfoMenu {
+    position        : fixed;
+    width           : 25vw;
+    min-height      : 15vh;
+    padding         : 0.5vmin;
+    top             : 6vh;
+    left            : 70vw;
+    background      : #dc46186a;
+    display         : flex;
+    justify-content : space-around;
+    align-items     : center;
+    flex-flow       : column;
+    z-index         : 11;
+}
+#payslipInfoMenu p {
+    font-size   : 1.5vmin;
+    font-weight : bold;
+}
+#payslipInfoMenu #payDayArea,
+#payslipInfoMenu #registeredNetPayArea {
+    margin: 0 1vmin 0 auto;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+}
+#payslipInfoMenu #payDayArea > select {
+    width           : 10vmin;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+}
+#payslipInfoMenu button {
+    background      : #000;
+    padding         : 0 1vw;
+    font-size       : 2vmin;
+    border          : 0.1vmin solid #666;
+    border-radius   : 100vh;
+    text-align      : center;
+    color           : #fff;
+    cursor          : pointer;
+}
+
+
+
+/* ───────────────────────────────────────────────────
+   基本情報
+   ……………………………………………………………………………………………………………………………………… */
+
+#payslipInfoArea {
+    width           : 100%;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    flex-flow       : column;
+}
+#payslipInfoArea div {
+    width           : 100%;
+    margin          : 2vmin 0 0 0;
+    font-size       : 1.5vmin;
+    text-align      : center;
+    display         : flex;
+    justify-content : space-between;
+    align-items     : center;
+}
+#payslipInfoArea > #days {
+    width           : 25vw;
+    margin          : 5vmin auto 0 0;
+    border-bottom   : 0.1vmin solid #000;
+}
+#payslipInfoArea > #days > select {
+    width       : 35%;
+}
+#payslipInfoArea > div > #event {
+    width           : 30vw;
+    margin          : 0 auto 0 0;
+    border-bottom   : 0.1vmin solid #000;
+}
+#payslipInfoArea > div > #name {
+    width           : 25vw;
+    margin          : 0 0 0 auto;
+    border-bottom   : 0.1vmin solid #000;
+}
+
+
+/* ───────────────────────────────────────────────────
+   給与明細
+   ……………………………………………………………………………………………………………………………………… */
+
+#payslipArea {
+    width           : 100%;
+    margin          : 5vmin 0 10vmin 0;
+}
+#payslipArea table {
+    width           : 100%;
+    border-collapse : separate;
+    border-spacing  : 0;
+    border-radius   : 100vh 0;
+}
+#payslipArea tbody {
+    width        : 100%;
+    display      : table;
+    table-layout : fixed;
+}
+#payslipArea td,
+#payslipArea th {
+    background      : #fff;
+    height          : 5vmin;
+    margin          : 0;
+    padding         : 0;
+    font-size       : 1.5vmin;
+    text-align      : center;
+    border          : 0.1vmin solid #666;
+    border-collapse : collapse;
+}
+#payslipArea th {
+    height      : 3vmin;
+    background  : #ececec;
+}
+#payslipArea textarea {
+    width           : 95%;
+    height          : 10vmin;
+    margin          : 1%;
+    padding         : 0.5vmin;
+    text-align      : left;
+    text-align-last : left;
+
+}
+
+
+
+/* ───────────────────────────────────────────────────
+   出勤明細
+   ……………………………………………………………………………………………………………………………………… */
+
+#workReporArea {
+    width           : 100%;
+    margin          : 5vmin 0 10vmin 0;
+}
+#workReporArea table {
+    width           : 100%;
+    border-collapse : separate;
+    border-spacing  : 0;
+    border-radius   : 100vh 0;
+}
+#workReporArea tbody {
+    width        : 100%;
+    display      : table;
+    table-layout : fixed;
+}
+#workReporArea td,
+#workReporArea th {
+    background      : #fff;
+    width           : fit-content;
+    margin          : 0;
+    padding         : 0.5vmin;
+    font-size       : 1.5vmin;
+    text-align      : center;
+    border          : 0.1vmin solid #666;
+    border-collapse : collapse;
+}
+#workReporArea th {
+    background : #ececec;
+}
+#workReporArea .w10 {
+    width : 10vw;
+}
+#workReporArea .borderRight {
+    border-right : 0.5vmin double #666;
+}
+#workReporArea .borderLeftNone {
+    border-left : none;
+}

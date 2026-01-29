@@ -217,6 +217,81 @@ html::-webkit-scrollbar {
 
 
 
+/* ───────────────────────────────────────────────────
+   イベント日報
+   ……………………………………………………………………………………………………………………………………… */
+
+    #dayReportArea {
+        display         : none;
+        margin-top      : 5vmin;
+        margin-right    : auto;
+        overflow        : visible;
+        /* display         : flex; */
+        justify-content : center;
+        align-items     : start;
+        flex-flow       : column;
+        flex-wrap       : wrap;
+    }
+    #dayReportArea > div {
+        width           : 100%;
+        display         : flex;
+        justify-content : start;
+        align-items     : center;
+    }
+    #dayReportArea > div > p {
+        width       : auto;
+        font-size   : 1.5vmin;
+    }
+    #dayReportArea > div > select {
+        background          : #ececec;
+        margin              : 1vmin;
+        padding             : 0.5vmin 3vmin;
+        width               : 20vmin;
+        height              : 4vh;
+        border              : 0.1vmin solid #666;
+        border-radius       : 100vh;
+        font-size           : 2vmin;
+        text-align          : center;
+        text-align-last     : center;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
+    }
+    #dayReportArea > dl {
+        display     : none;
+        width       : 80vw;
+        margin      : 1.5vmin 0 1.5vmin 3vmin;
+        /* display     : flex; */
+        flex-wrap   : wrap;
+    }
+    #dayReportArea > dl > dt,
+    #dayReportArea > dl > dd {
+        margin          : 0;
+        padding         : 1vmin;
+        border          : 0.1vmin solid #666;
+        font-size       : 1.5vmin;
+        overflow-wrap   : anywhere;
+    }
+    #dayReportArea > dl > dt {
+        background      : #ececec;
+        width           : 20%;
+        font-weight     : bold;
+        text-align      : center;
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+    }
+    #dayReportArea > dl > dd {
+        width           : 70%;
+        padding         : 0.5vmin;
+        border-left     : none;
+        display         : flex;
+        justify-content : start;
+        align-items     : center;
+    }
+
+
 
 /* ───────────────────────────────────────────────────
    イベント情報
@@ -337,7 +412,7 @@ html::-webkit-scrollbar {
     }
     #eventInfoArea > dl > dd > #inputHourlyWage,
     #eventInfoArea > dl > dd > #inputTransportationLimit,
-    #eventInfoArea > dl > dd > #inputMealAllowance,
+    /* #eventInfoArea > dl > dd > #inputMealAllowance, */
     #eventInfoArea > dl > dd > #inputRecruit {
         width           : 40%;
         margin          : 0 1vmin;
@@ -358,74 +433,6 @@ html::-webkit-scrollbar {
     #eventInfoArea > dl > .topRight {
         border-radius   : 0 100vh 0 0;
         text-align      : center;
-    }
-    #eventInfoArea > #dayReportArea {
-        display         : none;
-        margin-top      : 5vmin;
-        margin-right    : auto;
-        overflow        : visible;
-        /* display         : flex; */
-        justify-content : center;
-        align-items     : start;
-        flex-flow       : column;
-        flex-wrap       : wrap;
-    }
-    #eventInfoArea > #dayReportArea > div {
-        width           : 100%;
-        display         : flex;
-        justify-content : start;
-        align-items     : center;
-    }
-    #eventInfoArea > #dayReportArea > div > p {
-        width       : auto;
-        font-size   : 1.5vmin;
-    }
-    #eventInfoArea > #dayReportArea > div > select {
-        background          : #ececec;
-        margin              : 1vmin;
-        padding             : 0.5vmin 3vmin;
-        width               : 20vmin;
-        height              : 4vh;
-        border              : 0.1vmin solid #666;
-        border-radius       : 100vh;
-        font-size           : 2vmin;
-        text-align          : center;
-        text-align-last     : center;
-        cursor              : pointer;
-        outline             : none;
-        -webkit-appearance  : none;
-        appearance          : none;
-    }
-    #eventInfoArea > #dayReportArea > dl {
-        width       : 80vw;
-        margin      : 1.5vmin 0 1.5vmin 3vmin;
-        display     : flex;
-        flex-wrap   : wrap;
-    }
-    #eventInfoArea > #dayReportArea > dl > dt,
-    #eventInfoArea > #dayReportArea > dl > dd {
-        margin          : 0;
-        padding         : 1vmin;
-        border          : 0.1vmin solid #666;
-        font-size       : 1.5vmin;
-        overflow-wrap   : anywhere;
-    }
-    #eventInfoArea > #dayReportArea > dl > dt {
-        background      : #ececec;
-        width           : 20%;
-        font-weight     : bold;
-        text-align      : center;
-        display         : flex;
-        justify-content : center;
-        align-items     : center;
-    }
-    #eventInfoArea > #dayReportArea > dl > dd {
-        width           : 70%;
-        padding         : 0.5vmin;
-        border-left     : none;
-        display         : flex;
-        justify-content : start;
-        align-items     : center;
     }
 
 
@@ -496,9 +503,15 @@ html::-webkit-scrollbar {
     #workReportInfoArea th {
         background : #ececec;
     }
-    #workReportInfoArea #workReportInfoHeader2 th,
-    #workReportInfoArea #workReportInfoHeader3 th {
-        font-weight: normal;
+    #workReportInfoArea th > div {
+        display         : flex;
+        justify-content : center;
+        align-items     : center;
+        flex-wrap       : wrap;
+    }
+    #workReportInfoArea th > div > p {
+        width       : 45%;
+        font-weight : normal;
     }
     #workReportInfoArea .borderTop {
         border-top : 0.1vmin solid #e1e1e1;
@@ -512,21 +525,9 @@ html::-webkit-scrollbar {
     #workReportInfoArea .borderBottom {
         border-bottom : 0.1vmin solid #e1e1e1;
     }
-    #workReportInfoArea .sticky1_1 {
+    #workReportInfoArea .sticky1 {
         position        : sticky;
         top             : 0;
-        left            : 0;
-        z-index         : 1;
-    }
-    #workReportInfoArea .sticky1_2 {
-        position        : sticky;
-        top             : 3.05vmin;
-        left            : 0;
-        z-index         : 1;
-    }
-    #workReportInfoArea .sticky1_3 {
-        position        : sticky;
-        top             : 6.1vmin;
         left            : 0;
         z-index         : 1;
     }
@@ -947,6 +948,9 @@ html::-webkit-scrollbar {
     #payslipArea .w15 {
         width : 15vmin;
     }
+    #payslipArea .w20 {
+        width : 20vmin;
+    }
     #payslipArea .w30 {
         width           : 30vmin;
         padding         : 0.5vmin 1.5vmin;
@@ -1021,6 +1025,12 @@ html::-webkit-scrollbar {
         top             : 0;
         left            : 0;
         z-index         : 7;
+    }
+    #payslipArea .borderRight {
+        border-right : 0.5vmin double #666;
+    }
+    #payslipArea .borderLeftNone {
+        border-left : none;
     }
     #payslipArea > #deleteStaff,
     #payslipArea > #addStaff {

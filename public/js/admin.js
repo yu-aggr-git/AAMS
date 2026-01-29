@@ -136,6 +136,21 @@ window.onload = () => {
     })
 
 
+    // 給与明細の作成
+    document.getElementById("payslipTable").addEventListener('click', (e) => {
+        if (e.target.className == "staffNameB") {
+            window.open(
+                (
+                    (window.location.href).replaceAll("admin", "payslip")
+                    + '?' + 'event=' + encodeURI(document.getElementById("eventName").textContent)
+                    + '&' + 'name=' + e.target.value
+                ),
+                '_blank'
+            );
+        }
+    })
+
+
     // スタッフ削除
     document.getElementById("sendDeleteStaff").onclick = function() {
         sendDeleteStaff();
@@ -189,12 +204,12 @@ function adminLogin(adminUser) {
             var table = '';
             switch (params.get('newTab')) {
                 case 'workReportInfoArea':
-                    noneList = ['menuBar', 'selectEventArea', 'eventInfoNoticeArea', 'eventInfoAreaOpen', 'workReportInfoAreaOpen', 'workReportInfoMenu', 'stampInfoAreaOpen', 'workReportInfoEditAreaOpen', 'payslipAreaOpen', 'newsAreaOpen'];
+                    noneList = ['menuBar', 'selectEventArea', 'eventInfoNoticeArea', 'dayReportArea', 'eventInfoAreaOpen', 'workReportInfoAreaOpen', 'workReportInfoMenu', 'stampInfoAreaOpen', 'workReportInfoEditAreaOpen', 'payslipAreaOpen', 'newsAreaOpen'];
                     table = 'workReportInfoTable';
                     break;
 
                 case 'workReportInfoEditArea':
-                    noneList = ['menuBar', 'selectEventArea', 'eventInfoNoticeArea', 'eventInfoAreaOpen', 'workReportInfoAreaOpen', 'stampInfoAreaOpen', 'workReportInfoEditAreaOpen', 'workReportInfoEditMenu', 'payslipAreaOpen', 'newsAreaOpen'];
+                    noneList = ['menuBar', 'selectEventArea', 'eventInfoNoticeArea', 'dayReportArea', 'eventInfoAreaOpen', 'workReportInfoAreaOpen', 'stampInfoAreaOpen', 'workReportInfoEditAreaOpen', 'workReportInfoEditMenu', 'payslipAreaOpen', 'newsAreaOpen'];
                     table = 'workReportInfoEditTable';
                     break;
             }
@@ -313,7 +328,6 @@ function getSelectEvent(selectEvent) {
                 'place',
                 'hourlyWage',
                 'transportationLimit',
-                'mealAllowance',
                 'manager',
                 'shiftUrl',
                 'payDay',
@@ -341,7 +355,6 @@ function getSelectEvent(selectEvent) {
                 'inputPlace',
                 'inputHourlyWage',
                 'inputTransportationLimit',
-                'inputMealAllowance',
                 'inputMealManager',
                 'inputShiftUrl',
                 'inputPayDayArea',
@@ -376,8 +389,6 @@ function getSelectEvent(selectEvent) {
 
         var paramDB = {'event': selectEvent};
         opDB('getEvent', paramDB);
-        opDB('getStaffList', paramDB);
-        opDB('getWorkReportEditAll', paramDB);
     } else {
         window.location.reload();
     }
@@ -408,7 +419,6 @@ function eventEdit(id) {
         'place'                 : document.getElementById("inputPlace").value,
         'hourlyWage'            : document.getElementById("inputHourlyWage").value,
         'transportationLimit'   : document.getElementById("inputTransportationLimit").value,
-        'mealAllowance'         : document.getElementById("inputMealAllowance").value,
         'manager'               : document.getElementById("inputMealManager").value,
         'shiftUrl'              : document.getElementById("inputShiftUrl").value,
         'payDay'                : '',
@@ -488,8 +498,8 @@ function eventEdit(id) {
 
         case 'editEventEdit':
             common_op_view({
-                'block' : ['inputRecruit', 'eventName', 'inputPass',  'inputPlace', 'inputHourlyWage', 'inputTransportationLimit', 'inputMealAllowance', 'inputMealManager', 'inputShiftUrl', 'inputPayDayArea', 'inputMemo', 'cancelEventEdit' ,'sendEventEdit'],
-                'none'  : ['recruit','pass', 'firstDay', 'endDay', 'time', 'place', 'hourlyWage', 'transportationLimit', 'mealAllowance', 'manager', 'shiftUrl', 'payDay', 'memo', 'inputEventName', 'deleteEvent', 'editEventEdit'],
+                'block' : ['inputRecruit', 'eventName', 'inputPass',  'inputPlace', 'inputHourlyWage', 'inputTransportationLimit', 'inputMealManager', 'inputShiftUrl', 'inputPayDayArea', 'inputMemo', 'cancelEventEdit' ,'sendEventEdit'],
+                'none'  : ['recruit','pass', 'firstDay', 'endDay', 'time', 'place', 'hourlyWage', 'transportationLimit', 'manager', 'shiftUrl', 'payDay', 'memo', 'inputEventName', 'deleteEvent', 'editEventEdit'],
                 'flex'  : ['inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea']
             });
             common_text_entry({
@@ -507,7 +517,6 @@ function eventEdit(id) {
                     'inputPlace'                : '',
                     'inputHourlyWage'           : '',
                     'inputTransportationLimit'  : '',
-                    'inputMealAllowance'        : '',
                     'inputMealManager'          : '',
                     'inputShiftUrl'             : '',
                     'inputPayDay1Year'          : '',
@@ -545,7 +554,6 @@ function eventEdit(id) {
                     'inputPlace'                : document.getElementById("place").textContent,
                     'inputHourlyWage'           : document.getElementById("hourlyWage").textContent,
                     'inputTransportationLimit'  : document.getElementById("transportationLimit").textContent,
-                    'inputMealAllowance'        : document.getElementById("mealAllowance").textContent,
                     'inputMealManager'          : document.getElementById("manager").textContent,
                     'inputShiftUrl'             : document.getElementById("shiftUrl").querySelector('a').textContent,
                     'inputMemo'                 : document.getElementById("memo").innerHTML.replaceAll("<br>", "\n"),
@@ -570,8 +578,8 @@ function eventEdit(id) {
 
         case 'cancelEventEdit':
             common_op_view({
-                'block' : ['recruit', 'pass', 'firstDay', 'endDay', 'time', 'place', 'hourlyWage', 'transportationLimit', 'mealAllowance', 'manager', 'shiftUrl', 'payDay', 'memo', 'deleteEvent', 'editEventEdit'],
-                'none'  : ['inputRecruit', 'inputPass', 'inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea',  'inputPlace', 'inputHourlyWage', 'inputTransportationLimit', 'inputMealAllowance', 'inputMealManager', 'inputShiftUrl', 'inputPayDayArea', 'inputMemo', 'cancelEventEdit' ,'sendEventEdit']
+                'block' : ['recruit', 'pass', 'firstDay', 'endDay', 'time', 'place', 'hourlyWage', 'transportationLimit', 'manager', 'shiftUrl', 'payDay', 'memo', 'deleteEvent', 'editEventEdit'],
+                'none'  : ['inputRecruit', 'inputPass', 'inputFirstDayArea', 'inputEndDayArea', 'inputTimeArea',  'inputPlace', 'inputHourlyWage', 'inputTransportationLimit', 'inputMealManager', 'inputShiftUrl', 'inputPayDayArea', 'inputMemo', 'cancelEventEdit' ,'sendEventEdit']
             });
             break;
 
@@ -825,15 +833,17 @@ function payslipEdit(id) {
             Array.from(payslipTable.querySelectorAll("tr")).forEach(function(e) {
                 if (!e.id) {
                     var name        = e.querySelectorAll("td")[0].textContent.split(/\./)[1];
-                    var workRules   = e.querySelectorAll("td")[1].querySelector("input").checked ? 'レ' : '';
-                    var experience  = e.querySelectorAll("td")[2].querySelector("input").value;
-                    var payslipUrl  = e.querySelectorAll("td")[6].querySelector("textarea").value;
-                    var tShirt      = e.querySelectorAll("td")[7].querySelector("input").checked ? 'レ' : '';
+                    var workRules   = e.querySelectorAll("td")[3].querySelector("input").checked ? 'レ' : '';
+                    var experience  = e.querySelectorAll("td")[4].querySelector("input").value;
+                    var attendance  = e.querySelectorAll("td")[5].querySelector("input").value;
+                    var payslipUrl  = e.querySelectorAll("td")[11].querySelector("textarea").value;
+                    var tShirt      = e.querySelectorAll("td")[12].querySelector("input").checked ? 'レ' : '';
 
                     payslipList.push(
                         name
                         + '|' + workRules
                         + '|' + experience
+                        + '|' + attendance
                         + '|' + payslipUrl
                         + '|' + tShirt
                     );
@@ -1101,7 +1111,6 @@ function opDB(op, paramDB) {
                         'place'                 : '',
                         'hourlyWage'            : '',
                         'transportationLimit'   : '',
-                        'mealAllowance'         : '',
                         'manager'               : '',
                         'aShiftUrl'             : '',
                         'payDay'                : '',
@@ -1114,8 +1123,6 @@ function opDB(op, paramDB) {
                 common_clear_children({
                     'all'   : {
                         'workReportInfoHeader'  : 'th',
-                        'workReportInfoHeader2' : 'th',
-                        'workReportInfoHeader3' : 'th',
                         'selectStampInfoDay'    : 'option',
                         'dayReportSelect'       : 'option',
                     }
@@ -1136,7 +1143,6 @@ function opDB(op, paramDB) {
                             'place'                 : data.place,
                             'hourlyWage'            : data.hourly_wage,
                             'transportationLimit'   : data.transportation_limit,
-                            'mealAllowance'         : data.meal_allowance,
                             'manager'               : data.manager,
                             'aShiftUrl'             : (data.shift_url ? data.shift_url : ''),
                             'memo'                  : data.memo,
@@ -1155,9 +1161,12 @@ function opDB(op, paramDB) {
                         'element'       : th,
                         'className'     : 'sticky3',
                         'innerText'     : 'スタッフ名',
-                        'rowSpan'       : '3',
                     });
                     document.getElementById("workReportInfoHeader").appendChild(th);
+
+                    const dayOfTime = common_clac(data.first_day, data.start_time, data.end_time, 'diff');
+                    let eventDay    = 0;
+                    let eventTime   = '0:00';
 
                     const firstDay = data.first_day.split(/-/);
                     const endDay = data.end_day.split(/-/);
@@ -1166,51 +1175,56 @@ function opDB(op, paramDB) {
                         date <= new Date(endDay[0], endDay[1] - 1, endDay[2]);
                         date.setDate(date.getDate() + 1)
                     ){
-                        // 日付
+                        eventDay++;
+                        eventTime = common_clac(data.first_day, dayOfTime, eventTime, 'sum');
+
                         var th = document.createElement("th");
                         common_set_element({
                             'element'       : th,
-                            'className'     : 'sticky1_1',
-                            'innerText'     : date.toLocaleDateString('sv-SE'),
+                            'className'     : 'sticky1',
                             'colSpan'       : '2',
                         });
-                        document.getElementById("workReportInfoHeader").appendChild(th);
 
-                        // 出勤
-                        var th = document.createElement("th");
+                        // 日付
+                        var day = document.createElement("p");
                         common_set_element({
-                            'element'       : th,
-                            'className'     : 'borderRight borderBottom sticky1_2',
+                            'element'       : day,
+                            'innerText'     : date.toLocaleDateString('sv-SE'),
+                        });
+                        th.appendChild(day);
+
+                        // 項目
+                        var div = document.createElement("div");
+                        var item1 = document.createElement("p");
+                        common_set_element({
+                            'element'       : item1,
+                            'className'     : 'borderRight borderBottom',
                             'innerText'     : '出勤',
                         });
-                        document.getElementById("workReportInfoHeader2").appendChild(th);
-
-                        // 退勤
-                        var th = document.createElement("th");
+                        var item2 = document.createElement("p");
                         common_set_element({
-                            'element'       : th,
-                            'className'     : 'borderLeft borderBottom sticky1_2',
+                            'element'       : item2,
+                            'className'     : 'borderLeft borderBottom',
                             'innerText'     : '退勤',
                         });
-                        document.getElementById("workReportInfoHeader2").appendChild(th);
-
-                        // 休憩
-                        var th = document.createElement("th");
+                        var item3 = document.createElement("p");
                         common_set_element({
-                            'element'       : th,
-                            'className'     : 'borderTop borderRight sticky1_3',
+                            'element'       : item3,
+                            'className'     : 'borderTop borderRight',
                             'innerText'     : '休憩',
                         });
-                        document.getElementById("workReportInfoHeader3").appendChild(th);
-
-                        // 実働
-                        var th = document.createElement("th");
+                        var item4 = document.createElement("p");
                         common_set_element({
-                            'element'       : th,
-                            'className'     : 'borderTop borderLeft sticky1_3',
+                            'element'       : item4,
+                            'className'     : 'borderTop borderLeft',
                             'innerText'     : '実働',
                         });
-                        document.getElementById("workReportInfoHeader3").appendChild(th);
+                        div.appendChild(item1);
+                        div.appendChild(item2);
+                        div.appendChild(item3);
+                        div.appendChild(item4);
+                        th.appendChild(div);
+                        document.getElementById("workReportInfoHeader").appendChild(th);
 
                         // 打刻修正選択
                         var option = document.createElement("option");
@@ -1232,16 +1246,32 @@ function opDB(op, paramDB) {
                     }
 
 
+                    // スタッフリストの出勤率
+                    eventTime = common_convert_time(eventTime);
+                    common_text_entry({'innerHTML' : {
+                        'attendanceRate' : '出勤率<br>(全' + eventDay + '日・' + eventTime + 'h)'
+                    }});
+
+
+                    // スタッフリストの取得
+                    var nextParamDB = {
+                        'event'     : paramDB['event'],
+                        'eventTime' : eventTime
+                    };
+                    opDB('getStaffList', nextParamDB);
+
+
                     // 日報の取得
                     let yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() - 1);
-                    common_text_entry({'value' : {'dayReportSelect' : yesterday.toISOString().split("T")[0]}});
-
-                    var nextParamDB = {
+                    common_text_entry({
+                        'value' : {'dayReportSelect' : yesterday.toISOString().split("T")[0]}
+                    });
+                    var nextParamDB2 = {
                         'event' : paramDB['event'],
                         'day'   : yesterday.toISOString().split("T")[0]
                     };
-                    opDB('getDayReport', nextParamDB);
+                    opDB('getDayReport', nextParamDB2);
                 }
             }
             break;
@@ -1489,7 +1519,6 @@ function opDB(op, paramDB) {
                 + "&place="                 + encodeURIComponent(paramDB.place)
                 + "&hourlyWage="            + encodeURIComponent(paramDB.hourlyWage)
                 + "&transportationLimit="   + encodeURIComponent(paramDB.transportationLimit)
-                + "&mealAllowance="         + encodeURIComponent(paramDB.mealAllowance)
                 + "&manager="               + encodeURIComponent(paramDB.manager)
                 + "&shiftUrl="              + encodeURIComponent(paramDB.shiftUrl)
                 + "&payDay="                + encodeURIComponent(paramDB.payDay)
@@ -1524,7 +1553,6 @@ function opDB(op, paramDB) {
                 + "&place="                 + encodeURIComponent(paramDB.place)
                 + "&hourlyWage="            + encodeURIComponent(paramDB.hourlyWage)
                 + "&transportationLimit="   + encodeURIComponent(paramDB.transportationLimit)
-                + "&mealAllowance="         + encodeURIComponent(paramDB.mealAllowance)
                 + "&manager="               + encodeURIComponent(paramDB.manager)
                 + "&shiftUrl="              + encodeURIComponent(paramDB.shiftUrl)
                 + "&payDay="                + encodeURIComponent(paramDB.payDay)
@@ -1567,7 +1595,7 @@ function opDB(op, paramDB) {
             break;
 
         case 'getStaffList':
-            var param = "function=" + "get_staff_list"
+            var param = "function=" + "get_staff_list_admin"
                 + "&event=" + encodeURIComponent(paramDB['event'])
             ;
 
@@ -1575,8 +1603,9 @@ function opDB(op, paramDB) {
                 // 初期値
                 common_clear_children({
                     'all'   : {
-                        'selectStampInfoStaff'  : 'option',
-                        'deleteStaffName'       : 'option',
+                        'selectStampInfoStaff'      : 'option',
+                        'deleteStaffName'           : 'option',
+                        'workReportInfoEditArea'    : 'td'
                     },
                     'notId' : {
                         'workReportInfoTable'   : 'tr',
@@ -1598,177 +1627,582 @@ function opDB(op, paramDB) {
                     const data = JSON.parse(this.response);
 
                     if (data) {
-                        Object.keys(data).forEach(function(key) {
+                        const orderList = ['start', 'break1s', 'break1e', 'break2s', 'break2e', 'break3s', 'break3e', 'end'];
+                        let nameKeyNum  = [];
+                        let dayNum      = [];
+                        let itemNum     = [];
+                        let i           = 0;
 
-                            // 勤怠情報表示
-                            var tr = document.createElement("tr");
-                            var tr2 = document.createElement("tr");
-                            document.getElementById("workReportInfoTable").querySelector("tbody").appendChild(tr);
-                            document.getElementById("workReportInfoTable").querySelector("tbody").appendChild(tr2);
-                            var nextParamDB = {
-                                'event' : paramDB['event'],
-                                'no'    : data[key].no,
-                                'name'  : data[key].name,
-                                'tr'    : tr,
-                                'tr2'   : tr2
-                            };
-                            opDB('getWorkReport', nextParamDB);
+                        Object.keys(data).forEach(function(name) {
+                            var sl  = data[name]['staff_list'];
+                            var wr  = data[name]['work_report'];
+                            var wre = data[name]['work_report_edit'];
 
+                            // スタッフNo.
+                            var no = sl['no'];
+
+                            // 出勤数
+                            var workNum = [];
+
+                            // シフト
+                            var notWork = 0;
+                            var shift = [];
+                            if (sl.shift) {
+                                (sl.shift.split(/,/)).forEach(function(d) {
+                                    var dA = d.split(/_/);
+                                    var shiftTime =  dA[1] + '_' + dA[2]
+
+                                    if (shiftTime != '×_×') {
+                                        shift[dA[0]] = shiftTime;
+                                        notWork++;
+                                    }
+                                });
+                            }
 
                             // 打刻情報表示
-                            var option = document.createElement("option");
+                            var stamp_option = document.createElement("option");
                             common_set_element({
-                                'element'   : option,
-                                'text'      : data[key].no + '.' + data[key].name,
-                                'value'     : data[key].name,
+                                'element'   : stamp_option,
+                                'text'      : no + '.' + name,
+                                'value'     : name,
                             });
-                            document.getElementById("selectStampInfoStaff").appendChild(option);
-
+                            document.getElementById("selectStampInfoStaff").appendChild(stamp_option);
 
                             // スタッフ削除
-                            var option2 = document.createElement("option");
+                            var deleteStaff_option = document.createElement("option");
                             common_set_element({
-                                'element'   : option2,
-                                'text'      : data[key].no + '.' + data[key].name,
-                                'value'     : data[key].name,
+                                'element'   : deleteStaff_option,
+                                'text'      : no + '.' + name,
+                                'value'     : name,
                             });
-                            document.getElementById("deleteStaffName").appendChild(option2);
+                            document.getElementById("deleteStaffName").appendChild(deleteStaff_option);
+
+
+                            // 勤怠情報
+                            if (Object.keys(wr).length != 0) {
+                                var totalDay    = 0;
+                                var totalTime   = '0:00';
+                                var note        = '';
+
+                                var wr_tr  = document.createElement("tr");
+                                var wr_tr2 = document.createElement("tr");
+                                document.getElementById("workReportInfoTable").querySelector("tbody").appendChild(wr_tr);
+                                document.getElementById("workReportInfoTable").querySelector("tbody").appendChild(wr_tr2);
+
+                                // 名前
+                                var wr_name = document.createElement("td");
+                                common_set_element({
+                                    'element'   : wr_name,
+                                    'className' : 'sticky2',
+                                    'innerText' : no + '.' + name,
+                                    'rowSpan'   : '2',
+                                });
+                                wr_tr.appendChild(wr_name);
+
+                                Array.from(document.getElementById("workReportInfoHeader").querySelectorAll("th")).forEach(function(e) {
+                                    var day = e.querySelector("p") ? e.querySelector("p").textContent : '';
+
+                                    if (common_validation_day(day)) {
+                                        var start = document.createElement("td");
+                                        common_set_element({
+                                            'element'   : start,
+                                            'className' : 'borderRight borderBottom',
+                                        });
+                                        var end = document.createElement("td");
+                                        common_set_element({
+                                            'element'   : end,
+                                            'className' : 'borderLeft borderBottom',
+                                        });
+                                        var breaTime = document.createElement("td");
+                                        common_set_element({
+                                            'element'   : breaTime,
+                                            'className' : 'borderTop borderRight',
+                                        });
+                                        var workTime = document.createElement("td");
+                                        common_set_element({
+                                            'element'   : workTime,
+                                            'className' : 'borderTop borderLeft',
+                                        });
+
+
+                                        if (day in wr) {
+                                            var wrDay   = wr[day];
+                                            var dataS   = '';
+                                            var dataE   = '';
+                                            var dataB   = '';
+                                            var dataW   = '';
+                                            var sumTime = '';
+
+                                            // 出勤
+                                            if (wrDay.start && wrDay.start != '-') {
+                                                dataS = wrDay.start;
+
+                                                if (!dataS.startsWith('＊')) {
+                                                    // 切り上げ
+                                                    dataS = common_ceil(dataS);
+                                                }
+                                            }
+
+                                            // 退勤
+                                            if (wrDay.end && wrDay.end != '-') {
+                                                dataE = wrDay.end;
+
+                                                if (!dataE.startsWith('＊')) {
+                                                    // 切り捨て
+                                                    dataE = common_floor(dataS, dataE);
+                                                }
+                                            }
+
+                                            // 時間計算
+                                            var reportTime = common_report_time(
+                                                day,
+                                                dataS,
+                                                common_validation_time(wrDay.break1s) ? common_ceil(wrDay.break1s) : '',
+                                                common_validation_time(wrDay.break1e) ? common_ceil(wrDay.break1e) : '',
+                                                common_validation_time(wrDay.break2s) ? common_ceil(wrDay.break2s) : '',
+                                                common_validation_time(wrDay.break2e) ? common_ceil(wrDay.break2e) : '',
+                                                common_validation_time(wrDay.break3s) ? common_ceil(wrDay.break3s) : '',
+                                                common_validation_time(wrDay.break3e) ? common_ceil(wrDay.break3e) : '',
+                                                dataE
+                                            );
+
+                                            // 拘束・休憩・実働
+                                            var dataB   = reportTime.breakTime;
+                                            var dataW   = reportTime.workTime;
+                                            var sumTime = reportTime.sumTime;
+
+
+                                            // 値の設定
+                                            start.innerText     = dataS;
+                                            end.innerText       = dataE;
+                                            breaTime.innerText  = dataB;
+                                            workTime.innerText  = dataW;
+                                        }
+
+                                        wr_tr.appendChild(start);
+                                        wr_tr.appendChild(end);
+                                        wr_tr2.appendChild(breaTime);
+                                        wr_tr2.appendChild(workTime);
+
+                                        // 各値の設定
+                                        if (dataS) {
+                                            // 勤務総日数
+                                            totalDay++;
+
+                                            // 拘束総時間
+                                            totalTime = common_validation_hhmm(sumTime) ? common_clac(day, sumTime, totalTime, 'sum') : totalTime;
+                                            if (dataW.startsWith('＊')) {
+                                                note = '＊';
+                                            }
+                                        }
+                                        if (day in shift) {
+                                            // 前日までの欠勤日数
+                                            notWork = (day >= common_date().yyyymmdd)
+                                                ? notWork - 1
+                                                : dataS ? notWork - 1 : notWork
+                                            ;
+                                        }
+                                    }
+                                });
+
+                                // 出勤率の設定
+                                workNum = {
+                                    'totalDay'  : totalDay,
+                                    'totalTime' : note + totalTime,
+                                    'notWork'   : notWork,
+                                } 
+                            }
+
+
+                            // 勤怠修正情報
+                            if (Object.keys(wre).length != 0) {
+                                i++;
+                                nameKeyNum[no] = 0;
+
+                                var wre_name = document.createElement("td");
+
+                                Object.keys(wre).forEach(function(day) {
+                                    // 日付データ
+                                    dayNum[day] = 0;
+                                    var wreDay  = wre[day];
+                                    var wre_day = document.createElement("td");
+
+                                    Object.keys(orderList).forEach(function(orderName) {
+                                        // 項目名
+                                        var itemKey = orderList[orderName];
+
+                                        // 項目データ
+                                        var wreDayItem = wreDay[itemKey];
+                                        if (wreDayItem) {
+                                            itemNum[itemKey] = 0;
+                                            var wre_item     = document.createElement("td");
+
+                                            Object.keys(wreDayItem).forEach(function(request) {
+                                                // 申請日データ
+                                                nameKeyNum[no]          = nameKeyNum[no] + 1;
+                                                dayNum[day]             = dayNum[day] + 1;
+                                                itemNum[itemKey]        = itemNum[itemKey] + 1;
+                                                var wreDayItemRequest   = wreDayItem[request];
+                                                var wre_tr              = document.createElement("tr");
+
+                                                // スタッフ名
+                                                if (nameKeyNum[no] == 1) {
+                                                    common_set_element({
+                                                        'element'       : wre_name,
+                                                        'className'     : 'sticky1',
+                                                        'innerText'     : no + '.' + name,
+                                                        'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                        'rowSpan'       : nameKeyNum[no],
+                                                    });
+                                                    wre_tr.appendChild(wre_name);
+                                                } else {
+                                                    common_set_element({
+                                                        'element'       : wre_name,
+                                                        'className'     : 'sticky1 valueTop',
+                                                        'rowSpan'       : nameKeyNum[no],
+                                                    });
+                                                }
+
+                                                // 対象日
+                                                if (dayNum[day] == 1) {
+                                                    common_set_element({
+                                                        'element'       : wre_day,
+                                                        'className'     : 'sticky2',
+                                                        'innerText'     : day,
+                                                        'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                        'rowSpan'       : dayNum[day],
+                                                    });
+                                                    wre_tr.appendChild(wre_day);
+                                                } else {
+                                                    common_set_element({
+                                                        'element'       : wre_day,
+                                                        'className'     : 'sticky2 valueTop',
+                                                        'rowSpan'       : dayNum[day],
+                                                    });
+                                                }
+
+                                                // 項目
+                                                if (itemNum[itemKey] == 1) {
+                                                    common_set_element({
+                                                        'element'       : wre_item,
+                                                        'className'     : 'sticky3',
+                                                        'innerText'     : common_itemName(itemKey),
+                                                        'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                        'rowSpan'       : itemNum[itemKey],
+                                                    });
+                                                    wre_tr.appendChild(wre_item);
+                                                } else {
+                                                    common_set_element({
+                                                        'element'       : wre_item,
+                                                        'className'     : 'sticky3 valueTop',
+                                                        'rowSpan'       : itemNum[itemKey],
+                                                    });
+                                                }
+
+                                                // 状態
+                                                var wre_status = document.createElement("td");
+                                                common_set_element({
+                                                    'element'       : wre_status,
+                                                    'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                });
+                                                var wre_statusB = document.createElement("button");
+                                                common_set_element({
+                                                    'element'       : wre_statusB,
+                                                    'className'     : 'statusB selectStatusB',
+                                                    'innerText'     : wreDayItemRequest.status,
+                                                    'value'         : (
+                                                        wreDayItemRequest.request_dt
+                                                        + '|' + name
+                                                        + '|' + day
+                                                        + '|' + itemKey
+                                                        + '|' + wreDayItemRequest.data_before
+                                                        + '|' + wreDayItemRequest.data_after
+                                                    ),
+                                                    'background'    : common_workReportEditStatus_color(wreDayItemRequest.status),
+                                                });
+                                                wre_status.appendChild(wre_statusB);
+                                                wre_tr.appendChild(wre_status);
+
+                                                // 修正前
+                                                var wre_data_before = document.createElement("td");
+                                                common_set_element({
+                                                    'element'       : wre_data_before,
+                                                    'innerText'     : wreDayItemRequest.data_before,
+                                                    'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                });
+                                                wre_tr.appendChild(wre_data_before);
+
+                                                // 修正後
+                                                var wre_data_after = document.createElement("td");
+                                                common_set_element({
+                                                    'element'       : wre_data_after,
+                                                    'innerText'     : wreDayItemRequest.data_after,
+                                                    'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                });
+                                                wre_tr.appendChild(wre_data_after);
+
+                                                // 理由
+                                                var wre_reason = document.createElement("td");
+                                                common_set_element({
+                                                    'element'       : wre_reason,
+                                                    'className'     : 'w25 textLeft',
+                                                    'innerText'     : wreDayItemRequest.reason,
+                                                    'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                });
+                                                wre_tr.appendChild(wre_reason);
+
+                                                // 申請日
+                                                var wre_request_dt = document.createElement("td");
+                                                common_set_element({
+                                                    'element'       : wre_request_dt,
+                                                    'className'     : 'w25',
+                                                    'innerText'     : wreDayItemRequest.request_dt,
+                                                    'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                });
+                                                wre_tr.appendChild(wre_request_dt);
+
+                                                // 処理日
+                                                var wre_approval_d = document.createElement("td");
+                                                common_set_element({
+                                                    'element'       : wre_approval_d,
+                                                    'innerText'     : wreDayItemRequest.approval_d,
+                                                    'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
+                                                });
+                                                wre_tr.appendChild(wre_approval_d);
+
+                                                document.getElementById("workReportInfoEditArea").querySelector("tbody").appendChild(wre_tr);
+                                            });
+                                        }
+                                    });
+                                });
+                            }
 
 
                             // スタッフリスト
-                            var tr3 = document.createElement("tr");
+                            if (sl.length != 0) {
+                                var sl_tr = document.createElement("tr");
 
-                            // 氏名
-                            var staffName = document.createElement("td");
-                            common_set_element({
-                                'element'   : staffName,
-                                'className' : 'w15 sticky3 textLeft',
-                                'innerText' : data[key].no + '.' + data[key].name,
-                            });
-
-                            // 就業規則
-                            var workRules = document.createElement("td");
-                            common_set_element({
-                                'element'   : workRules,
-                                'className' : 'w10',
-                            });
-                            var workRulesP = document.createElement("p");
-                            common_set_element({
-                                'element'       : workRulesP,
-                                'innerText'     : data[key].work_rules,
-                                'fontWeight'    : 'bold',
-                            });
-                            var workRulesI = document.createElement('input');
-                            common_set_element({
-                                'element'   : workRulesI,
-                                'type'      : "checkbox",
-                                'checked'   : (data[key].work_rules == 'レ' ? true : false),
-                            });
-                            workRules.appendChild(workRulesP);
-                            workRules.appendChild(workRulesI);
-
-                            // 経験者手当
-                            var experience = document.createElement("td");
-                            common_set_element({
-                                'element'   : experience,
-                                'className' : 'w10',
-                            });
-                            var experienceP = document.createElement("p");
-                            common_set_element({
-                                'element'   : experienceP,
-                                'innerText' : (data[key].experience ? data[key].experience + '円' : ''),
-                            });
-                            var experienceI = document.createElement('input');
-                            common_set_element({
-                                'element'   : experienceI,
-                                'value'     : data[key].experience,
-                                'type'      : "text",
-                            });
-                            experience.appendChild(experienceP);
-                            experience.appendChild(experienceI);
-
-                            // 利用駅
-                            var station = document.createElement("td");
-                            common_set_element({
-                                'element'   : station,
-                                'className' : 'w10',
-                                'innerText' : data[key].station,
-                            });
-
-                            // 交通費
-                            var transportation = document.createElement("td");
-                            common_set_element({
-                                'element'   : transportation,
-                                'innerText' : (data[key].transportation ? data[key].transportation + '円' : ''),
-                            });
-
-                            // 銀行口座
-                            var bankA = data[key].bank ? data[key].bank.split(/_/) : '';
-                            var bank = document.createElement("td");
-                            common_set_element({
-                                'element'   : bank,
-                                'className' : 'w30 textLeft',
-                                'innerHTML' : (data[key].bank ? bankA[0] + ' ' + bankA [1] + '<br>' + bankA[2] + ' ' + bankA[3] : ''),
-                            });
-
-                            // 給与明細URL
-                            var payslipUrl = document.createElement("td");
-                            common_set_element({
-                                'element'   : payslipUrl,
-                                'className' : 'w30 textLeft',
-                            });
-                            if (data[key].payslip) {
-                                data[key].payslip.split(/\n/).forEach(function(val) {
-                                    var payslipUrlA = document.createElement("a");
-                                    common_set_element({
-                                        'element'   : payslipUrlA,
-                                        'innerText' : val,
-                                        'href'      : val,
-                                        'target'    : '_blank',
-                                        'display'   : 'block',
-                                    });
-                                    payslipUrl.appendChild(payslipUrlA);
+                                // 氏名
+                                var sl_staffName = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_staffName,
+                                    'className' : 'w20 sticky3 textLeft',
                                 });
+                                var sl_staffNameB = document.createElement("button");
+                                common_set_element({
+                                    'element'   : sl_staffNameB,
+                                    'className' : 'staffNameB',
+                                    'innerText' : no + '.' + name,
+                                    'value'     : name,
+                                });
+                                sl_staffName.appendChild(sl_staffNameB);
+                                sl_tr.appendChild(sl_staffName);
+
+
+                                // メール
+                                var sl_mail = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_mail,
+                                    'className' : 'w30 textLeft',
+                                    'innerText' : sl.mail,
+                                });
+                                sl_tr.appendChild(sl_mail);
+
+
+                                // 生年月日
+                                var sl_birthday = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_birthday,
+                                    'className' : 'w15 borderRight',
+                                    'innerText' : sl.birthday,
+                                });
+                                sl_tr.appendChild(sl_birthday);
+
+
+                                // 就業規則
+                                var sl_workRules = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_workRules,
+                                    'className' : 'w10 borderRight borderLeftNone',
+                                });
+                                var sl_workRulesP = document.createElement("p");
+                                common_set_element({
+                                    'element'       : sl_workRulesP,
+                                    'innerText'     : sl.work_rules,
+                                    'fontWeight'    : 'bold',
+                                });
+                                var sl_workRulesI = document.createElement('input');
+                                common_set_element({
+                                    'element'   : sl_workRulesI,
+                                    'type'      : "checkbox",
+                                    'checked'   : (sl.work_rules == 'レ' ? true : false),
+                                });
+                                sl_workRules.appendChild(sl_workRulesP);
+                                sl_workRules.appendChild(sl_workRulesI);
+                                sl_tr.appendChild(sl_workRules);
+
+
+                                // 経験者手当
+                                var sl_experience = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_experience,
+                                    'className' : 'w10 borderLeftNone',
+                                });
+                                var sl_experienceP = document.createElement("p");
+                                common_set_element({
+                                    'element'   : sl_experienceP,
+                                    'innerText' : (sl.experience ? sl.experience + '円' : ''),
+                                });
+                                var sl_experienceI = document.createElement('input');
+                                common_set_element({
+                                    'element'   : sl_experienceI,
+                                    'value'     : sl.experience,
+                                    'type'      : "text",
+                                });
+                                sl_experience.appendChild(sl_experienceP);
+                                sl_experience.appendChild(sl_experienceI);
+                                sl_tr.appendChild(sl_experience);
+
+
+                                // 出勤手当
+                                var sl_attendance = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_attendance,
+                                    'className' : 'w10',
+                                });
+                                var sl_attendanceP = document.createElement("p");
+                                common_set_element({
+                                    'element'   : sl_attendanceP,
+                                    'innerHTML' : (sl.attendance ? sl.attendance + '円' : ''),
+                                });
+                                var sl_attendanceI = document.createElement('input');
+                                common_set_element({
+                                    'element'   : sl_attendanceI,
+                                    'value'     : sl.attendance,
+                                    'type'      : "text",
+                                });
+                                sl_attendance.appendChild(sl_attendanceP);
+                                sl_attendance.appendChild(sl_attendanceI);
+                                sl_tr.appendChild(sl_attendance);
+
+
+                                // 出勤率
+                                var workTime = ('totalTime' in workNum ? common_convert_time(workNum['totalTime']) : 0);
+                                var sl_attendanceRate = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_attendanceRate,
+                                    'className' : 'w30 textLeft borderRight',
+                                    'innerHTML' :  (
+                                        '出：' + common_clac_attendance(paramDB['eventTime'], workTime)
+                                        + ' (' + ('totalDay' in workNum ? workNum['totalDay'] : 0) + '日'
+                                        + '・' + workTime + 'h)'
+                                        + '<br>欠：' + notWork + '日'
+                                    ),
+                                });
+                                sl_tr.appendChild(sl_attendanceRate);
+
+
+                                // 利用駅
+                                var sl_station = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_station,
+                                    'className' : 'w10 borderLeftNone',
+                                    'innerText' : sl.station,
+                                });
+                                sl_tr.appendChild(sl_station);
+
+
+                                // 交通費
+                                var sl_transportation = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_transportation,
+                                    'innerText' : (sl.transportation ? sl.transportation + '円' : ''),
+                                });
+                                sl_tr.appendChild(sl_transportation);
+
+
+                                // 銀行口座
+                                var bankA = sl.bank ? sl.bank.split(/_/) : '';
+                                var sl_bank = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_bank,
+                                    'className' : 'w30 textLeft borderRight',
+                                    'innerHTML' : (sl.bank ? bankA[0] + ' ' + bankA [1] + '<br>' + bankA[2] + ' ' + bankA[3] : ''),
+                                });
+                                sl_tr.appendChild(sl_bank);
+
+
+                                // 差引支給額
+                                var netPay = ''; 
+                                if (sl.net_pay) {
+                                    sl.net_pay.split(/,/).forEach(function(val) {
+                                        var netPayA = val.split(/_/);
+                                        netPay = netPay + (netPayA[0] + '支払 : ' + Number(netPayA[2]).toLocaleString() + '円<br>');
+                                    });
+                                }
+                                var sl_netPay = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_netPay,
+                                    'className' : 'w30 borderLeftNone',
+                                    'innerHTML' : netPay,
+                                });
+                                sl_tr.appendChild(sl_netPay);
+
+
+                                // 給与明細URL
+                                var sl_payslipUrl = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_payslipUrl,
+                                    'className' : 'w30 textLeft borderRight',
+                                });
+                                if (sl.payslip) {
+                                    sl.payslip.split(/\n/).forEach(function(val) {
+                                        var sl_payslipUrlA = document.createElement("a");
+                                        common_set_element({
+                                            'element'   : sl_payslipUrlA,
+                                            'innerText' : val,
+                                            'href'      : val,
+                                            'target'    : '_blank',
+                                            'display'   : 'block',
+                                        });
+                                        sl_payslipUrl.appendChild(sl_payslipUrlA);
+                                    });
+                                }
+                                var sl_payslipUrlT = document.createElement("textarea");
+                                common_set_element({
+                                    'element'   : sl_payslipUrlT,
+                                    'innerHTML' : sl.payslip,
+                                    'name'      : 'payslip',
+                                });
+                                sl_payslipUrl.appendChild(sl_payslipUrlT);
+                                sl_tr.appendChild(sl_payslipUrl);
+
+
+                                // Tシャツ
+                                var sl_tShirt = document.createElement("td");
+                                common_set_element({
+                                    'element'   : sl_tShirt,
+                                    'className' : 'w10 borderLeftNone',
+                                });
+                                var sl_tShirtP = document.createElement("p");
+                                common_set_element({
+                                    'element'       : sl_tShirtP,
+                                    'innerText'     : sl.t_shirt,
+                                    'fontWeight'    : 'bold',
+                                });
+                                var sl_tShirtI = document.createElement('input');
+                                common_set_element({
+                                    'element'   : sl_tShirtI,
+                                    'type'      : "checkbox",
+                                    'checked'   : (sl.t_shirt == 'レ' ? true : false),
+                                });
+                                sl_tShirt.appendChild(sl_tShirtP);
+                                sl_tShirt.appendChild(sl_tShirtI);
+                                sl_tr.appendChild(sl_tShirt);
+
+
+                                document.getElementById("payslipTable").querySelector("tbody").appendChild(sl_tr);
                             }
-                            var payslipUrlT = document.createElement("textarea");
-                            common_set_element({
-                                'element'   : payslipUrlT,
-                                'innerHTML' : data[key].payslip,
-                                'name'      : 'payslip',
-                            });
-                            payslipUrl.appendChild(payslipUrlT);
-
-                            // Tシャツ
-                            var tShirt = document.createElement("td");
-                            common_set_element({
-                                'element'   : tShirt,
-                                'className' : 'w10',
-                            });
-                            var tShirtP = document.createElement("p");
-                            common_set_element({
-                                'element'       : tShirtP,
-                                'innerText'     : data[key].t_shirt,
-                                'fontWeight'    : 'bold',
-                            });
-                            var tShirtI = document.createElement('input');
-                            common_set_element({
-                                'element'   : tShirtI,
-                                'type'      : "checkbox",
-                                'checked'   : (data[key].t_shirt == 'レ' ? true : false),
-                            });
-                            tShirt.appendChild(tShirtP);
-                            tShirt.appendChild(tShirtI);
-
-
-                            tr3.appendChild(staffName);
-                            tr3.appendChild(workRules);
-                            tr3.appendChild(experience);
-                            tr3.appendChild(station);
-                            tr3.appendChild(transportation);
-                            tr3.appendChild(bank);
-                            tr3.appendChild(payslipUrl);
-                            tr3.appendChild(tShirt);
-                            document.getElementById("payslipTable").querySelector("tbody").appendChild(tr3);
                         });
                     }
                 }
@@ -1856,116 +2290,6 @@ function opDB(op, paramDB) {
             }
             break;
 
-        case 'getWorkReport':
-            var param   = "function=" + "get_work_report"
-                + "&event=" + encodeURIComponent(paramDB['event'])
-                + "&name=" + encodeURIComponent(paramDB['name'])
-            ;
-
-            xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    const data = JSON.parse(this.response);
-
-                    if (data) {
-                        var tr = paramDB['tr'];
-                        var tr2 = paramDB['tr2'];
-
-                        var name = document.createElement("td");
-                        common_set_element({
-                            'element'   : name,
-                            'className' : 'sticky2',
-                            'innerText' : paramDB['no'] + '.' + paramDB['name'],
-                            'rowSpan'   : '2',
-                        });
-                        tr.appendChild(name);
-
-                        Array.from(document.getElementById("workReportInfoHeader").querySelectorAll("th")).forEach(function(e) {
-                            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-                            if (e.textContent.match(dateRegex) != null) {
-                                var start = document.createElement("td");
-                                common_set_element({
-                                    'element'   : start,
-                                    'className' : 'borderRight borderBottom',
-                                });
-                                var end = document.createElement("td");
-                                common_set_element({
-                                    'element'   : end,
-                                    'className' : 'borderLeft borderBottom',
-                                });
-                                var breaTime = document.createElement("td");
-                                common_set_element({
-                                    'element'   : breaTime,
-                                    'className' : 'borderTop borderRight',
-                                });
-                                var workTime = document.createElement("td");
-                                common_set_element({
-                                    'element'   : workTime,
-                                    'className' : 'borderTop borderLeft',
-                                });
-
-
-                                Object.keys(data).forEach(function(key) {
-                                    if (e.textContent == data[key].day) {
-                                        var dataS = '';
-                                        var dataE = '';
-                                        var dataB = '';
-                                        var dataW = '';
-
-                                        // 出勤
-                                        if (data[key].start && data[key].start != '-') {
-                                            dataS = data[key].start;
-
-                                            if (!dataS.startsWith('＊')) {
-                                                // 切り上げ
-                                                dataS = common_ceil(dataS);
-                                            }
-                                        }
-
-                                        // 退勤
-                                        if (data[key].end && data[key].end != '-') {
-                                            dataE = data[key].end;
-
-                                            if (!dataE.startsWith('＊')) {
-                                                // 切り捨て
-                                                dataE = common_floor(dataS, dataE);
-                                            }
-                                        }
-
-                                        // 時間計算
-                                        var reportTime = common_report_time(
-                                            e.textContent,
-                                            dataS,
-                                            common_validation_time(data[key].break1s) ? common_ceil(data[key].break1s) : '',
-                                            common_validation_time(data[key].break1e) ? common_ceil(data[key].break1e) : '',
-                                            common_validation_time(data[key].break2s) ? common_ceil(data[key].break2s) : '',
-                                            common_validation_time(data[key].break2e) ? common_ceil(data[key].break2e) : '',
-                                            common_validation_time(data[key].break3s) ? common_ceil(data[key].break3s) : '',
-                                            common_validation_time(data[key].break3e) ? common_ceil(data[key].break3e) : '',
-                                            dataE
-                                        );
-
-                                        // 休憩・実働
-                                        var dataB = reportTime.breakTime;
-                                        var dataW  = reportTime.workTime;
-
-                                        start.innerText     = dataS;
-                                        end.innerText       = dataE;
-                                        breaTime.innerText  = dataB;
-                                        workTime.innerText  = dataW;
-                                    }
-                                });
-
-                                tr.appendChild(start);
-                                tr.appendChild(end);
-                                tr2.appendChild(breaTime);
-                                tr2.appendChild(workTime);
-                            }
-                        });
-                    }
-                }
-            }
-            break;
-
         case 'getWorkReportDay':
             var param   = "function=" + "get_work_report_day"
                 + "&event=" + encodeURIComponent(paramDB['event'])
@@ -2042,191 +2366,6 @@ function opDB(op, paramDB) {
                                 'break3eWork'   : break3eWork,
                                 'endWork'       : endWork,
                             }
-                        });
-                    }
-                }
-            }
-            break;
-
-        case 'getWorkReportEditAll':
-            var param   = "function=" + "get_work_report_edit_all"
-                + "&event=" + encodeURIComponent(paramDB['event'])
-            ;
-
-            xmlhttp.onreadystatechange = function() {
-                // 初期値
-                common_clear_children({
-                    'all'   : {
-                        'workReportInfoEditArea'  : 'td'
-                    }
-                });
-
-
-                if (this.readyState == 4 && this.status == 200) {
-                    const data = JSON.parse(this.response);
-
-                    if (data) {
-                        const orderList = ['start', 'break1s', 'break1e', 'break2s', 'break2e', 'break3s', 'break3e', 'end'];
-                        let nameKeyNum  = [];
-                        let dayNum      = [];
-                        let itemNum     = [];
-
-                        let i = 0;
-                        Object.keys(data).forEach(function(no) {
-                            i++;
-                            nameKeyNum[no] = 0;
-                            var dataName        = data[no];
-                            var name            = document.createElement("td");
-
-                            Object.keys(dataName).forEach(function(dayKey) {
-                                dayNum[dayKey]  = 0;
-                                var dataDay     = dataName[dayKey];
-                                var day         = document.createElement("td");
-
-                                Object.keys(orderList).forEach(function(orderName) {
-                                    var itemKey = orderList[orderName];
-
-                                    if (dataDay[itemKey]) {
-                                        itemNum[itemKey] = 0;
-                                        var dataItem     = dataDay[itemKey];
-                                        var item         = document.createElement("td");
-
-                                        Object.keys(dataItem).forEach(function(key) {
-                                            nameKeyNum[no]      = nameKeyNum[no] + 1;
-                                            dayNum[dayKey]      = dayNum[dayKey] + 1;
-                                            itemNum[itemKey]    = itemNum[itemKey] + 1;
-                                            var tr              = document.createElement("tr");
-
-                                            // スタッフ名
-                                            if (nameKeyNum[no] == 1) {
-                                                common_set_element({
-                                                    'element'       : name,
-                                                    'className'     : 'sticky1',
-                                                    'innerText'     : no + '.' + dataItem[key].name,
-                                                    'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
-                                                    'rowSpan'       : nameKeyNum[no],
-                                                });
-                                                tr.appendChild(name);
-                                            } else {
-                                                common_set_element({
-                                                    'element'       : name,
-                                                    'className'     : 'sticky1 valueTop',
-                                                    'rowSpan'       : nameKeyNum[no],
-                                                });
-                                            }
-
-                                            // 対象日
-                                            if (dayNum[dayKey] == 1) {
-                                                common_set_element({
-                                                    'element'       : day,
-                                                    'className'     : 'sticky2',
-                                                    'innerText'     : dayKey,
-                                                    'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
-                                                    'rowSpan'       : dayNum[dayKey],
-                                                });
-                                                tr.appendChild(day);
-                                            } else {
-                                                common_set_element({
-                                                    'element'       : day,
-                                                    'className'     : 'sticky2 valueTop',
-                                                    'rowSpan'       : dayNum[dayKey],
-                                                });
-                                            }
-
-                                            // 項目
-                                            if (itemNum[itemKey] == 1) {
-                                                common_set_element({
-                                                    'element'       : item,
-                                                    'className'     : 'sticky3',
-                                                    'innerText'     : common_itemName(itemKey),
-                                                    'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
-                                                    'rowSpan'       : itemNum[itemKey],
-                                                });
-                                                tr.appendChild(item);
-                                            } else {
-                                                common_set_element({
-                                                    'element'       : item,
-                                                    'className'     : 'sticky3 valueTop',
-                                                    'rowSpan'       : itemNum[itemKey],
-                                                });
-                                            }
-
-                                            // 状態
-                                            var status = document.createElement("td");
-                                            common_set_element({
-                                                'element'       : status,
-                                                'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
-                                            });
-                                            var statusB = document.createElement("button");
-                                            common_set_element({
-                                                'element'       : statusB,
-                                                'className'     : 'statusB selectStatusB',
-                                                'innerText'     : dataItem[key].status,
-                                                'value'         : (
-                                                    dataItem[key].request_dt
-                                                    + '|' + dataItem[key].name
-                                                    + '|' + dayKey
-                                                    + '|' + itemKey
-                                                    + '|' + dataItem[key].data_before
-                                                    + '|' + dataItem[key].data_after
-                                                ),
-                                                'background'    : common_workReportEditStatus_color(dataItem[key].status),
-                                            });
-                                            status.appendChild(statusB);
-                                            tr.appendChild(status);
-
-                                            // 修正前
-                                            var data_before = document.createElement("td");
-                                            common_set_element({
-                                                'element'       : data_before,
-                                                'innerText'     : dataItem[key].data_before,
-                                                'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
-                                            });
-                                            tr.appendChild(data_before);
-
-                                            // 修正後
-                                            var data_after = document.createElement("td");
-                                            common_set_element({
-                                                'element'       : data_after,
-                                                'innerText'     : dataItem[key].data_after,
-                                                'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
-                                            });
-                                            tr.appendChild(data_after);
-
-                                            // 理由
-                                            var reason = document.createElement("td");
-                                            common_set_element({
-                                                'element'       : reason,
-                                                'className'     : 'w25 textLeft',
-                                                'innerText'     : dataItem[key].reason,
-                                                'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
-                                            });
-                                            tr.appendChild(reason);
-
-                                            // 申請日
-                                            var request_dt = document.createElement("td");
-                                            common_set_element({
-                                                'element'       : request_dt,
-                                                'className'     : 'w25',
-                                                'innerText'     : dataItem[key].request_dt,
-                                                'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
-                                            });
-                                            tr.appendChild(request_dt);
-
-                                            // 処理日
-                                            var approval_d = document.createElement("td");
-                                            common_set_element({
-                                                'element'       : approval_d,
-                                                'innerText'     : dataItem[key].approval_d,
-                                                'background'    : (i % 2 == 0 ? '#f5f5f5ff' : '#fff'),
-                                            });
-                                            tr.appendChild(approval_d);
-
-                                            document.getElementById("workReportInfoEditArea").querySelector("tbody").appendChild(tr);
-                                        });
-                                    }
-                                });
-                            });
                         });
                     }
                 }
@@ -2572,12 +2711,18 @@ function opDB(op, paramDB) {
 
             xmlhttp.onreadystatechange = function() {
                 common_text_entry({'innerText' : {'dayReport' : ''}});
+                common_op_view({
+                    'none'  : ['dayReportDl']
+                });
 
                 if (this.readyState == 4 && this.status == 200) {
                     const data = JSON.parse(this.response);
 
                     if (data) {
                         common_text_entry({'innerHTML' : {'dayReport' : data.report.replaceAll("\n", "<br>")}});
+                        common_op_view({
+                            'flex'  : ['dayReportDl']
+                        });
                     }
                 }
             }

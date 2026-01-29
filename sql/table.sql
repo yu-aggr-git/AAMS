@@ -52,6 +52,8 @@ create table aams.staff_list(
     shift           VARCHAR(2000)                                    COMMENT 'シフト',
     work_rules      VARCHAR(4)                                       COMMENT '就業規則',
     experience      INTEGER                                          COMMENT '経験者手当',
+    attendance      INTEGER                                          COMMENT '出勤手当',
+    net_pay         VARCHAR(122)                                     COMMENT '差引支給額',
     t_shirt         VARCHAR(4)                                       COMMENT 'Tシャツ',    
     login_dt        VARCHAR(19)                                      COMMENT 'ログイン日時',
     PRIMARY KEY (event, name)
@@ -129,4 +131,13 @@ create table aams.day_report(
     day         VARCHAR(10)  NOT NULL                            COMMENT '日付',
     report      VARCHAR(2000)                                    COMMENT '日報',
     PRIMARY KEY (event, day)
+);
+
+drop table aams.withholding_tax_list;
+CREATE TABLE aams.withholding_tax_list (
+  year          varchar(4)  NOT NULL COMMENT '年',
+  min_range     int         NOT NULL COMMENT '以上',
+  max_range     int         NOT NULL COMMENT '未満',
+  tax           int         NOT NULL COMMENT '税額',
+  PRIMARY KEY (year, min_range, max_range)
 );

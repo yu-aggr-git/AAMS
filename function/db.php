@@ -35,7 +35,7 @@
             case 'get_staff_list' :
                 get_staff_list($dbh, $_POST);
                 break;
-            
+
             case 'get_staff_list_shift' :
                 get_staff_list_shift($dbh, $_POST);
                 break;
@@ -55,7 +55,7 @@
             case 'get_staff_list_name' :
                 get_staff_list_name($dbh, $_POST);
                 break;
-                
+
             case 'check_staff_list_pass' :
                 check_staff_list_pass($dbh, $_POST);
                 break;
@@ -78,12 +78,20 @@
 
             case 'update_staff_list_info' :
                 update_staff_list_info($dbh, $_POST);
-                break;                
+                break;
 
             case 'delete_staff_list' :
                 delete_staff_list($dbh, $_POST);
                 break;
-                
+
+            case 'get_staff_list_admin' :
+                get_staff_list_admin($dbh, $_POST);
+                break;
+
+            case 'register_staff_list_netPay' :
+                register_staff_list_netPay($dbh, $_POST);
+                break;
+
 
 
             // イベント
@@ -125,20 +133,16 @@
                 register_work_report_edit($dbh, $_POST);
                 break;
 
-            case 'get_work_report_edit_all' :
-                get_work_report_edit_all($dbh, $_POST);
-                break;                
-
             case 'get_work_report_edit' :
                 get_work_report_edit($dbh, $_POST);
                 break;
 
-
-            // 
             case 'update_work_report' :
                 update_work_report($dbh, $_POST);
                 break;
 
+
+            // 管理者ユーザー
             case 'check_admin_login' :
                 check_admin_login($dbh, $_POST);
                 break;
@@ -170,7 +174,7 @@
             case 'get_application_Info' :
                 get_application_Info($dbh, $_POST);
                 break;
-                
+
             case 'register_application' :
                 register_application($dbh, $_POST);
                 break;
@@ -209,6 +213,12 @@
 
             case 'get_day_report' :
                 get_day_report($dbh, $_POST);
+                break;
+
+
+            // 給与明細作成情報
+            case 'get_payslip_create_info' :
+                get_payslip_create_info($dbh, $_POST);
                 break;
         }
 
@@ -831,8 +841,9 @@
                 $name       = $staffArray[0];
                 $workRules  = $staffArray[1];
                 $experience = $staffArray[2] ? $staffArray[2] : NULL;
-                $payslipUrl = $staffArray[3];
-                $tShirt     = $staffArray[4];
+                $attendance = $staffArray[3] ? $staffArray[3] : NULL;
+                $payslipUrl = $staffArray[4];
+                $tShirt     = $staffArray[5];
 
                 $query = "
                     UPDATE
@@ -841,6 +852,7 @@
                         payslip     = :payslipUrl,
                         work_Rules  = :workRules,
                         experience  = :experience,
+                        attendance  = :attendance,
                         t_shirt     = :tShirt
                     WHERE
                             event = :event
@@ -853,6 +865,7 @@
                     'payslipUrl'    => $payslipUrl,
                     'workRules'     => $workRules,
                     'experience'    => $experience,
+                    'attendance'    => $attendance,
                     'tShirt'        => $tShirt
                 ]);
             }
@@ -955,6 +968,102 @@
 
         echo $count;
     }
+
+    // ────スタッフリスト：取得（管理用）─────────────────────────────
+    function get_staff_list_admin($dbh, $param) {
+
+        // スタッフリスト
+        $query1 = "
+            SELECT *
+            FROM staff_list
+            WHERE
+                event = :event
+            ORDER BY no asc
+        ";
+        $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth1->execute([
+            'event' => $param['event']
+        ]);
+        while ($row = $sth1->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData[$row['name']]['staff_list']        = $row;
+            $employeeData[$row['name']]['work_report']       = [];
+            $employeeData[$row['name']]['work_report_edit']  = [];
+        }
+
+
+        // 勤怠情報
+        $query2 = "
+            SELECT *
+            FROM work_report
+            WHERE event = :event
+            ORDER BY day asc 
+        ";
+        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth2->execute([
+            'event' => $param['event'],
+        ]);
+        while ($row = $sth2->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData[$row['name']]['work_report'][$row['day']] = array(
+                'start'     => $row['start'],
+                'end'       => $row['end'],
+                'break1s'   => $row['break1s'],
+                'break1e'   => $row['break1e'],
+                'break2s'   => $row['break2s'],
+                'break2e'   => $row['break2e'],
+                'break3s'   => $row['break3s'],
+                'break3e'   => $row['break3e'],
+            );
+        }
+
+
+        // 勤怠修正情報
+        $query3 = "
+            SELECT *
+            FROM work_report_edit
+            WHERE event = :event
+            ORDER BY day asc
+        ";
+        $sth3 = $dbh->prepare($query3, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth3->execute([
+            'event' => $param['event'],
+        ]);
+        while ($row = $sth3->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData[$row['name']]['work_report_edit'][$row['day']][$row['item']][] = array(
+                'status'        => $row['status'],
+                'data_before'   => $row['data_before'],
+                'data_after'    => $row['data_after'],
+                'reason'        => $row['reason'],
+                'request_dt'    => $row['request_dt'],
+                'approval_d'    => $row['approval_d']
+            );
+        }
+
+        $json = json_encode($employeeData);
+        echo $json;
+    }
+
+    // ────スタッフリスト：登録（給与）─────────────────────────────
+    function register_staff_list_netPay($dbh, $param) {
+        $query = "
+            UPDATE
+                staff_list
+            SET
+                net_pay = :netPay
+            WHERE
+                    event = :event
+                AND name = :name
+        ";
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $count = $sth->execute([
+            'event'     => $param['event'],
+            'name'      => $param['name'],
+            'netPay'    => $param['after'],
+        ]);
+
+        echo $count;
+    }
+
+
 
 
     // ────イベント：ログイン───────────────────────────────
@@ -1186,9 +1295,9 @@
 
         $query = "
             INSERT INTO
-                event(event, pass, first_day, end_day, start_time, end_time, place, hourly_wage, transportation_limit, meal_allowance, pay_day, manager, shift_url, recruit, memo)
+                event(event, pass, first_day, end_day, start_time, end_time, place, hourly_wage, transportation_limit, pay_day, manager, shift_url, recruit, memo)
             VALUES
-                (:event, :pass, :firstDay, :endDay, :startTime, :endTime, :place, :hourlyWage, :transportationLimit, :mealAllowance, :payDay, :manager, :shiftUrl, :recruit, :memo)
+                (:event, :pass, :firstDay, :endDay, :startTime, :endTime, :place, :hourlyWage, :transportationLimit, :payDay, :manager, :shiftUrl, :recruit, :memo)
         ";
 
         $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
@@ -1203,7 +1312,6 @@
             'place'                 => $param['place'],
             'hourlyWage'            => $param['hourlyWage'] ? $param['hourlyWage'] : NULL,
             'transportationLimit'   => $param['transportationLimit'] ? $param['transportationLimit'] : NULL,
-            'mealAllowance'         => $param['mealAllowance'] ? $param['mealAllowance'] : NULL,
             'manager'               => $param['manager'],
             'shiftUrl'              => $param['shiftUrl'] ? $param['shiftUrl'] : $config['shift_url'] . '?event=' . urlencode($param['event']),
             'payDay'                => $param['payDay'],
@@ -1227,7 +1335,6 @@
                 place                   = :place,
                 hourly_wage             = :hourlyWage,
                 transportation_limit    = :transportationLimit,
-                meal_allowance          = :mealAllowance,
                 pay_day                 = :payDay,
                 manager                 = :manager,
                 shift_url               = :shiftUrl,
@@ -1249,7 +1356,6 @@
             'place'                 => $param['place'],
             'hourlyWage'            => $param['hourlyWage'] ? $param['hourlyWage'] : NULL,
             'transportationLimit'   => $param['transportationLimit'] ? $param['transportationLimit'] : NULL,
-            'mealAllowance'         => $param['mealAllowance'] ? $param['mealAllowance'] : NULL,
             'manager'               => $param['manager'],
             'shiftUrl'              => $param['shiftUrl'],
             'payDay'                => $param['payDay'],
@@ -1374,49 +1480,6 @@
         ]);
 
         echo $count;
-    }
-
-    // ────勤怠修正情報：取得─────────────────────────────
-    function get_work_report_edit_all($dbh, $param) {
-        $query = "
-            SELECT
-                sl.no,
-                wre.*
-            FROM
-                work_report_edit wre
-            LEFT JOIN
-                staff_list sl
-                ON  sl.event = wre.event
-                and sl.name  = wre.name
-            WHERE
-                    wre.event = :event
-            ORDER BY 
-                sl.no asc, 
-                wre.day asc
-        ";
-
-        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-        $sth->execute([
-            'event' => $param['event'],
-        ]);
-
-        // 結果を配列で取得
-        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-            $employeeData[$row['no']][$row['day']][$row['item']][] = array(
-                'name'          => $row['name'],
-                'status'        => $row['status'],
-                'data_before'   => $row['data_before'],
-                'data_after'    => $row['data_after'],
-                'reason'        => $row['reason'],
-                'request_dt'    => $row['request_dt'],
-                'approval_d'    => $row['approval_d']
-            );
-        }
-
-        // PHPの配列をJSON形式のデータに変換
-        $json = json_encode($employeeData);
-
-        echo $json;
     }
 
     // ────勤怠修正情報：取得（名前）──────────────────────────
@@ -2287,4 +2350,108 @@
         $json = json_encode($result);
         echo $json;
     }
-    
+
+
+
+    // ────給与明細作成情報：取得─────────────────────────────
+    function get_payslip_create_info($dbh, $param) {
+
+        // イベント
+        $query1 = "
+            SELECT
+                event,
+                first_day,
+                end_day,
+                hourly_wage,
+                transportation_limit,
+                pay_day
+            FROM
+                event
+            WHERE
+                event = :event
+        ";
+        $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth1->execute([
+            'event' => $param['event']
+        ]);
+        while ($row = $sth1->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData['event']                  = $row;
+            $employeeData['staff_list']             = [];
+            $employeeData['work_report']            = [];
+            $employeeData['withholding_tax_list']   = [];
+        }
+
+        // スタッフリスト
+        $query2 = "
+            SELECT
+                name,
+                transportation,
+                experience,
+                attendance,
+                net_pay
+            FROM
+                staff_list
+            WHERE
+                    event = :event
+                AND name  = :name
+        ";
+        $sth2 = $dbh->prepare($query2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth2->execute([
+            'event' => $param['event'],
+            'name'  => $param['name']
+        ]);
+        while ($row = $sth2->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData['staff_list'] = $row;
+        }
+
+        // 勤怠情報
+        $query3 = "
+            SELECT
+                day,
+                start,
+                end,
+                break1s,
+                break1e,
+                break2s,
+                break2e,
+                break3s,
+                break3e
+            FROM
+                work_report
+            WHERE
+                    event = :event
+                AND name  = :name
+
+        ";
+        $sth3 = $dbh->prepare($query3, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth3->execute([
+            'event' => $param['event'],
+            'name'  => $param['name']
+        ]);
+        while ($row = $sth3->fetch(PDO::FETCH_ASSOC)) {
+            $employeeData['work_report'][] = $row;
+        }
+
+        // 源泉所得表
+        if ($param['payYear']) {
+            $query4 = "
+                SELECT
+                    *
+                FROM
+                    withholding_tax_list
+                WHERE
+                    year = :payYear
+
+            ";
+            $sth4 = $dbh->prepare($query4, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+            $sth4->execute([
+                'payYear' => $param['payYear']
+            ]);
+            while ($row = $sth4->fetch(PDO::FETCH_ASSOC)) {
+                $employeeData['withholding_tax_list'][] = $row;
+            }
+        }
+
+        $json = json_encode($employeeData);
+        echo $json;
+    }
