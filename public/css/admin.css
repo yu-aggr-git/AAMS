@@ -952,11 +952,13 @@ html::-webkit-scrollbar {
         width : 20vmin;
     }
     #payslipArea .w30 {
-        width           : 30vmin;
-        padding         : 0.5vmin 1.5vmin;
-        white-space     : nowrap;
+        width : 30vmin;
     }
-    #payslipArea .w30::-webkit-scrollbar {
+    #payslipArea .nowrap {
+        padding     : 0.5vmin 1.5vmin;
+        white-space : nowrap;
+    }
+    #payslipArea .nowrap::-webkit-scrollbar {
         display: none;
     }
     #payslipArea .textLeft {

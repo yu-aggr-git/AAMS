@@ -2153,7 +2153,7 @@ function opDB(op, paramDB) {
                                 var sl_payslipUrl = document.createElement("td");
                                 common_set_element({
                                     'element'   : sl_payslipUrl,
-                                    'className' : 'w30 textLeft borderRight',
+                                    'className' : 'w30 textLeft borderRight nowrap',
                                 });
                                 if (sl.payslip) {
                                     sl.payslip.split(/\n/).forEach(function(val) {

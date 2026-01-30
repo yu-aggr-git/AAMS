@@ -425,7 +425,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
             var basicI = document.createElement("input");
             common_set_element({
                 'element'   : basicI,
-                'value'     : basicVal ? basicVal.toLocaleString() : '',
+                'value'     : basicVal ? basicVal.toLocaleString() : '0',
             });
             basic.appendChild(basicI);
             tr.appendChild(basic);
@@ -435,7 +435,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
             var experienceI = document.createElement("input");
             common_set_element({
                 'element'   : experienceI,
-                'value'     : experienceVal ? experienceVal.toLocaleString() : '',
+                'value'     : experienceVal ? experienceVal.toLocaleString() : '0',
             });
             experience.appendChild(experienceI);
             tr.appendChild(experience);
@@ -445,7 +445,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
             var lateNightI = document.createElement("input");
             common_set_element({
                 'element'   : lateNightI,
-                'value'     : lateNightVal ? lateNightVal.toLocaleString() : '',
+                'value'     : lateNightVal ? lateNightVal.toLocaleString() : '0',
             });
             lateNight.appendChild(lateNightI);
             tr.appendChild(lateNight);
@@ -455,7 +455,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
             var attendanceI = document.createElement("input");
             common_set_element({
                 'element'   : attendanceI,
-                'value'     : attendanceVal ? attendanceVal.toLocaleString() : '',
+                'value'     : attendanceVal ? attendanceVal.toLocaleString() : '0',
             });
             attendance.appendChild(attendanceI);
             tr.appendChild(attendance);
@@ -465,7 +465,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
             var allowancesI = document.createElement("input");
             common_set_element({
                 'element'   : allowancesI,
-                'value'     : allowancesVal ? allowancesVal.toLocaleString() : '',
+                'value'     : allowancesVal ? allowancesVal.toLocaleString() : '0',
             });
             allowances.appendChild(allowancesI);
             tr.appendChild(allowances);
@@ -479,7 +479,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
             var transportationI = document.createElement("input");
             common_set_element({
                 'element'   : transportationI,
-                'value'     : transportationVal ? transportationVal.toLocaleString() : '',
+                'value'     : transportationVal ? transportationVal.toLocaleString() : '0',
             });
             transportation.appendChild(transportationI);
             tr.appendChild(transportation);
@@ -489,7 +489,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
             common_set_element({
                 'element'   : tax,
                 'className' : 'borderRight borderLeftNone',
-                'innerText' : taxVal ? '-' + taxVal.toLocaleString() : '',
+                'innerText' : taxVal ? '-' + taxVal.toLocaleString() : '0',
             });
             tr.appendChild(tax);
 
@@ -498,7 +498,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
             common_set_element({
                 'element'   : dayTotal,
                 'className' : 'borderLeftNone',
-                'innerText' : dayTotalVal ? dayTotalVal.toLocaleString() : '',
+                'innerText' : dayTotalVal ? dayTotalVal.toLocaleString() : '0',
             });
             tr.appendChild(dayTotal);
 

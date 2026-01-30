@@ -583,7 +583,7 @@
                             <tr id="payslipTableHeader">
                                 <th class="w20 sticky1">スタッフ名</th>
                                 <th class="w30 sticky2">メール</th>
-                                <th class="w10 sticky2 borderRight">生年月日</th>
+                                <th class="w15 sticky2 borderRight">生年月日</th>
                                 <th class="w10 sticky2 borderRight borderLeftNone">就業規則</th>
                                 <th class="w10 sticky2 borderLeftNone">経験者手当</th>
                                 <th class="w10 sticky2">出勤手当</th>
