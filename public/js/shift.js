@@ -1198,6 +1198,9 @@ function opDB(op, paramDB) {
                     const data = JSON.parse(this.response);
 
                     if (data) {
+                        const firstDay  = document.getElementById("firstDay").innerText.split(/-/);
+                        const endDay    = document.getElementById("endDay").innerText.split(/-/);
+
                         // 顔写真
                         common_text_entry({'href' : {'photoList' : data.photoList}});
 
@@ -1282,17 +1285,32 @@ function opDB(op, paramDB) {
                             tr.appendChild(memo);
 
                             // シフト希望
-                            var availableA  = application.available.split(/,/);
-                            availableA.forEach(function(d) {
-                                var availablD = d.split(/_/);
+                            var availableA = [];
+                            (application.available.split(/,/)).forEach(function(d) {
+                                var availablD            = d.split(/_/);
+                                availableA[availablD[0]] = d;
+                            });
+                            for (
+                                let date = new Date(firstDay[0], firstDay[1] - 1 , firstDay[2]);
+                                date <= new Date(endDay[0], endDay[1] - 1, endDay[2]);
+                                date.setDate(date.getDate() + 1)
+                            ){
+                                var day         = date.toLocaleDateString('sv-SE');
+                                var dowClass    = common_getDOW(day).dowClass;
+                                var start       = '';
+                                var end         = '';
 
-                                var dowClass = common_getDOW(availablD[0]).dowClass;
+                                if (day in availableA) {
+                                    var availablD   = availableA[day].split(/_/);
+                                    start           = availablD[1];
+                                    end             = availablD[2];
+                                }
 
                                 var availableS = document.createElement("td");
                                 common_set_element({
                                     'element'   : availableS,
                                     'className' : "rightBorder " + dowClass + " " + tdClass,
-                                    'innerText' : availablD[1],
+                                    'innerText' : start,
                                 });
                                 tr.appendChild(availableS);
 
@@ -1300,10 +1318,10 @@ function opDB(op, paramDB) {
                                 common_set_element({
                                     'element'   : availableE,
                                     'className' : "leftBorder " + dowClass + " " + tdClass,
-                                    'innerText' : availablD[2],
+                                    'innerText' : end,
                                 });
                                 tr.appendChild(availableE);
-                            });
+                            }
 
                             document.getElementById("formInfoTable").querySelector("tbody").appendChild(tr);
                         });
@@ -1984,10 +2002,12 @@ function opDB(op, paramDB) {
                     if (data) {
 
                         // シフト
+                        var shiftNum = 0;
                         if (data.shift) {
                             const shiftA = data.shift.split(/\,/);
                             Array.from(shiftA).forEach(function(day) {
                                 if (!(day.includes('×'))) {
+                                    shiftNum++;
                                     var dayA =  day.split(/_/);
 
                                     var option = document.createElement("option");
@@ -1999,7 +2019,8 @@ function opDB(op, paramDB) {
                                     document.getElementById("selectShiftDay").appendChild(option);
                                 } 
                             });
-                        } else {
+                        }
+                        if (shiftNum == 0) {
                             common_op_view({
                                 'none'  : ['shiftChangeInfoRequest']
                             });
@@ -2007,9 +2028,11 @@ function opDB(op, paramDB) {
 
 
                         // 出勤可能日
+                        var availableNum = 0;
                         if (data.available) {
                             const availableA = data.available.split(/\,/);
                             Array.from(availableA).forEach(function(day) {
+                                availableNum++;
                                 var dayA =  day.split(/_/);
 
                                 var option = document.createElement("option");
@@ -2020,7 +2043,8 @@ function opDB(op, paramDB) {
                                 });
                                 document.getElementById("selectAvailableDay").appendChild(option);
                             }); 
-                        } else {
+                        }
+                        if (availableNum == 0) {
                             common_op_view({
                                 'none'  : ['availableRequest']
                             });
