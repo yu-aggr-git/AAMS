@@ -124,8 +124,8 @@
                         </tr>
 
                         <tr>
-                            <td id="taxInput"></td>
                             <td></td>
+                            <td id="taxInput"></td>
                             <td></td>
                             <td></td>
                             <td></td>

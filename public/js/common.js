@@ -310,6 +310,10 @@ function common_report_time(day, start, break1s, break1e, break2s, break2e, brea
             // 実働時間
             workTime = common_clac(day, breakTime, sumTime, 'diff');
         }
+    } else if ((!start || start == '-') && (!end || end == '-') && (breakTime == '0:00')) {
+        // 出退勤を却下している場合
+        breakTime = '';
+        workTime = '';
     }
 
     return {

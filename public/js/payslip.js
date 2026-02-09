@@ -218,8 +218,11 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
     Object.keys(dataW).forEach(function(key) {
         var dataWD = dataW[key];
 
-        // 期間範囲のみ
-        if (minDayRange <= dataWD.day && dataWD.day <= maxDayRange) {
+        if ((!dataWD.start || dataWD.start == '-') && (!dataWD.end || dataWD.end == '-')) {
+            // 出退勤を却下している場合スキップ
+            // console.log(dataWD);
+        } else if (minDayRange <= dataWD.day && dataWD.day <= maxDayRange) {
+            // 期間範囲のみ
             var sumTime     = '';
             var breakTime   = '';
             var workTime    = '';
