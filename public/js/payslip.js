@@ -301,7 +301,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
                             transportationVal = dataE.transportation_limit;
                         }
 
-                        // ［源泉所得税］
+                        // ［源泉徴収税］
                         var sumVal      = basicVal + experienceVal + lateNightVal + attendanceVal + allowancesVal;
                         var grossVal    = sumVal + transportationVal;
                         var taxVal      = 0;
@@ -353,7 +353,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
                         var allowancesVal       = Number(dataWD.allowances);
                         var transportationVal   = Number(dataWD.transportation);
 
-                        // ［源泉所得税］
+                        // ［源泉徴収税］
                         var sumVal      = basicVal + experienceVal + lateNightVal + attendanceVal + allowancesVal;
                         var grossVal    = sumVal + transportationVal;
                         var taxVal      = 0;
@@ -487,7 +487,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
             transportation.appendChild(transportationI);
             tr.appendChild(transportation);
 
-            // 源泉所得税
+            // 源泉徴収税
             var tax = document.createElement("td");
             common_set_element({
                 'element'   : tax,
@@ -835,8 +835,8 @@ function opDB(op, paramDB) {
                                     msg = msg + '*出勤データが存在しません。<br>';
                                 } else {
                                     if (Object.keys(dataT).length == 0) {
-                                        // 源泉所得税データなし
-                                        msg = msg + '*' + paramDB['selectPayDay'].substring(0, 4) + '年源泉所得税データが存在しません。<br>';
+                                        // 源泉徴収税データなし
+                                        msg = msg + '*' + paramDB['selectPayDay'].substring(0, 4) + '年源泉徴収税データが存在しません。<br>';
                                     }
                                 }
                             }

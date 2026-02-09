@@ -114,7 +114,7 @@
 
                         <tr>
                             <th>住民税</th>
-                            <th>源泉所得税</th>
+                            <th>源泉徴収税</th>
                             <th>厚生年金</th>
                             <th>健康保険</th>
                             <th>雇用保険</th>
@@ -163,7 +163,7 @@
                             <th>出勤手当</th>
                             <th>諸手当</th>
                             <th class="borderRight">交通費</th>
-                            <th class="borderRight borderLeftNone">源泉所得税</th>
+                            <th class="borderRight borderLeftNone">源泉徴収税</th>
                             <th class="borderLeftNone">合計(一日)</th>
                         </tr>
                     </tbody>

@@ -2432,7 +2432,7 @@
             $employeeData['work_report'][] = $row;
         }
 
-        // 源泉所得表
+        // 源泉徴収税表
         if ($param['payYear']) {
             $query4 = "
                 SELECT
