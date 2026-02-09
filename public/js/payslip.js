@@ -258,7 +258,7 @@ function clacPay(method, dataE, dataS, dataW, dataT, minDayRange, maxDayRange, r
                     );
                     sumTime     = reportTime.sumTime ? reportTime.sumTime.padStart(5, '0') : '＊';
                     breakTime   = common_validation_time(reportTime.breakTime) ? reportTime.breakTime.padStart(5, '0') : '＊';
-                    workTime    = reportTime.workTime ? reportTime.workTime.padStart(5, '0') : '＊';
+                    workTime    = common_validation_time(reportTime.workTime) ? reportTime.workTime.padStart(5, '0') : '＊';
 
                     // 金額計算
                     if (common_validation_time(workTime)) {
