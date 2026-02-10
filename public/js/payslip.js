@@ -729,8 +729,6 @@ function opDB(op, paramDB) {
                                         payDaySelectE.appendChild(option);
                                     } else {
                                         selectPayDay = payDayA[0];
-                                        minDayRange  = dataE.first_day;
-                                        maxDayRange  = dataE.end_day;
                                     }
 
                                     payDayA.forEach(function(d) {
@@ -799,8 +797,8 @@ function opDB(op, paramDB) {
                                         registeredRange = netPayDA[1].split(/\|/)
 
                                         // 期間
-                                        minDayRange     = minDayRange ? minDayRange : registeredRange[0];
-                                        maxDayRange     = maxDayRange ? maxDayRange : registeredRange[1];
+                                        minDayRange = minDayRange ? minDayRange : registeredRange[0];
+                                        maxDayRange = maxDayRange ? maxDayRange : registeredRange[1];
 
                                         // 差引支給額
                                         registeredNetPay = Number(netPayDA[2]);
