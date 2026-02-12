@@ -1035,7 +1035,8 @@ html::-webkit-scrollbar {
         border-left : none;
     }
     #payslipArea > #deleteStaff,
-    #payslipArea > #addStaff {
+    #payslipArea > #addStaff,
+    #payslipArea > #totalNetPayArea {
         margin-top      : 5vmin;
         margin-right    : auto;
         overflow        : visible;
@@ -1045,6 +1046,9 @@ html::-webkit-scrollbar {
         flex-flow       : column;
         flex-wrap       : wrap;
     }
+    #payslipArea > #totalNetPayArea {
+        display : none;
+    }
     #payslipArea > #deleteStaff > #sendDeleteStaff,
     #payslipArea > #addStaff > #sendAddStaff {
         background      : #000;
@@ -1052,7 +1056,8 @@ html::-webkit-scrollbar {
         color           : #fff;
     }
     #payslipArea > #deleteStaff > p,
-    #payslipArea > #addStaff > p {
+    #payslipArea > #addStaff > p,
+    #payslipArea > #totalNetPayArea > p {
         width           : 100%;
         font-size       : 2vmin;
     }
@@ -1108,6 +1113,12 @@ html::-webkit-scrollbar {
         padding             : 0.5vmin 3vmin;
         text-align          : left;
         text-align-last     : left;
+    }
+    #payslipArea > #totalNetPayArea dd {
+        width           : 20%;
+        margin-right    : 50%;
+        padding-right   : 1vmin;
+        justify-content : right;
     }
 
 

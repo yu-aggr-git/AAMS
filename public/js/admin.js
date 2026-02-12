@@ -373,7 +373,8 @@ function getSelectEvent(selectEvent) {
 
                 // スタッフリスト
                 'cancelPayslip',
-                'updatePayslip'
+                'updatePayslip',
+                'totalNetPayArea'
             ],
             'flex'  : [
                 // イベント情報
@@ -1605,7 +1606,8 @@ function opDB(op, paramDB) {
                     'all'   : {
                         'selectStampInfoStaff'      : 'option',
                         'deleteStaffName'           : 'option',
-                        'workReportInfoEditArea'    : 'td'
+                        'workReportInfoEditArea'    : 'td',
+                        'totalNetPayArea'           : '.totalNetPayM'
                     },
                     'notId' : {
                         'workReportInfoTable'   : 'tr',
@@ -1632,6 +1634,7 @@ function opDB(op, paramDB) {
                         let dayNum      = [];
                         let itemNum     = [];
                         let i           = 0;
+                        let totalNetPay = [];
 
                         Object.keys(data).forEach(function(name) {
                             var sl  = data[name]['staff_list'];
@@ -2137,7 +2140,9 @@ function opDB(op, paramDB) {
                                 if (sl.net_pay) {
                                     sl.net_pay.split(/,/).forEach(function(val) {
                                         var netPayA = val.split(/_/);
-                                        netPay = netPay + (netPayA[0] + '支払 : ' + Number(netPayA[2]).toLocaleString() + '円<br>');
+                                        netPay = netPay + (netPayA[0] + '支払 : ' + Number(netPayA[2]).toLocaleString().padStart(7, '_') + '円<br>');
+
+                                        totalNetPay[netPayA[0]] = totalNetPay[netPayA[0]] ? totalNetPay[netPayA[0]] + Number(netPayA[2]) : Number(netPayA[2]);
                                     });
                                 }
                                 var sl_netPay = document.createElement("td");
@@ -2204,6 +2209,54 @@ function opDB(op, paramDB) {
                                 document.getElementById("payslipTable").querySelector("tbody").appendChild(sl_tr);
                             }
                         });
+
+                        // 合計差引支給額
+                        if (Object.keys(totalNetPay).length != 0) {
+                            const totalNetPayArea = document.getElementById("totalNetPayArea");
+                            let allTotalNetPay = 0;
+
+                            common_op_view({'flex' : ['totalNetPayArea']});
+
+                            // 支払月ごと
+                            for (let key in totalNetPay) {
+                                allTotalNetPay = allTotalNetPay + totalNetPay[key];
+
+                                var dt = document.createElement("dt");
+                                common_set_element({
+                                    'element'   : dt,
+                                    'className' : 'totalNetPayM',
+                                    'innerText' : key,
+                                });
+                                totalNetPayArea.querySelector("dl").appendChild(dt);
+
+                                var dd = document.createElement("dd");
+                                common_set_element({
+                                    'element'   : dd,
+                                    'className' : 'totalNetPayM',
+                                    'innerText' : totalNetPay[key].toLocaleString() + '円',
+                                });
+                                totalNetPayArea.querySelector("dl").appendChild(dd);
+                            }
+
+                            // 合計
+                            if (Object.keys(totalNetPay).length >= 2) {
+                                var dt = document.createElement("dt");
+                                common_set_element({
+                                    'element'   : dt,
+                                    'className' : 'totalNetPayM',
+                                    'innerText' : '合計',
+                                });
+                                totalNetPayArea.querySelector("dl").appendChild(dt);
+
+                                var dd = document.createElement("dd");
+                                common_set_element({
+                                    'element'   : dd,
+                                    'className' : 'totalNetPayM',
+                                    'innerText' : allTotalNetPay.toLocaleString() + '円',
+                                });
+                                totalNetPayArea.querySelector("dl").appendChild(dd);
+                            }
+                        }
                     }
                 }
             }

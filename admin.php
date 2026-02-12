@@ -599,6 +599,14 @@
                     </table>
                 </div>
 
+                <!-- 合計差引支給額 -->
+                <div id="totalNetPayArea">
+                    <p>・合計差引支給額：</p>
+
+                    <dl></dl>
+                </div>
+
+                <!-- スタッフ削除 -->
                 <div id="deleteStaff">
                     <p>
                         ・スタッフの削除：
@@ -615,6 +623,7 @@
                     <button type="button" id="sendDeleteStaff" value="false">削除</button>
                 </div>
 
+                <!-- スタッフ追加 -->
                 <div id="addStaff">
                     <p>
                         ・応募以外のスタッフ追加：
