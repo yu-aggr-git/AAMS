@@ -2433,7 +2433,17 @@
         }
 
         // 源泉徴収税表
-        if ($param['payYear']) {
+        $payYear = $param['payYear'];
+        if (!$payYear) {
+            if ($employeeData['staff_list']['net_pay']) {
+                // 登録済み
+                $payYear = mb_substr($employeeData['staff_list']['net_pay'], 0, 4);
+            } elseif (!str_contains($employeeData['event']['pay_day'], ',')) {
+                // 未登録かつ振込日1件
+                $payYear = mb_substr($employeeData['event']['pay_day'], 0, 4);
+            }
+        }
+        if ($payYear) {
             $query4 = "
                 SELECT
                     *
@@ -2445,7 +2455,7 @@
             ";
             $sth4 = $dbh->prepare($query4, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
             $sth4->execute([
-                'payYear' => $param['payYear']
+                'payYear' => $payYear
             ]);
             while ($row = $sth4->fetch(PDO::FETCH_ASSOC)) {
                 $employeeData['withholding_tax_list'][] = $row;
