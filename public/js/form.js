@@ -198,6 +198,14 @@ function opDB(op, paramDB) {
                     const data = JSON.parse(this.response);
 
                     if (data) {
+                        var option = document.createElement("option");
+                        common_set_element({
+                            'element'   : option,
+                            'text'      : '▼ 選択してください',
+                            'value'     : '',
+                        });
+                        document.getElementById("selectEventName").appendChild(option);
+
                         Object.keys(data).forEach(function(key) {
                             var option = document.createElement("option");
                             common_set_element({
