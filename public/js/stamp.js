@@ -1488,12 +1488,14 @@ function opDB(op, paramDB) {
                             });
 
                             // 名前
+                            let workReportEditNum = 0;
                             const dayReportListA = document.getElementById("dayReportList").querySelectorAll("tr");
                             Object.keys(data.staffList).forEach(function(keyName) {
                                 var namaData = data.staffList[keyName];
 
                                 // 勤怠修正情報
                                 if (Object.keys(namaData.workReportEdit).length) {
+
                                     Object.keys(namaData.workReportEdit).forEach(function(keyEdit) {
                                         var editData = namaData.workReportEdit[keyEdit];
 
@@ -1508,7 +1510,7 @@ function opDB(op, paramDB) {
                                         var statusI1 = document.createElement("input");
                                         common_set_element({
                                             'element'   : statusI1,
-                                            'id'        : 'approve' + keyEdit,
+                                            'id'        : 'approve' + workReportEditNum,
                                             'value'     :
                                                 '承認済'
                                                 + '|' + editData.request_dt
@@ -1517,19 +1519,19 @@ function opDB(op, paramDB) {
                                                 + '|' + editData.item
                                                 + '|' + editData.data_after
                                             ,
-                                            'name'      : 'status' + keyEdit,
+                                            'name'      : 'status' + workReportEditNum,
                                             'type'      : 'radio',
                                         });
                                         var statusL1 = document.createElement("label");
                                         common_set_element({
                                             'element'   : statusL1,
                                             'innerText' : '承認',
-                                            'htmlFor'   : 'approve' + keyEdit,
+                                            'htmlFor'   : 'approve' + workReportEditNum,
                                         });
                                         var statusI2 = document.createElement("input");
                                         common_set_element({
                                             'element'   : statusI2,
-                                            'id'        : 'reject' + keyEdit,
+                                            'id'        : 'reject' + workReportEditNum,
                                             'value'     :
                                                 '却下済'
                                                 + '|' + editData.request_dt
@@ -1538,14 +1540,14 @@ function opDB(op, paramDB) {
                                                 + '|' + editData.item
                                                 + '|' + editData.data_before
                                             ,
-                                            'name'      : 'status' + keyEdit,
+                                            'name'      : 'status' + workReportEditNum,
                                             'type'      : 'radio',
                                         });
                                         var statusL2 = document.createElement("label");
                                         common_set_element({
                                             'element'   : statusL2,
                                             'innerText' : '却下',
-                                            'htmlFor'   : 'reject' + keyEdit,
+                                            'htmlFor'   : 'reject' + workReportEditNum,
                                         });
                                         status.appendChild(statusI1);
                                         status.appendChild(statusL1);
@@ -1595,6 +1597,8 @@ function opDB(op, paramDB) {
                                         workReportEditTr.appendChild(reason);
 
                                         document.getElementById("dayReportEditList").querySelector("tbody").appendChild(workReportEditTr);
+
+                                        workReportEditNum++;
                                     });
                                 }
 
