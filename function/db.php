@@ -109,7 +109,7 @@
 
             case 'get_event_list_shift' :
                 get_event_list_shift($dbh);
-                break;                
+                break;
 
             case 'get_event_notice' :
                 get_event_notice($dbh);
@@ -1281,7 +1281,28 @@
             }
 
             if ($row['recruit'] == '募集中') {
-                $employeeData[$event]['recruit'][] = $row['recruit'];
+                $employeeData[$event]['recruit'] = $row['recruit'];
+            }
+        }
+
+        // 最新応募日時の取得
+        $query5 = "
+            SELECT
+                event,
+                MAX(created_dt) AS created_dt
+            FROM
+                application_list
+            GROUP BY
+                event
+            ;
+        ";
+        $sth5 = $dbh->prepare($query5, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $sth5->execute();
+        while ($row = $sth5->fetch(PDO::FETCH_ASSOC)) {
+            $event = $row['event'];
+
+            if ($employeeData[$event]['recruit'] == '募集中' && $row['created_dt']) {
+                $employeeData[$event]['recruit'] = $employeeData[$event]['recruit'] . '（' .$row['created_dt'] . '）';
             }
         }
 
@@ -1711,7 +1732,7 @@
     // ────応募リスト：取得─────────────────────────────
     function get_application_list_all($dbh, $param) {
         global $config;
-        
+
         $query = "
             SELECT *
             FROM application_list

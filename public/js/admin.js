@@ -1324,11 +1324,21 @@ function opDB(op, paramDB) {
                             'flex'  : ['eventInfoNoticeArea']
                         });
 
+                        // 支払い日順に並び変え
+                        for (let event in data) {
+                            if ('pay_day' in data[event]) {
+                                data[data[event].pay_day[0] + event] = data[event];
+                                delete data[event];
+                            }
+                        }
+
                         for (let event in data) {
                             var dt = document.createElement("dt");
                             common_set_element({
                                 'element'   : dt,
-                                'innerText' : event,
+                                'innerText' : ('pay_day' in data[event]
+                                    ? event.replace(data[event].pay_day[0], "")
+                                    : event)
                             });
                             var dd = document.createElement("dd");
 

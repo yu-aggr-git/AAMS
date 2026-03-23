@@ -96,7 +96,7 @@ create table aams.news(
 drop table aams.application_list;
 create table aams.application_list(
     event       VARCHAR(100) NOT NULL                            COMMENT 'イベント名',
-    no          VARCHAR(4)                                       COMMENT 'No.',
+    no          INTEGER                                          COMMENT 'No.',
     name        VARCHAR(30)  NOT NULL                            COMMENT '氏名',
     mail        VARCHAR(255) NOT NULL                            COMMENT 'メールアドレス',
     birthday    VARCHAR(8)                                       COMMENT '生年月日',
