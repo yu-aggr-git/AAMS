@@ -454,6 +454,10 @@ function editData(event) {
 //  日報報告
 // ………………………………………………………………………………………………………………………………………………
 function sendDayReport(event) {
+    const dayReportSelect   = document.getElementById("dayReportSelect");
+    const inputEventPass    = document.getElementById("inputEventPass");
+    const inputDayReport    = document.getElementById("inputDayReport");
+
     common_text_entry({
         'innerText' : {
             'dayReportMsg' : ''
@@ -477,19 +481,15 @@ function sendDayReport(event) {
     opDB('getWorkReportDayAll', paramDB);
 
     // 選択肢切り替え
-    let selectDay =  '';
-    document.getElementById("dayReportSelect").onchange = function() {
-        selectDay = document.getElementById("dayReportSelect").value;
-
-        paramDB['day'] = selectDay;
+    dayReportSelect.onchange = function() {
+        paramDB['day'] = dayReportSelect.value;
         opDB('getWorkReportDayAll', paramDB);
-
     }
 
     // 送信
-    const inputDayReport = document.getElementById("inputDayReport");
     document.getElementById("sendDayReport").onclick = function() {
-        var eventPass = document.getElementById("inputEventPass").value;
+        var selectDay = dayReportSelect.value;
+        var eventPass = inputEventPass.value;
 
         if (!selectDay || !inputDayReport.value || !eventPass) {
             common_text_entry({'innerText' : {'dayReportMsg' : 'すべての項目に入力が必要です。'}});

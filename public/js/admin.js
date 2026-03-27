@@ -1324,26 +1324,32 @@ function opDB(op, paramDB) {
                             'flex'  : ['eventInfoNoticeArea']
                         });
 
-                        // 支払い日順に並び変え
+                        // 支払い日順に並び替え
+                        let dispList = [];
                         for (let event in data) {
-                            if ('pay_day' in data[event]) {
-                                data[data[event].pay_day[0] + event] = data[event];
-                                delete data[event];
-                            }
-                        }
+                            var dispListKey = event;
 
-                        for (let event in data) {
+                            if ('pay_day' in data[event]) {
+                                dispListKey = data[event].pay_day[0] + '_' + event;
+                            }
+
+                            dispList[dispListKey] = data[event];
+                            dispList[dispListKey]['eventName'] = event;
+                        }
+                        let keyList = Object.keys(dispList).sort();
+
+                        for (const i in keyList) {
+                            var key = keyList[i];
+
                             var dt = document.createElement("dt");
                             common_set_element({
                                 'element'   : dt,
-                                'innerText' : ('pay_day' in data[event]
-                                    ? event.replace(data[event].pay_day[0], "")
-                                    : event)
+                                'innerText' : dispList[key].eventName,
                             });
                             var dd = document.createElement("dd");
 
                             // 募集状況
-                            if ('recruit' in data[event]) {
+                            if ('recruit' in dispList[key]) {
                                 var div1 = document.createElement("div");
 
                                 var title1 = document.createElement("din");
@@ -1362,7 +1368,7 @@ function opDB(op, paramDB) {
                                 common_set_element({
                                     'element'   : item1,
                                     'className' : 'noticeItem',
-                                    'innerHTML' : data[event].recruit,
+                                    'innerHTML' : dispList[key].recruit,
                                 });
 
                                 div1.appendChild(title1);
@@ -1371,7 +1377,7 @@ function opDB(op, paramDB) {
                             }
 
                             // 応募リスト
-                            if ('al_status' in data[event]) {
+                            if ('al_status' in dispList[key]) {
                                 var div2 = document.createElement("div");
 
                                 var title2 = document.createElement("div");
@@ -1392,7 +1398,7 @@ function opDB(op, paramDB) {
                                     'className' : 'noticeItem',
                                 });
 
-                                for (let name in data[event].al_status) {
+                                for (let name in dispList[key].al_status) {
                                     var nameP = document.createElement("p");
                                     common_set_element({
                                         'element'   : nameP,
@@ -1403,8 +1409,8 @@ function opDB(op, paramDB) {
                                     var nameS = document.createElement("span");
                                     common_set_element({
                                         'element'       : nameS,
-                                        'innerText'     : data[event].al_status[name],
-                                        'background'    : common_applicationStatus_color(data[event].al_status[name]),
+                                        'innerText'     : dispList[key].al_status[name],
+                                        'background'    : common_applicationStatus_color(dispList[key].al_status[name]),
                                     });
                                     nameP.appendChild(nameS);
                                     item2.appendChild(nameP);
@@ -1416,7 +1422,7 @@ function opDB(op, paramDB) {
 
 
                             // シフト変更希望リスト
-                            if ('sl_change' in data[event]) {
+                            if ('sl_change' in dispList[key]) {
                                 var div3 = document.createElement("div");
 
                                 var title3 = document.createElement("div");
@@ -1435,7 +1441,7 @@ function opDB(op, paramDB) {
                                 common_set_element({
                                     'element'       : item3,
                                     'className'     : 'noticeItem',
-                                    'innerText'     : '未承認： ' + data[event].sl_change + ' 件',
+                                    'innerText'     : '未承認： ' + dispList[key].sl_change + ' 件',
                                 });
 
                                 div3.appendChild(title3);
@@ -1445,7 +1451,7 @@ function opDB(op, paramDB) {
 
 
                             // 勤怠修正情報
-                            if ('wr_request' in data[event]) {
+                            if ('wr_request' in dispList[key]) {
                                 var div4 = document.createElement("div");
 
                                 var title4 = document.createElement("div");
@@ -1464,7 +1470,7 @@ function opDB(op, paramDB) {
                                 common_set_element({
                                     'element'       : item4,
                                     'className'     : 'noticeItem',
-                                    'innerText'     : '未承認： ' + data[event].wr_request + ' 件',
+                                    'innerText'     : '未承認： ' + dispList[key].wr_request + ' 件',
                                 });
 
                                 div4.appendChild(title4);
@@ -1474,7 +1480,7 @@ function opDB(op, paramDB) {
 
 
                             // 支払日
-                            if ('pay_day' in data[event]) {
+                            if ('pay_day' in dispList[key]) {
                                 var div5 = document.createElement("div");
 
                                 var title5 = document.createElement("din");
@@ -1490,10 +1496,10 @@ function opDB(op, paramDB) {
                                 title5.appendChild(title5P);
 
                                 let payDayList = '';
-                                for (let pD in data[event].pay_day) {
+                                for (let pD in dispList[key].pay_day) {
                                     payDayList = payDayList
-                                        ? payDayList + '<br>' + data[event].pay_day[pD] 
-                                        : data[event].pay_day[pD]
+                                        ? payDayList + '<br>' + dispList[key].pay_day[pD] 
+                                        : dispList[key].pay_day[pD]
                                     ;
                                 }
 
