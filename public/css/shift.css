@@ -654,9 +654,10 @@ button {
         left            : 16.15vmin;
         z-index         : 9;
     }
-    #shiftInfoArea > #addStaff {
+    #shiftInfoArea > #addStaff,
+    #shiftInfoArea > #estimateTotalPayArea {
         display         : none;
-        margin-top      : 15vmin;
+        margin-top      : 5vmin;
         overflow        : visible;
         /* display         : flex; */
         justify-content : center;
@@ -669,7 +670,8 @@ button {
         margin-left     : 50vmin;
         color           : #fff;
     }
-    #shiftInfoArea > #addStaff > p {
+    #shiftInfoArea > #addStaff > p,
+    #shiftInfoArea > #estimateTotalPayArea > p {
         width           : 100%;
         font-size       : 2vmin;
     }
@@ -679,6 +681,9 @@ button {
         display     : flex;
         flex-wrap   : wrap;
     }
+    #shiftInfoArea > #estimateTotalPayArea > dl {
+        width : 75vmin;
+     }
     #shiftInfoArea dl > dt,
     #shiftInfoArea dl > dd {
         margin          : 0;
@@ -696,6 +701,9 @@ button {
         justify-content : center;
         align-items     : center;
     }
+    #shiftInfoArea > #estimateTotalPayArea > dl > dt {
+        width : 15%;
+     }
     #shiftInfoArea dl > dd {
         width           : 70%;
         padding         : 0.5vmin;
@@ -704,6 +712,11 @@ button {
         justify-content : center;
         align-items     : center;
     }
+    #shiftInfoArea > #estimateTotalPayArea > dl > dd {
+        width           : 75%;
+        padding         : 0.5vmin 1vmin;
+        justify-content : left;
+     }
     #shiftInfoArea dl > dd > input {
         background          : #ececec;
         margin              : 1vmin 0;

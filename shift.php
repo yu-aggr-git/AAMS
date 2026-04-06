@@ -153,7 +153,7 @@
                             <td id="separator">～</td>
                             <td id="endDay"></td>
                         </tr>
-                            
+
                         <tr>
                             <td id="startTime"></td>
                             <td id="separator2">-</td>
@@ -214,6 +214,34 @@
                         </tbody>
                     </table>
                 </div>
+
+
+                <div id="estimateTotalPayArea">
+                    <dl>
+                        <dt>合計基本給</dt>
+                        <dd>
+                            <p>
+                                時給：<span id="hourlyWage"></span>円
+                                 × 合計実働時間：<span id="totalWorkTime"></span>h
+                                 ＝ <span id="estimateTotalBasic"></span>円
+                            </p>
+                        </dd>
+
+                        <dt>合計交通費</dt>
+                        <dd>
+                            <p>
+                                一日上限：<span id="transportationLimit"></span>円
+                                 × 合計出勤人数：<span id="totalWorkNum"></span>人
+                                 ＝ <span id="estimateTotalTransportation"></span>円
+                            </p>
+
+                        </dd>
+
+                        <dt>概算給与</dt>
+                        <dd><span id="estimateTotalPay"></span>円</dd>
+                    </dl>
+                </div>
+
 
                 <div id="addStaff">
                     <p>

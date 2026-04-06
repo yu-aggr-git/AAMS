@@ -145,7 +145,7 @@ window.onload = () => {
     document.getElementById("printShiftInfo").onclick = function() {
         common_print(
             'printTarget',
-            ['header', 'menuBar', 'selectEventArea', 'eventInfoArea', 'selectItemArea', 'shiftInfoMenu', 'addStaff', 'footer']
+            ['header', 'menuBar', 'selectEventArea', 'eventInfoArea', 'selectItemArea', 'shiftInfoMenu', 'estimateTotalPayArea', 'addStaff', 'footer']
         );
 
         window.location.reload();
@@ -301,7 +301,7 @@ function getItem(id, event) {
             // 管理者用項目の表示
             if (adminUser) {
                 common_op_view({
-                    'flex'  : ['addStaff']
+                    'flex'  : ['estimateTotalPayArea', 'addStaff']
                 });
             }
 
@@ -1097,12 +1097,14 @@ function opDB(op, paramDB) {
                         // イベント情報
                         common_text_entry({
                             'innerText' : {
-                                'eventName' : data.event,
-                                'firstDay'  : data.first_day,
-                                'endDay'    : data.end_day,
-                                'startTime' : data.start_time,
-                                'endTime'   : data.end_time,
-                                'manager'   : '現場責任者：' + (data.manager ? data.manager : ''),
+                                'eventName'             : data.event,
+                                'firstDay'              : data.first_day,
+                                'endDay'                : data.end_day,
+                                'startTime'             : data.start_time,
+                                'endTime'               : data.end_time,
+                                'manager'               : '現場責任者：' + (data.manager ? data.manager : ''),
+                                'hourlyWage'            : (data.hourly_wage ? data.hourly_wage.toLocaleString() : ''),
+                                'transportationLimit'   : (data.transportation_limit ? data.transportation_limit.toLocaleString() : ''),
                             }
                         });
 
@@ -1116,7 +1118,7 @@ function opDB(op, paramDB) {
                         }
 
                         const firstDay  = data.first_day.split(/-/);
-                        const endDay    = data.end_day.split(/-/);                    
+                        const endDay    = data.end_day.split(/-/);
                         for (
                             let date = new Date(firstDay[0], firstDay[1] - 1 , firstDay[2]);
                             date <= new Date(endDay[0], endDay[1] - 1, endDay[2]);
@@ -1478,9 +1480,11 @@ function opDB(op, paramDB) {
                             });
                         }
 
-                        let i = 0;
-                        let sum = [];
-                        let boothA = [];
+                        let i           = 0;
+                        let sum         = [];
+                        let boothA      = [];
+                        let sumWorkTime = '0:00';
+                        let sumworkNum  = 0;
                         data.forEach(function(staff) {
 
                             var tr1 = document.createElement("tr");
@@ -1757,10 +1761,14 @@ function opDB(op, paramDB) {
 
                                 // 合計人数の加算
                                 if (valueW != '-' && valueW != '0:00') {
-                                    // 合計人数の加算
                                     sum[day] = sum[day] + 1;
+                                    sumworkNum = sumworkNum + 1;
                                 }
 
+                                // 概算給与の加算
+                                if (valueW != '-' && valueW != '0:00') {
+                                    sumWorkTime = common_clac(day, sumWorkTime, valueW, 'sum');
+                                }
 
                                 tr1.appendChild(tr1S);
                                 tr1.appendChild(tr1E);
@@ -1806,6 +1814,22 @@ function opDB(op, paramDB) {
                                 });
                             }
                         }
+
+                        // 概算給与
+                        var sumWorkTimeNum              = common_convert_time(sumWorkTime);
+                        var hourlyWage                  = document.getElementById("hourlyWage").innerText.replace(",", "");
+                        var transportationLimit         = document.getElementById("transportationLimit").innerText.replace(",", "");
+                        var estimateTotalBasic          = Math.round(Number(sumWorkTimeNum) * Number(hourlyWage));
+                        var estimateTotalTransportation = Math.round(Number(sumworkNum) * Number(transportationLimit));
+                        common_text_entry({
+                            'innerText' : {
+                                'totalWorkTime'                 : sumWorkTimeNum,
+                                'estimateTotalBasic'            : estimateTotalBasic.toLocaleString(),
+                                'totalWorkNum'                  : sumworkNum,
+                                'estimateTotalTransportation'   : estimateTotalTransportation.toLocaleString(),
+                                'estimateTotalPay'              : (estimateTotalBasic + estimateTotalTransportation).toLocaleString()
+                            }
+                        });
                     }
                 }
             }
