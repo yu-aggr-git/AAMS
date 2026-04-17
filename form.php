@@ -197,7 +197,7 @@
                     <br>QRコードまたは招待URLからLINEグループにご参加ください。
                 </p>
 
-                <img src="public/img/LINE-GROUP-8665.jpg" alt="">
+                <img src="public/img/LINE-GROUP.jpg" alt="">
 
                 <a href="https://line.me/R/ti/g/h9KSDTaq7T">https://line.me/R/ti/g/h9KSDTaq7T</a>
 
@@ -208,6 +208,22 @@
                     <br>※年齢確認で参加できない場合は、
                     <br>LINEアカウントのQRコード添付の上でご連絡ください。
                     <br>グループに直接招待します。
+                </p>
+            </div>
+
+            <!-- Instagram -->
+            <div id="instagramArea">
+                <p>
+                    Instagram（インスタグラム）でも、
+                    <br>イベント求人情報の投稿をおこなっております。
+                </p>
+
+                <img src="public/img/Instagram.png" alt="">
+
+                <a href="https://www.instagram.com/aggregation.inc/">https://www.instagram.com/aggregation.inc/</a>
+
+                <p>
+                    ぜひフォローをお願いします！
                 </p>
             </div>
 
