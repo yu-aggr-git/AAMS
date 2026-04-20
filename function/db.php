@@ -1971,7 +1971,7 @@
             if ($mail) {
                 $query2 = "
                     INSERT IGNORE INTO
-                        staff_list(event, no, name, mail, birthday, shift)
+                        staff_list(event, no, name, mail, birthday)
                     SELECT
                         event,
                         (
@@ -1991,8 +1991,7 @@
                         ),
                         name,
                         mail,
-                        birthday,
-                        available
+                        birthday
                     FROM
                         application_list al
                     WHERE
