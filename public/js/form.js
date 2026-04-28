@@ -44,7 +44,7 @@ function eventSelect() {
             // 表示切替
             common_op_view({
                 'flex'  : ['applicationInfoInputArea'],
-                'none'  : ['eventSelectArea', 'lineGroupArea']
+                'none'  : ['eventSelectArea', 'lineGroupArea', 'instagramArea']
             });
             common_text_entry({
                 'innerText' : {

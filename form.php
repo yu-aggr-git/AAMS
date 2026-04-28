@@ -78,6 +78,7 @@
 
                         <div hidden id="inputBirthdayArea">
                             <select id="inputBirthdayYear">
+                                <option value=""></option>
                                 <?php for ($i =  date("Y") - 14; $i >= date("Y") - 70; $i--) : ?>
                                     <option value="<?php echo $i ?>"><?php echo $i ?></option>
                                 <?php endfor; ?>
@@ -86,6 +87,7 @@
                             <p class="separator">-</p>
 
                             <select id="inputBirthdayMonth">
+                                <option value=""></option>
                                 <?php for ($i = 1; $i <= 12; $i ++) : ?>
                                     <?php $i = sprintf('%02d', $i) ?>
                                     <option value="<?php echo $i ?>"><?php echo $i ?></option>
@@ -95,6 +97,7 @@
                             <p class="separator">-</p>
 
                             <select id="inputBirthdayDay">
+                                <option value=""></option>
                                 <?php for ($i = 1; $i <= 31; $i++) : ?>
                                     <?php $i = sprintf('%02d', $i) ?>
                                     <option value="<?php echo $i ?>"><?php echo $i ?></option>
