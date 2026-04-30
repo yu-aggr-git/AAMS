@@ -1,4 +1,7 @@
 window.onload = () => {
+
+    sessionStorage.clear();
+
     let paramIndexedDB = {};
 
     // 日時の表示

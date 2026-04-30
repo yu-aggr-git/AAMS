@@ -1,5 +1,7 @@
 window.onload = () => {
 
+    sessionStorage.clear();
+
     // ログイン
     const adminUser = window.localStorage.getItem("adminUser");
     adminLogin(adminUser);

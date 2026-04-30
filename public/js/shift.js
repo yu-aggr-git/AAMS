@@ -1,8 +1,9 @@
 window.onload = () => {
 
+    sessionStorage.clear();
+
     // 管理者判定
     checkAdmin();
-
 
     // ログイン
     document.getElementById("loginStaff").onclick = function() {

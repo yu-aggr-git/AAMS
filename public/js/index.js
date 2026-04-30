@@ -1,4 +1,7 @@
 window.onload = () => {
+
+    sessionStorage.clear();
+
     var isOnline = navigator.onLine;
     isOnline ? online() : offline();
 

@@ -2253,9 +2253,9 @@
 
         $query1 = "
             INSERT INTO
-                shift_change_list(request_dt, event, name, shift_before, shift_after, status)
+                shift_change_list(request_dt, event, name, shift_before, shift_after, status, approval_d)
             VALUES
-                (:requestDt, :event, :name, :before, :after, :status)
+                (:requestDt, :event, :name, :before, :after, :status, :approvalD)
         ;";
         $sth1 = $dbh->prepare($query1, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $count = $sth1->execute([
@@ -2265,6 +2265,7 @@
             'before'        => $param['before'],
             'after'         => $param['after'],
             'status'        => $param['status'],
+            'approvalD'     => $param['status'] == '可能日変更' ? mb_substr($param['requestDt'], 0, 10) : null 
         ]);
 
 

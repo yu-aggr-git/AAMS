@@ -325,6 +325,11 @@
                     <button type="button" id="sendAvailableRequest" value="false">送信</button>
                 </div>
 
+                <div id="shiftChangeMemo">
+                    <p>● 直前の変更申請は必ず現場責任者へ連絡をお願いします。</p>
+                    <p>● ステータスが「申請中」の状態では、シフトの変更は承認されていません。</p>
+                </div>
+
                 <div>
                     <table id="shiftChangeInfoTable">
                         <tbody>

@@ -1,5 +1,7 @@
 window.onload = () => {
 
+    sessionStorage.clear();
+
     // ログイン
     let staffUser = window.localStorage.getItem("staffUser");
     staffLogin(staffUser);

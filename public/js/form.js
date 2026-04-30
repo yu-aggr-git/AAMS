@@ -1,5 +1,7 @@
 window.onload = () => {
 
+    sessionStorage.clear();
+
     // イベント取得
     opDB('getEventListRecruit');
 

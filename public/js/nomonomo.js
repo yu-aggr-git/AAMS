@@ -1,5 +1,7 @@
 window.onload = () => {
 
+    sessionStorage.clear();
+
     let turn  = 0;
     let tefudaCnt   = 0;
     let bafudaMax = 0;
@@ -16,7 +18,7 @@ window.onload = () => {
     cardList = [...Array(48)].map((_, i) => i + 1);
     pointer("yamafuda")
 
-    
+
     // 山札からカードを取得
     document.getElementById("yamafuda").onclick = function() {
         turn        = document.getElementById("turn").textContent;
