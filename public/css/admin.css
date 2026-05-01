@@ -258,6 +258,18 @@ html::-webkit-scrollbar {
         -webkit-appearance  : none;
         appearance          : none;
     }
+    #dayReportArea > div > button{
+        background      : #fff;
+        margin-left     : 1vmin;
+        font-size       : 1.5vmin;
+        color           : #000;
+        white-space     : nowrap;
+        border-radius   : 100vh;
+    }
+    #dayReportArea > div > #sendDayReport {
+        background      : #000;
+        color           : #fff;
+    }
     #dayReportArea > dl {
         display     : none;
         width       : 75vw;
@@ -289,6 +301,20 @@ html::-webkit-scrollbar {
         display         : flex;
         justify-content : start;
         align-items     : center;
+    }
+    #dayReportArea > dl > dd textarea {
+        background          : #ececec;
+        margin              : 0;
+        padding             : 0.5vmin 1vmin;
+        width               : 100%;
+        field-sizing        : content;
+        border              : 0.1vmin solid #666;
+        border-radius       : 1vh;
+        font-size           : 1.5vmin;
+        cursor              : pointer;
+        outline             : none;
+        -webkit-appearance  : none;
+        appearance          : none;
     }
 
 

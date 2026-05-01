@@ -215,6 +215,10 @@
                 get_day_report($dbh, $_POST);
                 break;
 
+            case 'update_day_report' :
+                update_day_report($dbh, $_POST);
+                break;
+
 
             // 給与明細作成情報
             case 'get_payslip_create_info' :
@@ -2204,7 +2208,7 @@
             ]);
         }
 
-    
+
         // シフト変更希望更新
         $query4 = "
             UPDATE
@@ -2372,6 +2376,26 @@
         echo $json;
     }
 
+    // ────日報：更新─────────────────────────────
+    function update_day_report($dbh, $param) {
+        $query = "
+            UPDATE
+                day_report
+            SET
+                report = :report
+            WHERE
+                    event   = :event
+                AND day     = :day
+        ";
+        $sth = $dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $count = $sth->execute([
+            'event'     => $param['event'],
+            'day'       => $param['day'],
+            'report'    => $param['report'],
+        ]);
+
+        echo $count;
+    }
 
 
     // ────給与明細作成情報：取得─────────────────────────────

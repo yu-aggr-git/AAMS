@@ -72,6 +72,16 @@ window.onload = () => {
         opDB('getDayReport', paramDB);
     }
 
+    // 日報の編集
+    document.getElementById("editDayReportEdit").onclick = function() {
+        eventDayReport(this.id);
+    }
+    document.getElementById("cancelDayReport").onclick = function() {
+        eventDayReport(this.id);
+    }
+    document.getElementById("sendDayReport").onclick = function() {
+        eventDayReport(this.id);
+    }
 
     // 打刻情報の表示
     document.getElementById("sendStampInfo").onclick = function() {
@@ -601,6 +611,59 @@ function eventEdit(id) {
             }
             break;
     }
+}
+
+
+
+// ──────────────────────────────────────────────────────
+//  日報の編集
+// ………………………………………………………………………………………………………………………………………………
+function eventDayReport(id) {
+
+    const inputEvent = document.getElementById("eventName").textContent;
+    var paramDB = {
+        'event'  : inputEvent,
+        'day'    : document.getElementById("dayReportSelect").value,
+        'report' : ''
+    }
+
+    switch (id) {
+        case 'editDayReportEdit':
+            common_op_view({
+                'block' : ['inputDayReport', 'cancelDayReport', 'sendDayReport'],
+                'none'  : ['dayReport', 'editDayReportEdit'],
+            });
+            common_text_entry({
+                'value' : {
+                    'inputDayReport' : document.getElementById("dayReport").innerHTML.replaceAll("<br>", "\n"),
+                }
+            });
+            break;
+
+        case 'cancelDayReport':
+            common_op_view({
+                'block' : ['dayReport', 'editDayReportEdit'],
+                'none'  : ['inputDayReport', 'cancelDayReport', 'sendDayReport'],
+            });
+            common_text_entry({
+                'value' : {
+                    'inputDayReport' : '',
+                }
+            });
+            break;
+
+        case 'sendDayReport':
+            paramDB['report'] = document.getElementById("inputDayReport").value;
+
+            var result = window.confirm('日報の内容を更新してよろしいですか？');
+            if (result) {
+                opDB('updateDayReport', paramDB);
+            }
+            break;
+        }
+
+    console.log(paramDB);
+
 }
 
 
@@ -2783,7 +2846,7 @@ function opDB(op, paramDB) {
             xmlhttp.onreadystatechange = function() {
                 common_text_entry({'innerText' : {'dayReport' : ''}});
                 common_op_view({
-                    'none'  : ['dayReportDl']
+                    'none'  : ['dayReportDl', 'editDayReportEdit', 'cancelDayReport', 'sendDayReport', 'inputDayReport']
                 });
 
                 if (this.readyState == 4 && this.status == 200) {
@@ -2792,8 +2855,39 @@ function opDB(op, paramDB) {
                     if (data) {
                         common_text_entry({'innerHTML' : {'dayReport' : data.report.replaceAll("\n", "<br>")}});
                         common_op_view({
-                            'flex'  : ['dayReportDl']
+                            'flex'  : ['dayReportDl', 'dayReport', 'editDayReportEdit']
                         });
+                    }
+                }
+            }
+            break;
+
+        case 'updateDayReport':
+            var param = "function=" + "update_day_report"
+                + "&event="     + encodeURIComponent(paramDB.event)
+                + "&day="       + encodeURIComponent(paramDB.day)
+                + "&report="    + encodeURIComponent(paramDB.report)
+            ;
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    // 登録完了
+                    if (this.response == 1) {
+                        // console.log(this.response, '登録');
+
+                        common_text_entry({
+                            'value' : {
+                                'inputDayReport' : '',
+                            }
+                        });
+
+                        // 日報の表示
+                        var nextParamDB = {
+                            'event' : paramDB.event,
+                            'day'   : paramDB.day
+                        };
+                        opDB('getDayReport', nextParamDB);
                     }
                 }
             }

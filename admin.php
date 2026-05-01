@@ -66,12 +66,17 @@
                 <div>
                     <p>イベント日報：</p>
                     <select id="dayReportSelect"></select>
+
+                    <button type="button" id="editDayReportEdit"   hidden>編集</button>
+                    <button type="button" id="cancelDayReport" hidden>取消</button>
+                    <button type="button" id="sendDayReport"   hidden>送信</button>
                 </div>
 
                 <dl id="dayReportDl">
                     <dt>内容</dt>
                     <dd>
                         <p id="dayReport"></p>
+                        <textarea id="inputDayReport"></textarea>
                     </dd>
                 </dl>
             </div>
